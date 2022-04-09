@@ -10,7 +10,7 @@ public class DialogueTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(inkJSON.text);
+        DialogueManager.GetInstance().EnterDialogueMode(inkJSON);
     }
 
     // Update is called once per frame
