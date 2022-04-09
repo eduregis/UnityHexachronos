@@ -1,0 +1,3 @@
+Olá, sou um diálogo!
+Estou funcionando!
+Espero...
