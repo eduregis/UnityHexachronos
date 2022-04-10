@@ -1032,7 +1032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueBox: {fileID: 430249300}
-  characterImage: {fileID: 1045319906}
+  characterImage: {fileID: 1045319904}
   dialogueText: {fileID: 768018737}
   nameText: {fileID: 1522071624}
 --- !u!1 &2006891098

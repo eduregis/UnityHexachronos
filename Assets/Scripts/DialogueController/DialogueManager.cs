@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Ink.Runtime;
 
@@ -10,7 +11,7 @@ public class DialogueManager : MonoBehaviour
 
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialogueBox;
-    [SerializeField] private GameObject characterImage;
+    [SerializeField] private Image characterImage;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI nameText;
 
@@ -24,7 +25,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("Found morethan one DialogueManager in the scene");
+            Debug.LogWarning("Found more than one DialogueManager in the scene");
         }
         instance = this;
     }
@@ -37,6 +38,7 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueIsPlaying = false;
         dialogueBox.SetActive(false);
+        characterImage.enabled = false;
     }
 
     private void Update()
@@ -56,7 +58,7 @@ public class DialogueManager : MonoBehaviour
         currentStory = new Story(inkJSON.text);
         dialogueIsPlaying = true;
         dialogueBox.SetActive(true);
-
+        characterImage.enabled = true;
 
         ContinueStory();
     }
@@ -65,7 +67,7 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueIsPlaying = false;
         dialogueBox.SetActive(false);
-        characterImage. SetActive(false);
+        characterImage.enabled = false;
         dialogueText.text = "";
         nameText.text = "";
     }
@@ -87,15 +89,16 @@ public class DialogueManager : MonoBehaviour
                 if (charNamelist.Length == 2)
                 {
                     nameText.text = charNamelist[0];
-                    // TODO: chamar método pra mudar imagem
                 } else
                 {
                     nameText.text = strlist[1];
                 }
+                characterImage.sprite = CharacterImageManager.GetInstance().ChangeCharacterImage(strlist[1]);
                 dialogueText.text = strlist[2];
             }
             else
             {
+                characterImage.sprite = CharacterImageManager.GetInstance().ChangeCharacterImage("");
                 nameText.text = "";
                 dialogueText.text = " " + stringText;
             }
