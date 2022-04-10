@@ -1160,4 +1160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 107acbd09256b68459f6042020b37fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkJSON: {fileID: 4900000, guid: 2571264bfd451174e882ab596fac240d, type: 3}
+  inkJSONs:
+  - {fileID: 4900000, guid: 2571264bfd451174e882ab596fac240d, type: 3}
+  - {fileID: 4900000, guid: 2571264bfd451174e882ab596fac240d, type: 3}
