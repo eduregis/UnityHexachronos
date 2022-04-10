@@ -1,3 +1,3 @@
-Olá, sou um diálogo!
-Estou funcionando!
+[Sam_Sad] Olá, sou um diálogo!
+[Sam] Estou funcionando!
 Espero...

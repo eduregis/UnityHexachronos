@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using TMPro;
 using Ink.Runtime;
@@ -9,7 +10,9 @@ public class DialogueManager : MonoBehaviour
 
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialogueBox;
+    [SerializeField] private GameObject characterImage;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private TextMeshProUGUI nameText;
 
     private Story currentStory;
 
@@ -54,6 +57,7 @@ public class DialogueManager : MonoBehaviour
         dialogueIsPlaying = true;
         dialogueBox.SetActive(true);
 
+
         ContinueStory();
     }
 
@@ -61,15 +65,42 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueIsPlaying = false;
         dialogueBox.SetActive(false);
+        characterImage. SetActive(false);
         dialogueText.text = "";
+        nameText.text = "";
     }
 
     private void ContinueStory()
     {
         if (currentStory.canContinue)
         {
-            // Fazer a divisão pra definir a imagem do dialogo
-            dialogueText.text = currentStory.Continue();
+            String stringText = currentStory.Continue();
+
+            char[] separators = { '[', ']' };
+            String[] strlist = stringText.Split(separators, 3, StringSplitOptions.None);
+
+            if (strlist.Length == 3)
+            {
+                char[] charNameSeparators = { '_' };
+                String[] charNamelist = strlist[1].Split(charNameSeparators, 3, StringSplitOptions.None);
+
+                if (charNamelist.Length == 2)
+                {
+                    nameText.text = charNamelist[0];
+                    // TODO: chamar método pra mudar imagem
+                } else
+                {
+                    nameText.text = strlist[1];
+                }
+                dialogueText.text = strlist[2];
+            }
+            else
+            {
+                nameText.text = "";
+                dialogueText.text = " " + stringText;
+            }
+            
+            
         }
         else
         {
