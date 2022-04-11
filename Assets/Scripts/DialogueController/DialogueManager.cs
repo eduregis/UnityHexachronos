@@ -10,7 +10,6 @@ using UnityEngine.EventSystems;
 
 public class DialogueManager : MonoBehaviour
 {
-
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private Image characterImage;
@@ -24,6 +23,7 @@ public class DialogueManager : MonoBehaviour
     private Story currentStory;
 
     public bool dialogueIsPlaying { get; private set; }
+    private bool dialogueIsWriting;
 
     private static DialogueManager instance;
 
@@ -43,6 +43,7 @@ public class DialogueManager : MonoBehaviour
     private void Start()
     {
         dialogueIsPlaying = false;
+        dialogueIsWriting = false;
         dialogueBox.SetActive(false);
         characterImage.enabled = false;
 
@@ -64,7 +65,14 @@ public class DialogueManager : MonoBehaviour
 
         if(InputManager.GetInstance().GetSubmitPressed())
         {
-            ContinueStory();
+            if(!dialogueIsWriting)
+            {
+                ContinueStory();
+            } else
+            {
+                dialogueIsWriting = false;
+            }
+            
         }
     }
 
@@ -91,6 +99,7 @@ public class DialogueManager : MonoBehaviour
 
     private void ContinueStory()
     {
+        HidingChoices();
         if (currentStory.canContinue)
         {
             // set text for the current dialogue line
@@ -112,22 +121,40 @@ public class DialogueManager : MonoBehaviour
                     nameText.text = strlist[1];
                 }
                 characterImage.sprite = CharacterImageManager.GetInstance().ChangeCharacterImage(strlist[1]);
-                dialogueText.text = strlist[2];
+               StartCoroutine(FillText(strlist[2]));
             }
             else
             {
                 characterImage.sprite = CharacterImageManager.GetInstance().ChangeCharacterImage("");
                 nameText.text = "";
-                dialogueText.text = " " + stringText;
+                StartCoroutine(FillText(" " + stringText));
             }
-            // display choices, if any, for this dialogue line
-            DisplayChoices();
-            
         }
         else
         {
             StartCoroutine(ExitDialogueMode());
         }
+    }
+
+    private IEnumerator FillText(String text)
+    {
+        dialogueIsWriting = true;
+        dialogueText.text = "";
+        foreach (char c in text)
+        {
+            if(dialogueIsWriting)
+            {
+                dialogueText.text += c;
+                yield return new WaitForSeconds(0.025f);
+            } else
+            {
+                dialogueText.text = text;
+                break;
+            }
+        }
+        dialogueIsWriting = false;
+        // display choices, if any, for this dialogue line
+        DisplayChoices();
     }
 
     private void DisplayChoices()
@@ -154,6 +181,14 @@ public class DialogueManager : MonoBehaviour
             choices[i].gameObject.SetActive(false);
         }
         StartCoroutine(SelectFirstChoice());
+    }
+
+    private void HidingChoices()
+    {
+        for (int i = 0; i < choices.Length; i++)
+        {
+            choices[i].gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator SelectFirstChoice()
