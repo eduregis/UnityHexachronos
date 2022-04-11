@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Ink.Runtime;
+using UnityEngine.EventSystems;
+
 
 public class DialogueManager : MonoBehaviour
 {
@@ -59,7 +61,8 @@ public class DialogueManager : MonoBehaviour
         {
             return;
         }
-        if ((Input.GetKeyDown(KeyCode.Space)) || (Input.GetKeyDown(KeyCode.KeypadEnter)))
+
+        if(InputManager.GetInstance().GetSubmitPressed())
         {
             ContinueStory();
         }
@@ -150,5 +153,20 @@ public class DialogueManager : MonoBehaviour
         {
             choices[i].gameObject.SetActive(false);
         }
+        StartCoroutine(SelectFirstChoice());
+    }
+
+    private IEnumerator SelectFirstChoice()
+    {
+        // Event System requires we clear it first, then wait
+        // for at least one frame before we set the current selected object.
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(choices[0].gameObject);
+    }
+
+    public void MakeChoice(int choiceIndex)
+    {
+        currentStory.ChooseChoiceIndex(choiceIndex);
     }
 }

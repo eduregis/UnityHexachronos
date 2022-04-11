@@ -14,7 +14,7 @@ Espero...
         -> aff
 
 === chosen(time) ===
-Aqui é (time)!
+Aqui é {time}!
 -> END
 
 === aff ===
