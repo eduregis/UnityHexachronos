@@ -1893,6 +1893,10 @@ MonoBehaviour:
   characterImage: {fileID: 1045319906}
   dialogueText: {fileID: 768018737}
   nameText: {fileID: 1522071624}
+  choices:
+  - {fileID: 1769313586}
+  - {fileID: 1832364010}
+  - {fileID: 1115635037}
 --- !u!1 &2006891098
 GameObject:
   m_ObjectHideFlags: 0
