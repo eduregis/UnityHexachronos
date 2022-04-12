@@ -27,6 +27,8 @@ public class DialogueManager : MonoBehaviour
 
     private static DialogueManager instance;
 
+    public String choicesIndexes;
+
     private void Awake()
     {
         if (instance != null)
@@ -34,6 +36,7 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning("Found more than one DialogueManager in the scene");
         }
         instance = this;
+        choicesIndexes = "";
     }
     public static DialogueManager GetInstance()
     {
@@ -203,5 +206,6 @@ public class DialogueManager : MonoBehaviour
     public void MakeChoice(int choiceIndex)
     {
         currentStory.ChooseChoiceIndex(choiceIndex);
+        choicesIndexes += ("" + choiceIndex);
     }
 }

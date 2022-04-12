@@ -27,11 +27,12 @@ public class DialogueTrigger : MonoBehaviour
                     DialogueManager.GetInstance().EnterDialogueMode(inkJSON1);
                     handler = 1;
                     break;
-               // case 1:
-               //   DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
-               //   handler = 2;
-               //   break;
+                case 1:
+                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
+                    handler = 2;
+                    break;
                 default:
+                    Debug.Log(DialogueManager.GetInstance().choicesIndexes);
                     break;
             }
         }
