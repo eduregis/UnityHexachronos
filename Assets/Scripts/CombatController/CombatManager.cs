@@ -20,9 +20,13 @@ public class CombatManager : MonoBehaviour
     [Header("Main Menu UI")]
     [SerializeField] private GameObject[] mainMenuButtons;
 
-    [Header("SkillMenu UI")]
+    [Header("Skill Menu UI")]
     [SerializeField] private GameObject[] skillMenuButtons;
     [SerializeField] private Image[] actionPoints;
+    [SerializeField] private Image[] arrows;
+
+    // Control Variables
+    private int APLimit;
 
     private static CombatManager instance;
     private ActualTBSStatus actualStatus;
@@ -43,6 +47,7 @@ public class CombatManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        APLimit = 5;
         HidingSkillMenu();
         CallMainMenu();
         actualStatus = ActualTBSStatus.MainMenu;
@@ -83,9 +88,15 @@ public class CombatManager : MonoBehaviour
 
     private void CallSkillMenu()
     {
-        for (int i = 0; i < actionPoints.Length; i++)
+        for (int i = 0; i < APLimit; i++)
         {
             actionPoints[i].enabled = true;
+            arrows[i].enabled = true;
+        }
+        for (int i = APLimit; i < actionPoints.Length; i++)
+        {
+            actionPoints[i].enabled = false;
+            arrows[i].enabled = false;
         }
         for (int i = 0; i < skillMenuButtons.Length; i++)
         {
@@ -98,6 +109,7 @@ public class CombatManager : MonoBehaviour
         for (int i = 0; i < actionPoints.Length; i++)
         {
             actionPoints[i].enabled = false;
+            arrows[i].enabled = false;
         }
         for (int i = 0; i < skillMenuButtons.Length; i++)
         {
@@ -139,8 +151,23 @@ public class CombatManager : MonoBehaviour
 
     public void ChooseSkillMenuButton(int skillMenuButtonIndex)
     {
+        int[] sequences = new int[0];
         switch (skillMenuButtonIndex)
         {
+            case 0:
+                sequences = new int[] { 1, 2, 3 };
+                SettingSkill(sequences);
+                break;
+            case 1:
+                sequences = new int[] { 2, 2, 1 };
+                SettingSkill(sequences);
+                break;
+            case 2:
+                sequences = new int[] { 4, 4, 3 };
+                SettingSkill(sequences);
+                break;
+            case 3:
+                break;
             case 4:
                 HidingSkillMenu();
                 actualStatus = ActualTBSStatus.SkillMenu;
@@ -149,5 +176,41 @@ public class CombatManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void SettingSkill(int[] sequences)
+    {
+        int index = 0;
+        foreach (int sequence in sequences)
+        {
+            SettingArrow(index, sequence);
+            index++;
+        }
+        ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
+    }
+
+    public void SettingArrow(int index, int spriteCode)
+    {
+        arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 1f);
+        switch (spriteCode)
+        {
+            case 1:
+                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_up");
+                break;
+            case 2:
+                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_left");
+                break;
+            case 3:
+                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_right");
+                break;
+            case 4:
+                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down");
+                break;
+            default:
+                arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 0f);
+                break;
+
+        }
+        
     }
 }
