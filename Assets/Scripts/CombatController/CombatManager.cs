@@ -21,6 +21,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private GameObject[] mainMenuButtons;
 
     [Header("SkillMenu UI")]
+    [SerializeField] private GameObject[] skillMenuButtons;
     [SerializeField] private Image[] actionPoints;
 
     private static CombatManager instance;
@@ -70,7 +71,7 @@ public class CombatManager : MonoBehaviour
         {
             mainMenuButtons[i].gameObject.SetActive(true);
         }
-        StartCoroutine(SelectFirstOption());
+        StartCoroutine(SelectMainMenuFirstOption());
     }
     private void HidingMainMenu()
     {
@@ -82,22 +83,29 @@ public class CombatManager : MonoBehaviour
 
     private void CallSkillMenu()
     {
-        Debug.Log(actionPoints.Length);
         for (int i = 0; i < actionPoints.Length; i++)
         {
             actionPoints[i].enabled = true;
         }
+        for (int i = 0; i < skillMenuButtons.Length; i++)
+        {
+            skillMenuButtons[i].gameObject.SetActive(true);
+        }
+        StartCoroutine(SelectSkillMenuFirstOption());
     }
     private void HidingSkillMenu()
     {
-        Debug.Log("passei");
         for (int i = 0; i < actionPoints.Length; i++)
         {
             actionPoints[i].enabled = false;
         }
+        for (int i = 0; i < skillMenuButtons.Length; i++)
+        {
+            skillMenuButtons[i].gameObject.SetActive(false);
+        }
     }
 
-    private IEnumerator SelectFirstOption()
+    private IEnumerator SelectMainMenuFirstOption()
     {
         // Event System requires we clear it first, then wait
         // for at least one frame before we set the current selected object.
@@ -108,13 +116,35 @@ public class CombatManager : MonoBehaviour
 
     public void ChooseMainMenuButton(int mainMenuButtonIndex)
     {
-        
         switch (mainMenuButtonIndex)
         {
             case 1:
                 HidingMainMenu();
                 actualStatus = ActualTBSStatus.SkillMenu;
                 CallSkillMenu();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private IEnumerator SelectSkillMenuFirstOption()
+    {
+        // Event System requires we clear it first, then wait
+        // for at least one frame before we set the current selected object.
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(skillMenuButtons[0].gameObject);
+    }
+
+    public void ChooseSkillMenuButton(int skillMenuButtonIndex)
+    {
+        switch (skillMenuButtonIndex)
+        {
+            case 4:
+                HidingSkillMenu();
+                actualStatus = ActualTBSStatus.SkillMenu;
+                CallMainMenu();
                 break;
             default:
                 break;
