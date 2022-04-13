@@ -27,6 +27,7 @@ public class CombatManager : MonoBehaviour
 
     // Control Variables
     private int APLimit;
+    private int APindex;
 
     private static CombatManager instance;
     private ActualTBSStatus actualStatus;
@@ -48,6 +49,7 @@ public class CombatManager : MonoBehaviour
     void Start()
     {
         APLimit = 5;
+        APindex = 0;
         HidingSkillMenu();
         CallMainMenu();
         actualStatus = ActualTBSStatus.MainMenu;
@@ -166,7 +168,12 @@ public class CombatManager : MonoBehaviour
                 sequences = new int[] { 4, 4, 3 };
                 SettingSkill(sequences);
                 break;
+            // Erase the entire combo
             case 3:
+                APindex = 0;
+                sequences = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                SettingSkill(sequences);
+                APindex = 0;
                 break;
             case 4:
                 HidingSkillMenu();
@@ -180,11 +187,17 @@ public class CombatManager : MonoBehaviour
 
     public void SettingSkill(int[] sequences)
     {
-        int index = 0;
         foreach (int sequence in sequences)
         {
-            SettingArrow(index, sequence);
-            index++;
+            if (APindex < APLimit)
+            {
+                SettingArrow(APindex, sequence);
+                APindex++;
+            } else
+            {
+                break;
+            }
+            
         }
         ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
     }
@@ -207,6 +220,7 @@ public class CombatManager : MonoBehaviour
                 arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down");
                 break;
             default:
+                Debug.Log("apaga");
                 arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 0f);
                 break;
 
