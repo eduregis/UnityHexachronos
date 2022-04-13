@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Hierarchy
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -68,8 +68,8 @@ MonoBehaviour:
     y: 0
     width: 319
     height: 947
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 22
+  controlID: 38
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -249,7 +249,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 23
+  controlID: 27
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -269,8 +269,8 @@ MonoBehaviour:
     y: 0
     width: 1313
     height: 557
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -317,22 +317,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/DialogueController
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/DialogueController
+  - Assets/Scenes
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\DUDU\Desktop\Projetos\UnityHexachronos
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 10640000
-    m_LastClickedID: 25616
-    m_ExpandedIDs: 00000000f26300000c64000000ca9a3b
+    m_SelectedIDs: 2e630000
+    m_LastClickedID: 25390
+    m_ExpandedIDs: 000000008c6200002863000030630000566300006663000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -360,7 +360,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000f2630000
+    m_ExpandedIDs: 000000008c620000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -387,8 +387,8 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
-    m_ExpandedInstanceIDs: c62300008c7e0000
+    m_HadKeyboardFocusLastEvent: 1
+    m_ExpandedInstanceIDs: c62300008c7e000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -488,9 +488,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: aef6ffff28fbffff0a630000907c0000e67c00000c7d0000
+      m_SelectedIDs: 18940000
+      m_LastClickedID: 37912
+      m_ExpandedIDs: c0afffff76b0ffff00b1ffffbcb1ffff24b2ffffecb8ffff12c1ffff7cc4ffffd6c6ffffbec7ffff32c8ffff32c9ffff7cc9ffffc2c9ffff22caffff66cbffffa4d0ffff76d1fffffcd6ffff70e8ffffb8e8ffff3ae9ffff34ecffff84ecffff0eedffff8af1ffff8ef5ffff0cf6ffff1cf7ffff68f7ffffbcf7ffff48f8ffffc8f8ffff18f9ffff28fbffffea640000666500003666000058660000b26600002e67000058670000488100006e810000c8810000dc8100005e8200007e82000096820000fa8200000e83000022830000368300008a830000aa830000c28300002684000042840000688400008c84000096840000a08400006e8500008e850000a6850000e48500000a8600007086000098870000068900002c89000068890000a28a0000c88a0000f28a0000188b0000208b00004e8b0000ec8b00000c8c0000248c0000888c0000228d0000488d0000528d0000808d000002910000ac9200003094000056940000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -761,9 +761,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1173.0557, y: 514.02655, z: -4.948739}
+    m_Target: {x: 899.9611, y: 563.19543, z: -6.9914484}
     speed: 2
-    m_Value: {x: 1173.0557, y: 514.02655, z: -4.948739}
+    m_Value: {x: 899.9611, y: 563.19543, z: -6.9914484}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -814,9 +814,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 574.6147
+    m_Target: 583.6052
     speed: 2
-    m_Value: 574.6147
+    m_Value: 583.6052
   m_Ortho:
     m_Target: 1
     speed: 2
