@@ -28,9 +28,13 @@ public class CombatManager : MonoBehaviour
     // Control Variables
     private int APLimit;
     private int APindex;
+    private List<int> arrowCodes;
+    private List<int> comboList;
 
     private static CombatManager instance;
     private ActualTBSStatus actualStatus;
+
+    int aux = 0;
 
     private void Awake()
     {
@@ -50,6 +54,9 @@ public class CombatManager : MonoBehaviour
     {
         APLimit = 5;
         APindex = 0;
+        arrowCodes = new List<int>();
+        comboList = new List<int>();
+
         HidingSkillMenu();
         CallMainMenu();
         actualStatus = ActualTBSStatus.MainMenu;
@@ -153,31 +160,32 @@ public class CombatManager : MonoBehaviour
 
     public void ChooseSkillMenuButton(int skillMenuButtonIndex)
     {
-        int[] sequences = new int[0];
+        List<int> sequences = new List<int>();
         switch (skillMenuButtonIndex)
         {
             case 0:
-                sequences = new int[] { 1, 2, 3 };
-                SettingSkill(sequences);
+                sequences = new List<int> { 2, 1, 3 };
+                SettingSkill(sequences, 1);
                 break;
             case 1:
-                sequences = new int[] { 2, 2, 1 };
-                SettingSkill(sequences);
+                sequences = new List<int> { 2, 2, 1 };
+                SettingSkill(sequences, 2);
                 break;
             case 2:
-                sequences = new int[] { 4, 4, 3 };
-                SettingSkill(sequences);
+                sequences = new List<int> { 4, 4, 3 };
+                SettingSkill(sequences, 3);
                 break;
             // Erase the entire combo
             case 3:
-                APindex = 0;
-                sequences = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                SettingSkill(sequences);
-                APindex = 0;
+                ClearComboArray();
                 break;
             case 4:
                 HidingSkillMenu();
+                PrintCombo();
+                // faz os combos
                 actualStatus = ActualTBSStatus.SkillMenu;
+                ClearComboArray();
+                SettingSkill(sequences, 0);
                 CallMainMenu();
                 break;
             default:
@@ -185,8 +193,39 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    public void SettingSkill(int[] sequences)
+    public void PrintCombo()
     {
+        String combo = "";
+        Debug.Log(arrowCodes[1]);
+        foreach(int x in arrowCodes)
+        {
+            combo += (" " + x.ToString());
+        }
+        Debug.Log(combo);
+    }
+
+    public void ClearComboArray()
+    {
+        List<int> sequences = new List<int>();
+        APindex = 0;
+        sequences = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        SettingSkill(sequences, 0);
+        arrowCodes.Clear();
+        comboList.Clear();
+        APindex = 0;
+    }
+
+    public void SettingSkill(List<int> sequences, int techniqueCode)
+    {
+        // verifica a quantidade de posições que podemos recuar ao introduzir essa sequencia no combo.
+        APindex -= CheckingChainCombo(sequences);
+
+        // testa se a sequencia entra inteira no escopo de ações.
+        if ((APindex + sequences.Count < APLimit) && techniqueCode != 0)
+        {
+            comboList.Add(techniqueCode);
+        }
+
         foreach (int sequence in sequences)
         {
             if (APindex < APLimit)
@@ -202,8 +241,48 @@ public class CombatManager : MonoBehaviour
         ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
     }
 
+    public int CheckingChainCombo(List<int> sequences)
+    {
+        if (APindex > 0)
+        {
+            // Variáveis de controle
+            // chainSize vai checar o tamanho da sequencia a ser colocada, para iterar em cima desse numero e saber se existem semelhanças entre o final do combo e o começo da sequência.
+            int chainSize = sequences.Count - 1;
+            // suffixIndex pega o tamanho atual do combo.
+            int suffixIndex = arrowCodes.Count;
+            // prefixIndex subtrai o tamanho da sequencia ( menos 1) e o tamanho atual do combo, para saber a partir de posição do combo começamos a testar a semelhança dos combos.
+            int prefixIndex = suffixIndex - chainSize;
+            // Essa variável recebe 'true' se a sequencia e combo coincidirem;
+            bool isChained = false;
+            // chainBreaker inicia com 0, e é acrescida de 1 toda vez que a sequencia não coincidir com combo, utilizada para avançar uma casa do combo antes de testar novamente.
+            int chainBreaker = 0;
+            
+            //a cada falha de teste, a chainBreaker se aproxima de chainSize
+            while(chainSize > chainBreaker)
+            {
+                for (int index = 0; (index + chainBreaker) < chainSize; index++)
+                {
+                    // testamos se o prefixo da sequencia é semelhante ao sufixo do combo.
+                    isChained = (sequences[index] == arrowCodes[index + prefixIndex + chainBreaker]);
+
+                }
+                if (isChained)
+                {
+                    // se passar por todo o for e a variavel isChained ainda for 'true', retornamos o tamanho que o APindex deverá recuar.
+                    return chainSize - chainBreaker;
+                } else
+                {
+                    // se falhar no teste, avançamos a posição inicial testada em 1.
+                    chainBreaker++;
+                }
+            }
+        }
+        return 0;
+    }
+
     public void SettingArrow(int index, int spriteCode)
     {
+        arrowCodes.Add(spriteCode);
         arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 1f);
         switch (spriteCode)
         {
@@ -220,7 +299,6 @@ public class CombatManager : MonoBehaviour
                 arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down");
                 break;
             default:
-                Debug.Log("apaga");
                 arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 0f);
                 break;
 
