@@ -210,7 +210,7 @@ public class CombatManager : MonoBehaviour
     public void PrintCombo()
     {
         String combo = "";
-        foreach(int x in arrowCodes)
+        foreach(int x in comboList)
         {
             combo += (" " + x.ToString());
         }
@@ -231,28 +231,32 @@ public class CombatManager : MonoBehaviour
     public void SettingSkill(List<int> sequences, int techniqueCode)
     {
         // verifica a quantidade de posições que podemos recuar ao introduzir essa sequencia no combo.
-        APindex -= CheckingChainCombo(sequences);
-
-        // testa se a sequencia entra inteira no escopo de ações.
-        if ((APindex + sequences.Count < APLimit) && techniqueCode != 0)
+        if (APindex != APLimit)
         {
-            comboList.Add(techniqueCode);
-        }
+            APindex -= CheckingChainCombo(sequences);
+            bool canHighlight = false;
 
-        foreach (int sequence in sequences)
-        {
-            if (APindex < APLimit)
+            // testa se a sequencia entra inteira no escopo de ações.
+            if ((APindex + sequences.Count < APLimit) && techniqueCode != 0)
             {
-                SettingArrow(APindex, sequence);
-                APindex++;
-            } else
-            {
-                break;
+                canHighlight = true;
+                comboList.Add(techniqueCode);
             }
-            
+
+            foreach (int sequence in sequences)
+            {
+                if (APindex < APLimit)
+                {
+                    SettingArrow(APindex, sequence);
+                    APindex++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (canHighlight) { HighlightSkillArrows(); }
         }
-        HighlightSkillArrows();
-        //ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
     }
 
     public int CheckingChainCombo(List<int> sequences)
