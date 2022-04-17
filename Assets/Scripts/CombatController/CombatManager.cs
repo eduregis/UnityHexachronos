@@ -25,6 +25,11 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private Image[] actionPoints;
     [SerializeField] private Image[] arrows;
 
+    [Header("Character Info")]
+    [SerializeField] private List<int> skill1;
+    [SerializeField] private List<int> skill2;
+    [SerializeField] private List<int> skill3;
+
     // Control Variables
     private int APLimit;
     private int APindex;
@@ -33,8 +38,6 @@ public class CombatManager : MonoBehaviour
 
     private static CombatManager instance;
     private ActualTBSStatus actualStatus;
-
-    int aux = 0;
 
     private void Awake()
     {
@@ -56,6 +59,10 @@ public class CombatManager : MonoBehaviour
         APindex = 0;
         arrowCodes = new List<int>();
         comboList = new List<int>();
+
+        skill1 = new List<int> { 2, 1, 3 };
+        skill2 = new List<int> { 2, 2, 1 };
+        skill3 = new List<int> { 4, 4, 3 };
 
         HidingSkillMenu();
         CallMainMenu();
@@ -102,16 +109,24 @@ public class CombatManager : MonoBehaviour
             actionPoints[i].enabled = true;
             arrows[i].enabled = true;
         }
+
         for (int i = APLimit; i < actionPoints.Length; i++)
         {
             actionPoints[i].enabled = false;
             arrows[i].enabled = false;
         }
+
         for (int i = 0; i < skillMenuButtons.Length; i++)
         {
             skillMenuButtons[i].gameObject.SetActive(true);
         }
+
         StartCoroutine(SelectSkillMenuFirstOption());
+
+        SkillArrowsManager.GetInstance().ShowSkillCombo(skill1, 1);
+        SkillArrowsManager.GetInstance().ShowSkillCombo(skill2, 2);
+        SkillArrowsManager.GetInstance().ShowSkillCombo(skill3, 3);
+
     }
     private void HidingSkillMenu()
     {
@@ -160,20 +175,16 @@ public class CombatManager : MonoBehaviour
 
     public void ChooseSkillMenuButton(int skillMenuButtonIndex)
     {
-        List<int> sequences = new List<int>();
         switch (skillMenuButtonIndex)
         {
             case 0:
-                sequences = new List<int> { 2, 1, 3 };
-                SettingSkill(sequences, 1);
+                SettingSkill(skill1, 1);
                 break;
             case 1:
-                sequences = new List<int> { 2, 2, 1 };
-                SettingSkill(sequences, 2);
+                SettingSkill(skill2, 2);
                 break;
             case 2:
-                sequences = new List<int> { 4, 4, 3 };
-                SettingSkill(sequences, 3);
+                SettingSkill(skill3, 3);
                 break;
             // Erase the entire combo
             case 3:
@@ -185,7 +196,6 @@ public class CombatManager : MonoBehaviour
                 // faz os combos
                 actualStatus = ActualTBSStatus.SkillMenu;
                 ClearComboArray();
-                SettingSkill(sequences, 0);
                 CallMainMenu();
                 break;
             default:
@@ -196,7 +206,6 @@ public class CombatManager : MonoBehaviour
     public void PrintCombo()
     {
         String combo = "";
-        Debug.Log(arrowCodes[1]);
         foreach(int x in arrowCodes)
         {
             combo += (" " + x.ToString());

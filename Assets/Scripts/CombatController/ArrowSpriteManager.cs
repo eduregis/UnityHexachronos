@@ -11,6 +11,7 @@ public class ArrowSpriteManager : MonoBehaviour
     public Sprite Arrow_Down;
     public Sprite Arrow_Left;
     public Sprite Arrow_Right;
+    public Sprite empty;
 
     private void Awake()
     {
@@ -38,7 +39,7 @@ public class ArrowSpriteManager : MonoBehaviour
             case "arrow_right":
                 return Arrow_Right;
             default:
-                return Arrow_Up;
+                return empty;
         }
     }
 }
