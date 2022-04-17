@@ -2698,6 +2698,7 @@ Transform:
   - {fileID: 1155442529}
   - {fileID: 662793237}
   - {fileID: 902324113}
+  - {fileID: 1084239571}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2777,6 +2778,69 @@ RectTransform:
   m_AnchoredPosition: {x: 980, y: 50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
+--- !u!1 &1084239570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1084239571}
+  - component: {fileID: 1084239572}
+  m_Layer: 0
+  m_Name: CharStatsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1084239571
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084239570}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1020835860}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1084239572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084239570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f690be51039fb4293bb89e1c60e399, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characters:
+  - characterStats: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
+    characterIdentifier: 0
+  - characterStats: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
+    characterIdentifier: 1
+  - characterStats: {fileID: 11400000, guid: 2481888836602c64db3b9cf8a474e85e, type: 2}
+    characterIdentifier: 2
+  - characterStats: {fileID: 11400000, guid: e54be3f3b703bcc4cb0781a41f0e45a4, type: 2}
+    characterIdentifier: 3
+  - characterStats: {fileID: 11400000, guid: 43652d1940911c245919c4879c2036f6, type: 2}
+    characterIdentifier: 4
+  - characterStats: {fileID: 11400000, guid: 07e30a4e3f89fd147a166ae17b29b31e, type: 2}
+    characterIdentifier: 5
+  - characterStats: {fileID: 11400000, guid: 67e16df0ded8d674682f520a599dd214, type: 2}
+    characterIdentifier: 6
+  - characterStats: {fileID: 11400000, guid: 1d6710c2e574014409f98bf3e6b0c4da, type: 2}
+    characterIdentifier: 7
+  - characterStats: {fileID: 11400000, guid: 97e41e7a74c57754a8ab8dc6105c5d6d, type: 2}
+    characterIdentifier: 8
 --- !u!1 &1116458521
 GameObject:
   m_ObjectHideFlags: 0

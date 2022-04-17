@@ -89,6 +89,7 @@ public class CombatUIManager : MonoBehaviour
         }
     }
 
+    // Main Menu Methods
     private IEnumerator CallMainMenu()
     {
         turnIndicator.text = "Menu Principal";
@@ -102,52 +103,12 @@ public class CombatUIManager : MonoBehaviour
 
         turnIndicator.text = "";
     }
+
     private void HidingMainMenu()
     {
         for (int i = 0; i < mainMenuButtons.Length; i++)
         {
             mainMenuButtons[i].gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator CallSkillMenu()
-    {
-        turnIndicator.text = "Menu de Skills";
-
-        yield return new WaitForSeconds(1.0f);
-        for (int i = 0; i < APLimit; i++)
-        {
-            actionPoints[i].enabled = true;
-            arrows[i].enabled = true;
-        }
-
-        for (int i = APLimit; i < actionPoints.Length; i++)
-        {
-            actionPoints[i].enabled = false;
-            arrows[i].enabled = false;
-        }
-
-        for (int i = 0; i < skillMenuButtons.Length; i++)
-        {
-            skillMenuButtons[i].gameObject.SetActive(true);
-        }
-
-        StartCoroutine(SelectSkillMenuFirstOption());
-
-        HighlightSkillArrows();
-
-        turnIndicator.text = "";
-    }
-    private void HidingSkillMenu()
-    {
-        for (int i = 0; i < actionPoints.Length; i++)
-        {
-            actionPoints[i].enabled = false;
-            arrows[i].enabled = false;
-        }
-        for (int i = 0; i < skillMenuButtons.Length; i++)
-        {
-            skillMenuButtons[i].gameObject.SetActive(false);
         }
     }
 
@@ -184,20 +145,47 @@ public class CombatUIManager : MonoBehaviour
         }
     }
 
-    private IEnumerator Attacking()
+    // Skill Menu Methods
+    private IEnumerator CallSkillMenu()
     {
-        turnIndicator.text = "Atacando";
+        turnIndicator.text = "Menu de Skills";
+
         yield return new WaitForSeconds(1.0f);
+        for (int i = 0; i < APLimit; i++)
+        {
+            actionPoints[i].enabled = true;
+            arrows[i].enabled = true;
+        }
+
+        for (int i = APLimit; i < actionPoints.Length; i++)
+        {
+            actionPoints[i].enabled = false;
+            arrows[i].enabled = false;
+        }
+
+        for (int i = 0; i < skillMenuButtons.Length; i++)
+        {
+            skillMenuButtons[i].gameObject.SetActive(true);
+        }
+
+        StartCoroutine(SelectSkillMenuFirstOption());
+
+        HighlightSkillArrows();
+
         turnIndicator.text = "";
-        StartCoroutine(CallMainMenu());
     }
 
-    private IEnumerator Blocking()
+    private void HidingSkillMenu()
     {
-        turnIndicator.text = "Bloqueando";
-        yield return new WaitForSeconds(1.0f);
-        turnIndicator.text = "";
-        StartCoroutine(CallMainMenu());
+        for (int i = 0; i < actionPoints.Length; i++)
+        {
+            actionPoints[i].enabled = false;
+            arrows[i].enabled = false;
+        }
+        for (int i = 0; i < skillMenuButtons.Length; i++)
+        {
+            skillMenuButtons[i].gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator SelectSkillMenuFirstOption()
@@ -361,5 +349,23 @@ public class CombatUIManager : MonoBehaviour
 
         }
         
+    }
+
+    // Attacking Methods
+    private IEnumerator Attacking()
+    {
+        turnIndicator.text = "Atacando";
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(CallMainMenu());
+    }
+
+    // Blocking Methods
+    private IEnumerator Blocking()
+    {
+        turnIndicator.text = "Bloqueando";
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(CallMainMenu());
     }
 }
