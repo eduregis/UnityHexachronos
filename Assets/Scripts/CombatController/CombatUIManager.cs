@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+using TMPro;
 
 public enum ActualTBSStatus
 {
@@ -15,7 +15,7 @@ public enum ActualTBSStatus
     Block
 }
 
-public class CombatManager : MonoBehaviour
+public class CombatUIManager : MonoBehaviour
 {
     [Header("Main Menu UI")]
     [SerializeField] private GameObject[] mainMenuButtons;
@@ -30,13 +30,16 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private List<int> skill2;
     [SerializeField] private List<int> skill3;
 
+    [Header("Turn Indicator")]
+    [SerializeField] private TextMeshProUGUI turnIndicator;
+
     // Control Variables
     private int APLimit;
     private int APindex;
     private List<int> arrowCodes;
     private List<int> comboList;
 
-    private static CombatManager instance;
+    private static CombatUIManager instance;
     private ActualTBSStatus actualStatus;
 
     private void Awake()
@@ -47,7 +50,7 @@ public class CombatManager : MonoBehaviour
         }
         instance = this;
     }
-    public static CombatManager GetInstance()
+    public static CombatUIManager GetInstance()
     {
         return instance;
     }
@@ -65,7 +68,7 @@ public class CombatManager : MonoBehaviour
         skill3 = new List<int> { 4, 4, 3 };
 
         HidingSkillMenu();
-        CallMainMenu();
+        StartCoroutine(CallMainMenu());
         actualStatus = ActualTBSStatus.MainMenu;
     }
 
@@ -86,13 +89,18 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    private void CallMainMenu()
+    private IEnumerator CallMainMenu()
     {
+        turnIndicator.text = "Menu Principal";
+
+        yield return new WaitForSeconds(1.0f);
         for (int i = 0; i < mainMenuButtons.Length; i++)
         {
             mainMenuButtons[i].gameObject.SetActive(true);
         }
         StartCoroutine(SelectMainMenuFirstOption());
+
+        turnIndicator.text = "";
     }
     private void HidingMainMenu()
     {
@@ -102,8 +110,11 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    private void CallSkillMenu()
+    private IEnumerator CallSkillMenu()
     {
+        turnIndicator.text = "Menu de Skills";
+
+        yield return new WaitForSeconds(1.0f);
         for (int i = 0; i < APLimit; i++)
         {
             actionPoints[i].enabled = true;
@@ -124,6 +135,8 @@ public class CombatManager : MonoBehaviour
         StartCoroutine(SelectSkillMenuFirstOption());
 
         HighlightSkillArrows();
+
+        turnIndicator.text = "";
     }
     private void HidingSkillMenu()
     {
@@ -151,14 +164,40 @@ public class CombatManager : MonoBehaviour
     {
         switch (mainMenuButtonIndex)
         {
+            case 0:
+                HidingMainMenu();
+                actualStatus = ActualTBSStatus.Attack;
+                StartCoroutine(Attacking());
+                break;
             case 1:
                 HidingMainMenu();
                 actualStatus = ActualTBSStatus.SkillMenu;
-                CallSkillMenu();
+                StartCoroutine(CallSkillMenu());
+                break;
+            case 2:
+                HidingMainMenu();
+                actualStatus = ActualTBSStatus.Attack;
+                StartCoroutine(Blocking());
                 break;
             default:
                 break;
         }
+    }
+
+    private IEnumerator Attacking()
+    {
+        turnIndicator.text = "Atacando";
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(CallMainMenu());
+    }
+
+    private IEnumerator Blocking()
+    {
+        turnIndicator.text = "Bloqueando";
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(CallMainMenu());
     }
 
     private IEnumerator SelectSkillMenuFirstOption()
@@ -193,7 +232,7 @@ public class CombatManager : MonoBehaviour
                 // faz os combos
                 actualStatus = ActualTBSStatus.SkillMenu;
                 ClearComboArray();
-                CallMainMenu();
+                StartCoroutine(CallMainMenu());
                 break;
             default:
                 break;
