@@ -32,15 +32,18 @@ public class SkillArrowsManager : MonoBehaviour
         foreach (var skill in skill3Arrows) { skill.enabled = false; }
     }
 
-    public void ShowSkillCombo(List<int> sequences, int techniqueCode)
+    public void ShowSkillCombo(List<int> sequences, int techniqueCode, int chainSize)
     {
         switch (techniqueCode)
         {
             case 1:
                 for (int i = 0; i < sequences.Count; i++) {
                     skill1Arrows[i].enabled = true;
-                    skill1Arrows[i].sprite = GetSkillArrowSprite(sequences[i]);
+                    if (chainSize - 1 >= i) 
+                    { skill1Arrows[i].sprite = GetSkillArrowSprite(sequences[i], true); }
+                    else { skill1Arrows[i].sprite = GetSkillArrowSprite(sequences[i], false); };
                 }
+
                 for(int i = sequences.Count; i < skill1Arrows.Length; i++)
                 {
                     skill1Arrows[i].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
@@ -51,7 +54,9 @@ public class SkillArrowsManager : MonoBehaviour
                 for (int i = 0; i < sequences.Count; i++)
                 {
                     skill2Arrows[i].enabled = true;
-                    skill2Arrows[i].sprite = GetSkillArrowSprite(sequences[i]);
+                    if (chainSize - 1 >= i)
+                    { skill2Arrows[i].sprite = GetSkillArrowSprite(sequences[i], true); }
+                    else { skill2Arrows[i].sprite = GetSkillArrowSprite(sequences[i], false); };
                 }
                 for (int i = sequences.Count; i < skill1Arrows.Length; i++)
                 {
@@ -63,7 +68,9 @@ public class SkillArrowsManager : MonoBehaviour
                 for (int i = 0; i < sequences.Count; i++)
                 {
                     skill3Arrows[i].enabled = true;
-                    skill3Arrows[i].sprite = GetSkillArrowSprite(sequences[i]);
+                    if (chainSize - 1 >= i)
+                    { skill3Arrows[i].sprite = GetSkillArrowSprite(sequences[i], true); }
+                    else { skill3Arrows[i].sprite = GetSkillArrowSprite(sequences[i], false); };
                 }
                 for (int i = sequences.Count; i < skill1Arrows.Length; i++)
                 {
@@ -76,18 +83,22 @@ public class SkillArrowsManager : MonoBehaviour
         }
     }
 
-    private Sprite GetSkillArrowSprite(int code)
+    private Sprite GetSkillArrowSprite(int code, bool highlighted)
     {
         switch (code)
         {
             case 1:
-                return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_up");
+                if (highlighted) { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_up_highlighted"); }
+                else { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_up"); }
             case 2:
-                return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_left");
+                if (highlighted) { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_left_highlighted"); }
+                else { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_left"); }
             case 3:
-                return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_right");
+                if (highlighted) { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_right_highlighted"); }
+                else { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_right"); }
             case 4:
-                return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down");
+                if (highlighted) { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down_highlighted"); }
+                else { return ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down"); }
             default:
                 return ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
         }

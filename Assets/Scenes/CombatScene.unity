@@ -810,7 +810,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0, g: 1, b: 0.0666666, a: 1}
+    m_SelectedColor: {r: 0.8962264, g: 0.41006586, b: 0.419787, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1039,10 +1039,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0, g: 1, b: 0.0666666, a: 1}
+    m_SelectedColor: {r: 0.46646777, g: 0.8301887, b: 0.44250622, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1349,10 +1349,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f3ebcc1a51172b4291b4be328fa0240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Arrow_Up: {fileID: 21300000, guid: eefcd7fa6f9bb6d40bedb0a62def7125, type: 3}
-  Arrow_Down: {fileID: 21300000, guid: 455e5a95a8aee874a9ca0abee922eb2e, type: 3}
-  Arrow_Left: {fileID: 21300000, guid: 8df87c14705da5b42b65c0a7dd4c4636, type: 3}
-  Arrow_Right: {fileID: 21300000, guid: 5f30b2f82958d68469affe8573edd2a3, type: 3}
+  Arrow_Up: {fileID: 21300000, guid: 0ac4c5e43f6be7a4cb332137c8d9619f, type: 3}
+  Arrow_Down: {fileID: 21300000, guid: ad839bd961cc2bb4d8851115eb4a6d2c, type: 3}
+  Arrow_Left: {fileID: 21300000, guid: b096e3bb69e3e024db3c2e053bb035ca, type: 3}
+  Arrow_Right: {fileID: 21300000, guid: f5ab300609974014e8e3bfd3a8d9ab3a, type: 3}
+  Arrow_Up_Highlighted: {fileID: 21300000, guid: 744c24d77e680a44eba5a4ba710f9155, type: 3}
+  Arrow_Down_Highlighted: {fileID: 21300000, guid: 9219d1a7be3315a4ea6906ecf09d32e3, type: 3}
+  Arrow_Left_Highlighted: {fileID: 21300000, guid: bb9f3741d98ffb14181fcc15cca13702, type: 3}
+  Arrow_Right_Highlighted: {fileID: 21300000, guid: 0c2eb37a676fe2f48bc784291839f782, type: 3}
+  empty: {fileID: 21300000, guid: 053d75797ae9dce46a6127f7a1f7d599, type: 3}
 --- !u!1 &681271143
 GameObject:
   m_ObjectHideFlags: 0
@@ -2386,6 +2391,9 @@ MonoBehaviour:
   - {fileID: 1672620411}
   - {fileID: 1037373679}
   - {fileID: 947740916}
+  skill1: 
+  skill2: 
+  skill3: 
 --- !u!1 &1005538152
 GameObject:
   m_ObjectHideFlags: 0
@@ -4060,10 +4068,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0, g: 1, b: 0.065425634, a: 1}
+    m_SelectedColor: {r: 0.46646777, g: 0.8301887, b: 0.44250622, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -5718,10 +5726,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 0, g: 1, b: 0.0666666, a: 1}
+    m_SelectedColor: {r: 0.46646777, g: 0.8301887, b: 0.44250622, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

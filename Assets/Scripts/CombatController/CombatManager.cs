@@ -123,10 +123,7 @@ public class CombatManager : MonoBehaviour
 
         StartCoroutine(SelectSkillMenuFirstOption());
 
-        SkillArrowsManager.GetInstance().ShowSkillCombo(skill1, 1);
-        SkillArrowsManager.GetInstance().ShowSkillCombo(skill2, 2);
-        SkillArrowsManager.GetInstance().ShowSkillCombo(skill3, 3);
-
+        HighlightSkillArrows();
     }
     private void HidingSkillMenu()
     {
@@ -203,6 +200,13 @@ public class CombatManager : MonoBehaviour
         }
     }
 
+    public void HighlightSkillArrows()
+    {
+        SkillArrowsManager.GetInstance().ShowSkillCombo(skill1, 1, CheckingChainCombo(skill1));
+        SkillArrowsManager.GetInstance().ShowSkillCombo(skill2, 2, CheckingChainCombo(skill2));
+        SkillArrowsManager.GetInstance().ShowSkillCombo(skill3, 3, CheckingChainCombo(skill3));
+    }
+
     public void PrintCombo()
     {
         String combo = "";
@@ -247,7 +251,8 @@ public class CombatManager : MonoBehaviour
             }
             
         }
-        ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
+        HighlightSkillArrows();
+        //ArrowSpriteManager.GetInstance().ChangeArrowSprite("");
     }
 
     public int CheckingChainCombo(List<int> sequences)
