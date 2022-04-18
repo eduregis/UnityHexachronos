@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7099fbbadd263d4fadfb8505641244a, type: 3}
   m_Name: Sam_BasicStats
   m_EditorClassIdentifier: 
+  char_name: Sam
   strength: 15
   intelligence: 25
   vitality: 17
@@ -19,3 +20,4 @@ MonoBehaviour:
   agility: 22
   luck: 18
   level: 1
+  skills: []

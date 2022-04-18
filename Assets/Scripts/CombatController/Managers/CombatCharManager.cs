@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class CharacterInfo
 {
+    public string char_name;
     // basic status
     public int strength;
     public int intelligence;
@@ -69,18 +70,20 @@ public class CombatCharManager : MonoBehaviour
 
     public void SetupCharacters()
     {
-        CreateCharacter(CharStats.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
-        CreateCharacter(CharStats.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
-        CreateCharacter(CharStats.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
-        CreateCharacter(CharStats.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
-        CreateCharacter(CharStats.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
-        CreateCharacter(CharStats.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
     }
     private void CreateCharacter(BasicCharacterStats basicStats, bool isHero)
     {
         CharacterInfo characterInfo = new CharacterInfo();
         
+        characterInfo.char_name = basicStats.char_name;
+
         characterInfo.strength = basicStats.strength;
         characterInfo.intelligence = basicStats.intelligence;
         characterInfo.vitality = basicStats.vitality;

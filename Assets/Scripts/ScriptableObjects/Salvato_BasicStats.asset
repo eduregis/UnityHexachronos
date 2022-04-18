@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7099fbbadd263d4fadfb8505641244a, type: 3}
   m_Name: Salvato_BasicStats
   m_EditorClassIdentifier: 
+  char_name: Salvato
   strength: 20
   intelligence: 18
   vitality: 23
@@ -19,3 +20,4 @@ MonoBehaviour:
   agility: 15
   luck: 17
   level: 1
+  skills: []

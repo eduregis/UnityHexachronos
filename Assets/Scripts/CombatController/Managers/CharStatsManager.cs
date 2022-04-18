@@ -2,30 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CharacterIdentifier
-{
-    Luca = 0,
-    Borell = 1,
-    Sam = 2,
-    Salvato = 3,
-    Billy = 4,
-    Dandara = 5,
-    Sniper = 6,
-    BasicSoldier = 7,
-    BasicLiutenant = 8
-}
-
-[System.Serializable]
-public class BasicCharInfo
-{
-    public BasicCharacterStats characterStats;
-    public CharacterIdentifier characterIdentifier;
-}
-
-public class CharStats : MonoBehaviour
+public class CharStatsManager : MonoBehaviour
 {
     public List<BasicCharInfo> characters;
-    private static CharStats instance;
+    private static CharStatsManager instance;
 
     private void Awake()
     {
@@ -35,7 +15,7 @@ public class CharStats : MonoBehaviour
         }
         instance = this;
     }
-    public static CharStats GetInstance()
+    public static CharStatsManager GetInstance()
     {
         return instance;
     }

@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class BasicCharacterStats : ScriptableObject
 {
+    public string char_name;
+
     public int strength;
     public int intelligence;
     public int vitality;
@@ -13,4 +15,8 @@ public class BasicCharacterStats : ScriptableObject
     public int agility;
     public int luck;
     public int level;
+
+    public List<CharacterSkill> skills;
 }
+
+

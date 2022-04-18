@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7099fbbadd263d4fadfb8505641244a, type: 3}
   m_Name: Dandara_BasicStats
   m_EditorClassIdentifier: 
+  char_name: Dandara
   strength: 26
   intelligence: 17
   vitality: 18
@@ -19,3 +20,4 @@ MonoBehaviour:
   agility: 20
   luck: 15
   level: 1
+  skills: []

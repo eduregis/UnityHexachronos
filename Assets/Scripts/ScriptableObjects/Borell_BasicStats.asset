@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7099fbbadd263d4fadfb8505641244a, type: 3}
   m_Name: Borell_BasicStats
   m_EditorClassIdentifier: 
+  char_name: Borell
   strength: 23
   intelligence: 15
   vitality: 30
@@ -19,3 +20,4 @@ MonoBehaviour:
   agility: 15
   luck: 17
   level: 1
+  skills: []

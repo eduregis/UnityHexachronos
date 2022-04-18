@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7099fbbadd263d4fadfb8505641244a, type: 3}
   m_Name: Billy_BasicStats
   m_EditorClassIdentifier: 
+  char_name: Billy
   strength: 22
   intelligence: 20
   vitality: 18
@@ -19,3 +20,4 @@ MonoBehaviour:
   agility: 28
   luck: 10
   level: 1
+  skills: []
