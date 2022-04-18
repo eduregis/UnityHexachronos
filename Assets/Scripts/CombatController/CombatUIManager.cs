@@ -220,7 +220,7 @@ public class CombatUIManager : MonoBehaviour
                 // faz os combos
                 actualStatus = ActualTBSStatus.SkillMenu;
                 ClearComboArray();
-                StartCoroutine(CallMainMenu());
+                StartCoroutine(ExecutingCombo());
                 break;
             default:
                 break;
@@ -237,7 +237,7 @@ public class CombatUIManager : MonoBehaviour
     public void PrintCombo()
     {
         String combo = "";
-        foreach(int x in comboList)
+        foreach (int x in comboList)
         {
             combo += (" " + x.ToString());
         }
@@ -251,7 +251,6 @@ public class CombatUIManager : MonoBehaviour
         sequences = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         SettingSkill(sequences, 0);
         arrowCodes.Clear();
-        comboList.Clear();
         APindex = 0;
     }
 
@@ -301,9 +300,9 @@ public class CombatUIManager : MonoBehaviour
             bool isChained = false;
             // chainBreaker inicia com 0, e é acrescida de 1 toda vez que a sequencia não coincidir com combo, utilizada para avançar uma casa do combo antes de testar novamente.
             int chainBreaker = 0;
-            
+
             //a cada falha de teste, a chainBreaker se aproxima de chainSize
-            while(chainSize > chainBreaker)
+            while (chainSize > chainBreaker)
             {
                 for (int index = 0; (index + chainBreaker) < chainSize; index++)
                 {
@@ -348,8 +347,21 @@ public class CombatUIManager : MonoBehaviour
                 break;
 
         }
-        
+
     }
+
+    public IEnumerator ExecutingCombo() 
+    {
+        foreach (int combo in comboList)
+        {
+            turnIndicator.text = "Executando técnica: " + combo;
+            yield return new WaitForSeconds(1.0f);
+        }
+        comboList.Clear();
+        StartCoroutine(CallMainMenu());
+    }
+
+
 
     // Attacking Methods
     private IEnumerator Attacking()
