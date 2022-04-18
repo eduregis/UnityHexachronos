@@ -28,7 +28,9 @@ public class CombatCharManager : MonoBehaviour
 
     [Header("CharacterSprites")]
     [SerializeField] private GameObject[] heroesSprites;
+    [SerializeField] private GameObject[] heroesTargets;
     [SerializeField] private GameObject[] enemiesSprites;
+    [SerializeField] private GameObject[] enemiesTargets;
 
     [Header("CharacterLifebars")]
     [SerializeField] private Image[] heroesFullLifebars;
@@ -110,19 +112,28 @@ public class CombatCharManager : MonoBehaviour
         CheckingDamageBars();
     }
 
+    public void ShowEnemyTarget(int targetIndex)
+    {
+        for (int i = 0; i < enemiesTargets.Length; i++)
+        {
+            if (i == targetIndex) { enemiesTargets[i].SetActive(true); }
+            else { enemiesTargets[i].SetActive(false); }
+        }
+    } 
+
     public void LoseHP( int index, bool isEnemy)
     {
         if (isEnemy)
         {
             if (enemies[index].life - 30 < 0) { enemies[index].life = 0; }
             else { enemies[index].life -= 30; }
-            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[0].life / (float)enemies[0].maxLife), 0, 1f);
+            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
             damageLifeShrinkTimer = 1f;
         } else
         {
             if (heroes[index].life - 30 < 0) { heroes[index].life = 0; }
             else { heroes[index].life -= 30; }
-            heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[0].life / (float)enemies[0].maxLife), 0, 1f);
+            heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)enemies[index].maxLife), 0, 1f);
             damageLifeShrinkTimer = 1f;
         }
         

@@ -25,6 +25,9 @@ public class CombatUIManager : MonoBehaviour
     [SerializeField] private Image[] actionPoints;
     [SerializeField] private Image[] arrows;
 
+    [Header("Attack Target Menu UI")]
+    [SerializeField] private GameObject[] enemiesSpotted;
+
     [Header("Character Info")]
     [SerializeField] private List<int> skill1;
     [SerializeField] private List<int> skill2;
@@ -38,6 +41,7 @@ public class CombatUIManager : MonoBehaviour
     private int APindex;
     private List<int> arrowCodes;
     private List<int> comboList;
+    private int attackTargetIndex = 0;
 
     private static CombatUIManager instance;
     private ActualTBSStatus actualStatus;
@@ -75,23 +79,25 @@ public class CombatUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InputManager.GetInstance().GetSubmitPressed())
+        switch (actualStatus)
         {
-            switch (actualStatus)
-            {
-                case ActualTBSStatus.MainMenu:
-                    break;
-                case ActualTBSStatus.SkillMenu:
-                    break;
-                default:
-                    break;
-            }
+            case ActualTBSStatus.MainMenu:
+                break;
+            case ActualTBSStatus.SkillMenu:
+                break;
+            case ActualTBSStatus.Attack:
+                CheckingTarget();
+                break;
+            default:
+                break;
         }
     }
 
     // Main Menu Methods
     private IEnumerator CallMainMenu()
     {
+        actualStatus = ActualTBSStatus.MainMenu;
+
         turnIndicator.text = "Menu Principal";
 
         yield return new WaitForSeconds(1.0f);
@@ -128,7 +134,7 @@ public class CombatUIManager : MonoBehaviour
             case 0:
                 HidingMainMenu();
                 actualStatus = ActualTBSStatus.Attack;
-                StartCoroutine(Attacking());
+                StartCoroutine(CallAttackMenu());
                 break;
             case 1:
                 HidingMainMenu();
@@ -137,7 +143,7 @@ public class CombatUIManager : MonoBehaviour
                 break;
             case 2:
                 HidingMainMenu();
-                actualStatus = ActualTBSStatus.Attack;
+                actualStatus = ActualTBSStatus.Block;
                 StartCoroutine(Blocking());
                 break;
             default:
@@ -362,17 +368,67 @@ public class CombatUIManager : MonoBehaviour
     }
 
 
-    int temporaryAux = 0;
     // Attacking Methods
-    private IEnumerator Attacking()
+    private IEnumerator CallAttackMenu()
+    {
+        turnIndicator.text = "Selecione um alvo";
+        yield return new WaitForSeconds(1.0f);
+        for (int i = 0; i < enemiesSpotted.Length; i++)
+        {
+            enemiesSpotted[i].gameObject.SetActive(true);
+        }
+        StartCoroutine(SelectAttackTargetMenuFirstOption());
+    }
+
+    private void HidingAttackTargetMenu()
+    {
+        for (int i = 0; i < enemiesSpotted.Length; i++)
+        {
+            enemiesSpotted[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void ChooseAttackTargetMenuButton(int attackTargetMenuButtonIndex)
+    {
+        StartCoroutine(Attacking(attackTargetMenuButtonIndex));
+    }
+
+    private IEnumerator Attacking(int attackTargetMenuButtonIndex)
     {
         turnIndicator.text = "Atacando";
-        // VAI MUDAR
-        CombatCharManager.GetInstance().LoseHP(temporaryAux, true);
-        temporaryAux++;
-        yield return new WaitForSeconds(1.0f);
+        CombatCharManager.GetInstance().ShowEnemyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        CombatCharManager.GetInstance().LoseHP(attackTargetMenuButtonIndex, true);
         turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingAttackTargetMenu();
         StartCoroutine(CallMainMenu());
+    }
+
+    private void CheckingTarget()
+    {
+        for (int i = 0; i < enemiesSpotted.Length; i++)
+        {
+            if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, enemiesSpotted[i].gameObject))
+            {
+                if (i != attackTargetIndex)
+                {
+                    attackTargetIndex = i;
+                    CombatCharManager.GetInstance().ShowEnemyTarget(i);
+                }
+            }
+        }
+        
+    }
+
+    private IEnumerator SelectAttackTargetMenuFirstOption()
+    {
+        // Event System requires we clear it first, then wait
+        // for at least one frame before we set the current selected object.
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(enemiesSpotted[0].gameObject);
+        CombatCharManager.GetInstance().ShowEnemyTarget(0);
     }
 
     // Blocking Methods
