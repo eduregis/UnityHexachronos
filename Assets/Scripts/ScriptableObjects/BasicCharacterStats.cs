@@ -12,4 +12,5 @@ public class BasicCharacterStats : ScriptableObject
     public int technique;
     public int agility;
     public int luck;
+    public int level;
 }

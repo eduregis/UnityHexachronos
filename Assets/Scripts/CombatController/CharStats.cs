@@ -22,10 +22,10 @@ public class BasicCharInfo
     public CharacterIdentifier characterIdentifier;
 }
 
-public class CharStatsManager : MonoBehaviour
+public class CharStats : MonoBehaviour
 {
     public List<BasicCharInfo> characters;
-    private static CharStatsManager instance;
+    private static CharStats instance;
 
     private void Awake()
     {
@@ -35,21 +35,14 @@ public class CharStatsManager : MonoBehaviour
         }
         instance = this;
     }
-    public static CharStatsManager GetInstance()
+    public static CharStats GetInstance()
     {
         return instance;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        characters = new List<BasicCharInfo>();
     }
 
     public BasicCharacterStats GetBasicStats(CharacterIdentifier identifier)
@@ -58,6 +51,7 @@ public class CharStatsManager : MonoBehaviour
         {
             if(character.characterIdentifier == identifier)
             {
+                Debug.Log(character.characterStats.strength);
                 return character.characterStats;
             }
         }
