@@ -46,7 +46,7 @@ public class CombatUIManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("Found more than one CombatManager in the scene");
+            Debug.LogWarning("Found more than one CombatUIManager in the scene");
         }
         instance = this;
     }
@@ -367,6 +367,7 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator Attacking()
     {
         turnIndicator.text = "Atacando";
+        CombatCharManager.GetInstance().LoseHP();
         yield return new WaitForSeconds(1.0f);
         turnIndicator.text = "";
         StartCoroutine(CallMainMenu());
