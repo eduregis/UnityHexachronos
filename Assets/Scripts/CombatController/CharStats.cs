@@ -51,7 +51,6 @@ public class CharStats : MonoBehaviour
         {
             if(character.characterIdentifier == identifier)
             {
-                Debug.Log(character.characterStats.strength);
                 return character.characterStats;
             }
         }

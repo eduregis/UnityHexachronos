@@ -362,12 +362,14 @@ public class CombatUIManager : MonoBehaviour
     }
 
 
-
+    int temporaryAux = 0;
     // Attacking Methods
     private IEnumerator Attacking()
     {
         turnIndicator.text = "Atacando";
-        CombatCharManager.GetInstance().LoseHP();
+        // VAI MUDAR
+        CombatCharManager.GetInstance().LoseHP(temporaryAux, true);
+        temporaryAux++;
         yield return new WaitForSeconds(1.0f);
         turnIndicator.text = "";
         StartCoroutine(CallMainMenu());

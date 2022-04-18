@@ -40,6 +40,8 @@ public class CombatCharManager : MonoBehaviour
     private List<CharacterInfo> enemies;
 
     private static CombatCharManager instance;
+
+    private float damageLifeShrinkTimer = 1f;
     private void Awake()
     {
         if (instance != null)
@@ -60,8 +62,6 @@ public class CombatCharManager : MonoBehaviour
         enemies = new List<CharacterInfo>();
 
         SetupCharacters();
-
-        Debug.Log(heroes.Count);
         
     }
 
@@ -88,7 +88,7 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.level = basicStats.level;
 
         characterInfo.maxLife = ((basicStats.vitality + basicStats.level ) * 5);
-        characterInfo.life = characterInfo.maxLife / 2;
+        characterInfo.life = characterInfo.maxLife;
         characterInfo.damage = (basicStats.strength + (basicStats.technique / 2) + (basicStats.level / 5));
         characterInfo.hitRate = (50 + basicStats.technique + (basicStats.agility / 2) + (basicStats.luck / 4));
         characterInfo.evasionRate = ((basicStats.agility / 3) + (basicStats.luck / 3) + (basicStats.intelligence / 3));
@@ -107,11 +107,49 @@ public class CombatCharManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckingDamageBars();
+    }
+
+    public void LoseHP( int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            if (enemies[index].life - 30 < 0) { enemies[index].life = 0; }
+            else { enemies[index].life -= 30; }
+            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[0].life / (float)enemies[0].maxLife), 0, 1f);
+            damageLifeShrinkTimer = 1f;
+        } else
+        {
+            if (heroes[index].life - 30 < 0) { heroes[index].life = 0; }
+            else { heroes[index].life -= 30; }
+            heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[0].life / (float)enemies[0].maxLife), 0, 1f);
+            damageLifeShrinkTimer = 1f;
+        }
         
     }
 
-    public void LoseHP()
+    public void CheckingDamageBars()
     {
-        heroesFullLifebars[0].fillAmount = Mathf.Clamp(heroes[0].life / heroes[0].maxLife, 0.5f, 1f);
+        if (damageLifeShrinkTimer > 0)
+        {
+            damageLifeShrinkTimer -= Time.deltaTime;
+        } else
+        {
+            for (var i = 0; i < enemies.Count; i++)
+            {
+                if (enemiesFullLifebars[i].fillAmount < enemiesDamageLifebars[i].fillAmount)
+                {
+                    enemiesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
+                }
+            }
+            for (var i = 0; i < heroes.Count; i++)
+            {
+                if (heroesFullLifebars[i].fillAmount < heroesDamageLifebars[i].fillAmount)
+                {
+                    heroesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
+                }
+            }
+        }
+        
     }
 }
