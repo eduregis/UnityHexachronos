@@ -23,6 +23,8 @@ public class CharacterInfo
     public int APSlots;
     public int critRate;
     public int critDamage;
+
+    public List<CharacterSkill> skillList;
 }
 public class CombatCharManager : MonoBehaviour
 {
@@ -41,6 +43,8 @@ public class CombatCharManager : MonoBehaviour
 
     private List<CharacterInfo> heroes;
     private List<CharacterInfo> enemies;
+
+    private bool playerTurn = true;
 
     private static CombatCharManager instance;
 
@@ -91,6 +95,7 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.agility = basicStats.agility;
         characterInfo.luck = basicStats.luck;
         characterInfo.level = basicStats.level;
+        characterInfo.skillList = basicStats.skills;
 
         characterInfo.maxLife = ((basicStats.vitality + basicStats.level ) * 5);
         characterInfo.life = characterInfo.maxLife;
