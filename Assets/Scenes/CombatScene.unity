@@ -3084,6 +3084,10 @@ MonoBehaviour:
   - {fileID: 1073780977}
   - {fileID: 771743548}
   - {fileID: 1917250405}
+  heroesPortraits:
+  - {fileID: 876893633}
+  - {fileID: 282354633}
+  - {fileID: 507552122}
   heroesFullLifebars:
   - {fileID: 165469940}
   - {fileID: 1124872495}
@@ -3092,6 +3096,14 @@ MonoBehaviour:
   - {fileID: 671889682}
   - {fileID: 1704706534}
   - {fileID: 964049603}
+  heroesEmptyLifebars:
+  - {fileID: 460701071}
+  - {fileID: 2118903632}
+  - {fileID: 1958367603}
+  enemiesPortraits:
+  - {fileID: 494048829}
+  - {fileID: 1225486673}
+  - {fileID: 2117017657}
   enemiesFullLifebars:
   - {fileID: 633395179}
   - {fileID: 389752030}
@@ -3100,6 +3112,10 @@ MonoBehaviour:
   - {fileID: 1307598410}
   - {fileID: 2128321594}
   - {fileID: 893299493}
+  enemiesEmptyLifebars:
+  - {fileID: 1608765362}
+  - {fileID: 2037527886}
+  - {fileID: 1217672114}
 --- !u!1 &749633081
 GameObject:
   m_ObjectHideFlags: 0

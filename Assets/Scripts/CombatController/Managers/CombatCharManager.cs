@@ -36,10 +36,14 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private GameObject[] enemiesTargets;
 
     [Header("CharacterLifebars")]
+    [SerializeField] private Image[] heroesPortraits;
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
+    [SerializeField] private Image[] heroesEmptyLifebars;
+    [SerializeField] private Image[] enemiesPortraits;
     [SerializeField] private Image[] enemiesFullLifebars;
     [SerializeField] private Image[] enemiesDamageLifebars;
+    [SerializeField] private Image[] enemiesEmptyLifebars;
 
     private List<CharacterInfo> heroes;
     private List<CharacterInfo> enemies;
@@ -70,6 +74,8 @@ public class CombatCharManager : MonoBehaviour
         enemies = new List<CharacterInfo>();
 
         SetupCharacters();
+
+        UpdateUI();
         
     }
 
@@ -77,11 +83,11 @@ public class CombatCharManager : MonoBehaviour
     {
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+       // CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
+       // CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
     }
     private void CreateCharacter(BasicCharacterStats basicStats, bool isHero)
     {
@@ -115,10 +121,41 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    private void UpdateUI()
+    {
+        for (int i = heroes.Count; i < heroesSprites.Length; i++)
+        {
+            heroesSprites[i].SetActive(false);
+            heroesTargets[i].SetActive(false);
+            heroesDamageLifebars[i].enabled = false;
+            heroesFullLifebars[i].enabled = false;
+            heroesEmptyLifebars[i].enabled = false;
+            heroesPortraits[i].enabled = false;
+        }
+        for (int i = enemies.Count; i < enemiesSprites.Length; i++)
+        {
+            enemiesSprites[i].SetActive(false);
+            enemiesTargets[i].SetActive(false);
+            enemiesDamageLifebars[i].enabled = false;
+            enemiesFullLifebars[i].enabled = false;
+            enemiesEmptyLifebars[i].enabled = false;
+            enemiesPortraits[i].enabled = false;
+        }
+    }
+
     public CharacterInfo GetCurrentCharacter()
     {
         if (heroesIndex == heroes.Count) { heroesIndex = 0; }
         return heroes[heroesIndex++];
+    }
+    public int GetNumberOfAllies()
+    {
+        return heroes.Count;
+    }
+
+    public int GetNumberOfEnemies()
+    {
+        return enemies.Count;
     }
 
     // Update is called once per frame

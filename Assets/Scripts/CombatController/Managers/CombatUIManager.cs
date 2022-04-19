@@ -42,7 +42,10 @@ public class CombatUIManager : MonoBehaviour
     private List<int> arrowCodes;
     private List<int> comboList;
     private int attackTargetIndex = 0;
+
     private CharacterInfo actualCharacter;
+    private int numberOfAllies = 0;
+    private int numberOfEnemies = 0;
 
     private static CombatUIManager instance;
     private ActualTBSStatus actualStatus;
@@ -72,6 +75,9 @@ public class CombatUIManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         UpdateCurrentCharacter();
+
+        numberOfAllies = CombatCharManager.GetInstance().GetNumberOfAllies();
+        numberOfEnemies = CombatCharManager.GetInstance().GetNumberOfEnemies();
 
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(CallMainMenu());
@@ -398,9 +404,13 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "Selecione um alvo";
         yield return new WaitForSeconds(1.0f);
-        for (int i = 0; i < enemiesSpotted.Length; i++)
+        for (int i = 0; i < numberOfEnemies; i++)
         {
             enemiesSpotted[i].gameObject.SetActive(true);
+        }
+        for (int i = numberOfEnemies; i < enemiesSpotted.Length; i++)
+        {
+            enemiesSpotted[i].gameObject.SetActive(false);
         }
         StartCoroutine(SelectAttackTargetMenuFirstOption());
     }
