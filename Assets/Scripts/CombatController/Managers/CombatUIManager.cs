@@ -123,6 +123,9 @@ public class CombatUIManager : MonoBehaviour
             case ActualTBSStatus.SkillMenu:
                 CheckingSkillDescription();
                 break;
+            case ActualTBSStatus.Skill:
+                CheckingTarget();
+                break;
             case ActualTBSStatus.Attack:
                 CheckingTarget();
                 break;
@@ -418,7 +421,7 @@ public class CombatUIManager : MonoBehaviour
 
     private void CheckingSkillDescription() 
     { 
-        for (int i = 0; i < skillMenuButtons.Length; i++)
+        for (int i = 0; i < skillMenuButtons.Length - 2; i++)
         {
             if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skillMenuButtons[i].gameObject))
             {
@@ -427,17 +430,16 @@ public class CombatUIManager : MonoBehaviour
                     skillButtonIndex = i;
                     textSkillDescription.text = actualCharacter.skillList[i].description;
                 }
-                if(i == 3 || i == 4)
-                {
-                    textSkillDescription.text = "";
-                }
             }
         }
     }
 
     public IEnumerator ExecutingCombo()
     {
-        foreach (int combo in comboList)
+        actualStatus = ActualTBSStatus.Skill;
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(CallAttackMenu());
+        /*foreach (int combo in comboList)
         {
             turnIndicator.text = "Executando técnica: " + combo;
             yield return new WaitForSeconds(1.0f);
@@ -445,7 +447,7 @@ public class CombatUIManager : MonoBehaviour
         comboList.Clear();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(CallMainMenu());
+        StartCoroutine(CallMainMenu());*/
     }
 
 
@@ -475,7 +477,16 @@ public class CombatUIManager : MonoBehaviour
 
     public void ChooseAttackTargetMenuButton(int attackTargetMenuButtonIndex)
     {
-        StartCoroutine(Attacking(attackTargetMenuButtonIndex));
+        Debug.Log(actualStatus);
+        if (actualStatus == ActualTBSStatus.Attack)
+        {
+            StartCoroutine(Attacking(attackTargetMenuButtonIndex));
+        } else if (actualStatus == ActualTBSStatus.Skill)
+        {
+            Debug.Log("vapo");
+        }
+
+
     }
 
     private IEnumerator Attacking(int attackTargetMenuButtonIndex)
