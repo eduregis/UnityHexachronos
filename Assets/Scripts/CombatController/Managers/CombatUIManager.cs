@@ -12,7 +12,8 @@ public enum ActualTBSStatus
     Attack,
     SkillMenu,
     Skill,
-    Block
+    Block,
+    EnemiesTurn
 }
 
 public class CombatUIManager : MonoBehaviour
@@ -122,6 +123,9 @@ public class CombatUIManager : MonoBehaviour
             case ActualTBSStatus.Attack:
                 CheckingTarget();
                 break;
+            case ActualTBSStatus.EnemiesTurn:
+                CheckingIsPlayerTurn();
+                break;
             default:
                 break;
         }
@@ -130,18 +134,30 @@ public class CombatUIManager : MonoBehaviour
     // Main Menu Methods
     private IEnumerator CallMainMenu()
     {
-        actualStatus = ActualTBSStatus.MainMenu;
-
-        turnIndicator.text = "Menu Principal";
-
-        yield return new WaitForSeconds(1.0f);
-        for (int i = 0; i < mainMenuButtons.Length; i++)
+        if (CombatCharManager.GetInstance().IsPlayerTurn())
         {
-            mainMenuButtons[i].gameObject.SetActive(true);
-        }
-        StartCoroutine(SelectMainMenuFirstOption());
+            actualStatus = ActualTBSStatus.MainMenu;
 
-        turnIndicator.text = "";
+            turnIndicator.text = "Menu Principal";
+
+            yield return new WaitForSeconds(1.0f);
+            for (int i = 0; i < mainMenuButtons.Length; i++)
+            {
+                mainMenuButtons[i].gameObject.SetActive(true);
+            }
+            StartCoroutine(SelectMainMenuFirstOption());
+
+            turnIndicator.text = "";
+        } else
+        {
+            actualStatus = ActualTBSStatus.EnemiesTurn;
+            yield return new WaitForSeconds(1.0f);
+            turnIndicator.text = "Turno dos inimigos";
+
+            StartCoroutine(EnemyTurnActions());
+        }
+
+
     }
 
     private void HidingMainMenu()
@@ -311,7 +327,7 @@ public class CombatUIManager : MonoBehaviour
                     canHighlight = true;
                     comboList.Add(techniqueCode);
                 }
-                
+
             }
 
             foreach (int sequence in sequences)
@@ -327,7 +343,7 @@ public class CombatUIManager : MonoBehaviour
                 }
             }
             if (canHighlight) { HighlightSkillArrows(); }
-        } 
+        }
     }
 
     public int CheckingChainCombo(List<int> sequences)
@@ -390,12 +406,10 @@ public class CombatUIManager : MonoBehaviour
             default:
                 arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 0f);
                 break;
-
         }
-
     }
 
-    public IEnumerator ExecutingCombo() 
+    public IEnumerator ExecutingCombo()
     {
         foreach (int combo in comboList)
         {
@@ -443,7 +457,7 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "Atacando";
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
-        CombatCharManager.GetInstance().LoseHP(attackTargetMenuButtonIndex, true);
+        CombatCharManager.GetInstance().LoseHP(actualCharacter, attackTargetMenuButtonIndex, true);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAttackTargetMenu();
@@ -465,7 +479,7 @@ public class CombatUIManager : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     private IEnumerator SelectAttackTargetMenuFirstOption()
@@ -488,4 +502,25 @@ public class CombatUIManager : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
+
+    // Enemeies Turn Methods
+    private void CheckingIsPlayerTurn()
+    {
+        if (CombatCharManager.GetInstance().IsPlayerTurn())
+        {
+            actualStatus = ActualTBSStatus.MainMenu;
+            StartCoroutine(CallMainMenu());
+        }
+    }
+
+    private IEnumerator EnemyTurnActions()
+    {
+        foreach(CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
+        {
+            turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
+            yield return new WaitForSeconds(1.0f);
+        }
+        CombatCharManager.GetInstance().SetPlayerTurn();
+    }
+
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class CharacterInfo
 {
@@ -45,8 +46,8 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private Image[] enemiesDamageLifebars;
     [SerializeField] private Image[] enemiesEmptyLifebars;
 
-    private List<CharacterInfo> heroes;
-    private List<CharacterInfo> enemies;
+    public List<CharacterInfo> heroes;
+    public List<CharacterInfo> enemies;
 
     private int heroesIndex = 0;
     private bool playerTurn = true;
@@ -173,11 +174,23 @@ public class CombatCharManager : MonoBehaviour
     {
         if (heroesIndex == heroes.Count - 1)
         {
+            playerTurn = false;
             heroesIndex = 0;
         } else
         {
+            playerTurn = true;
             heroesIndex++;
         }
+    }
+    
+    public bool IsPlayerTurn()
+    {
+        return playerTurn;
+    }
+
+    public void SetPlayerTurn()
+    {
+        playerTurn = true;
     }
     public int GetNumberOfAllies()
     {
@@ -205,20 +218,48 @@ public class CombatCharManager : MonoBehaviour
         }
     } 
 
-    public void LoseHP( int index, bool isEnemy)
+    public void LoseHP(CharacterInfo attackChar, int index, bool isEnemy)
     {
+        System.Random rnd = new System.Random();
+
+        int hitRate = rnd.Next(1, 101);
+        int evasionRate = rnd.Next(1, 101);
+        int critRate = rnd.Next(1, 101);
+
+        int damage = attackChar.damage;
+
+        if (critRate < attackChar.critRate)
+        {
+            damage = damage + (damage * (int)((float)attackChar.critDamage) / 100);
+            Debug.Log("Critou");
+        }
+
+
         if (isEnemy)
         {
-            if (enemies[index].life - 30 < 0) { enemies[index].life = 0; }
-            else { enemies[index].life -= 30; }
-            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
-            damageLifeShrinkTimer = 1f;
+            if ((hitRate < attackChar.hitRate) || (evasionRate > attackChar.evasionRate)) {
+                if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
+                else { enemies[index].life -= damage; }
+                enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
+                damageLifeShrinkTimer = 1f;
+                Debug.Log(attackChar.char_name + " causa " + damage + " em " + enemies[index].char_name);
+            } else
+            {
+                Debug.Log("Errou");
+            }
         } else
         {
-            if (heroes[index].life - 30 < 0) { heroes[index].life = 0; }
-            else { heroes[index].life -= 30; }
-            heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)enemies[index].maxLife), 0, 1f);
-            damageLifeShrinkTimer = 1f;
+            if ((hitRate < attackChar.hitRate) || (evasionRate > attackChar.evasionRate))
+            {
+                if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
+                else { heroes[index].life -= damage; }
+                heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)enemies[index].maxLife), 0, 1f);
+                damageLifeShrinkTimer = 1f;
+            }
+            else
+            {
+                Debug.Log("Errou");
+            }
         }
         
     }
