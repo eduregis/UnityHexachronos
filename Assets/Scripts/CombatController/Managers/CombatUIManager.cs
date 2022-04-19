@@ -25,23 +25,25 @@ public class CombatUIManager : MonoBehaviour
     [SerializeField] private GameObject[] skillMenuButtons;
     [SerializeField] private Image[] actionPoints;
     [SerializeField] private Image[] arrows;
+    [SerializeField] private GameObject backgroundSkillDescription;
+    [SerializeField] private TextMeshProUGUI textSkillDescription;
 
     [Header("Attack Target Menu UI")]
     [SerializeField] private GameObject[] enemiesSpotted;
 
-    [Header("Character Info")]
-    [SerializeField] private List<int> skill1;
-    [SerializeField] private List<int> skill2;
-    [SerializeField] private List<int> skill3;
-
     [Header("Turn Indicator")]
     [SerializeField] private TextMeshProUGUI turnIndicator;
+
+    private List<int> skill1;
+    private List<int> skill2;
+    private List<int> skill3;
 
     // Control Variables
     private int APLimit;
     private int APindex;
     private List<int> arrowCodes;
     private List<int> comboList;
+    private int skillButtonIndex = 0;
     private int attackTargetIndex = 0;
 
     private CharacterInfo actualCharacter;
@@ -119,6 +121,7 @@ public class CombatUIManager : MonoBehaviour
             case ActualTBSStatus.MainMenu:
                 break;
             case ActualTBSStatus.SkillMenu:
+                CheckingSkillDescription();
                 break;
             case ActualTBSStatus.Attack:
                 CheckingTarget();
@@ -224,6 +227,9 @@ public class CombatUIManager : MonoBehaviour
             skillMenuButtons[i].gameObject.SetActive(true);
         }
 
+        backgroundSkillDescription.SetActive(true);
+        textSkillDescription.text = actualCharacter.skillList[0].description;
+
         StartCoroutine(SelectSkillMenuFirstOption());
 
         HighlightSkillArrows();
@@ -242,6 +248,7 @@ public class CombatUIManager : MonoBehaviour
         {
             skillMenuButtons[i].gameObject.SetActive(false);
         }
+        backgroundSkillDescription.SetActive(false);
     }
 
     private IEnumerator SelectSkillMenuFirstOption()
@@ -409,6 +416,25 @@ public class CombatUIManager : MonoBehaviour
         }
     }
 
+    private void CheckingSkillDescription() 
+    { 
+        for (int i = 0; i < skillMenuButtons.Length; i++)
+        {
+            if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skillMenuButtons[i].gameObject))
+            {
+                if (i != skillButtonIndex)
+                {
+                    skillButtonIndex = i;
+                    textSkillDescription.text = actualCharacter.skillList[i].description;
+                }
+                if(i == 3 || i == 4)
+                {
+                    textSkillDescription.text = "";
+                }
+            }
+        }
+    }
+
     public IEnumerator ExecutingCombo()
     {
         foreach (int combo in comboList)
@@ -479,7 +505,6 @@ public class CombatUIManager : MonoBehaviour
                 }
             }
         }
-
     }
 
     private IEnumerator SelectAttackTargetMenuFirstOption()
