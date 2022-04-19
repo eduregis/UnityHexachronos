@@ -231,8 +231,9 @@ public class CombatCharManager : MonoBehaviour
         if (critRate < attackChar.critRate)
         {
             damage = damage + (damage * (int)((float)attackChar.critDamage) / 100);
-            Debug.Log("Critou");
         }
+
+        Debug.Log(attackChar.char_name + " causou " + damage + " (" + attackChar.damage + ") pontos de dano em " + enemies[index].char_name); 
 
 
         if (isEnemy)
@@ -242,7 +243,6 @@ public class CombatCharManager : MonoBehaviour
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
-                Debug.Log(attackChar.char_name + " causa " + damage + " em " + enemies[index].char_name);
             } else
             {
                 Debug.Log("Errou");

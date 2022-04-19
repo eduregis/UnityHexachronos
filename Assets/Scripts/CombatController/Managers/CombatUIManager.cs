@@ -515,10 +515,19 @@ public class CombatUIManager : MonoBehaviour
 
     private IEnumerator EnemyTurnActions()
     {
-        foreach(CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
+        List<CharacterInfo> heroes = CombatCharManager.GetInstance().heroes;
+
+        foreach (CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
         {
             turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
+
+            System.Random rnd = new System.Random();
+            int targetIndex = rnd.Next(0, heroes.Count - 1);
+
+            CombatCharManager.GetInstance().LoseHP(enemy, targetIndex, false);
             yield return new WaitForSeconds(1.0f);
+            turnIndicator.text = "";
+            yield return new WaitForSeconds(0.1f);
         }
         CombatCharManager.GetInstance().SetPlayerTurn();
     }
