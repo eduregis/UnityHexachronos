@@ -53,7 +53,15 @@ public class CombatCharManager : MonoBehaviour
 
     private static CombatCharManager instance;
 
+    // Animation control variables
     private float damageLifeShrinkTimer = 1f;
+    private float rotateCharTimer = 0;
+
+    Vector3 pos1;
+    Vector3 pos2;
+    Vector3 pos3;
+    Vector3 scaleMain = new Vector3(90,90,1);
+    Vector3 scaleNormal = new Vector3(80,80,1);
     private void Awake()
     {
         if (instance != null)
@@ -83,7 +91,7 @@ public class CombatCharManager : MonoBehaviour
     {
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
-       // CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
@@ -143,10 +151,33 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    public void RotateCharacters()
+    {
+        ;
+
+        pos1 = heroesSprites[0].transform.position;
+        pos2 = heroesSprites[1].transform.position;
+        pos3 = heroesSprites[2].transform.position;
+
+        GoToNextCharacter();
+
+        rotateCharTimer = 1f;
+    }
+
     public CharacterInfo GetCurrentCharacter()
     {
-        if (heroesIndex == heroes.Count) { heroesIndex = 0; }
-        return heroes[heroesIndex++];
+        return heroes[heroesIndex];
+    }
+
+    public void GoToNextCharacter()
+    {
+        if (heroesIndex == heroes.Count - 1)
+        {
+            heroesIndex = 0;
+        } else
+        {
+            heroesIndex++;
+        }
     }
     public int GetNumberOfAllies()
     {
@@ -161,6 +192,7 @@ public class CombatCharManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        MovingSpriteCharsIfNeeded();
         CheckingDamageBars();
     }
 
@@ -191,6 +223,43 @@ public class CombatCharManager : MonoBehaviour
         
     }
 
+    public void MovingSpriteCharsIfNeeded()
+    {
+        if (rotateCharTimer > 0)
+        {
+            rotateCharTimer -= Time.deltaTime;
+
+            if (heroes.Count == 2)
+            {
+                heroesSprites[0].transform.position = Vector3.Lerp(heroesSprites[0].transform.position, pos2, 7f * Time.deltaTime);
+                heroesSprites[1].transform.position = Vector3.Lerp(heroesSprites[1].transform.position, pos1, 7f * Time.deltaTime);
+            }
+            else if (heroes.Count == 3)
+            {
+                heroesSprites[0].transform.position = Vector3.Lerp(heroesSprites[0].transform.position, pos3, 7f * Time.deltaTime);
+                heroesSprites[1].transform.position = Vector3.Lerp(heroesSprites[1].transform.position, pos1, 7f * Time.deltaTime);
+                heroesSprites[2].transform.position = Vector3.Lerp(heroesSprites[2].transform.position, pos2, 7f * Time.deltaTime);
+            }
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                if (i == heroesIndex)
+                {
+                    heroesSprites[i].transform.localScale = Vector3.Lerp(heroesSprites[i].transform.localScale, scaleMain, 4f * Time.deltaTime);
+                    SpriteRenderer spr = heroesSprites[i].GetComponent<SpriteRenderer>();
+                    spr.sortingOrder = 4;
+                    spr.color = Color.Lerp(spr.color, Color.white, 4f * Time.deltaTime);
+                }
+                else
+                {
+                    heroesSprites[i].transform.localScale = Vector3.Lerp(heroesSprites[i].transform.localScale, scaleNormal, 4f * Time.deltaTime);
+                    SpriteRenderer spr = heroesSprites[i].GetComponent<SpriteRenderer>();
+                    spr.sortingOrder = 3;
+                    spr.color = Color.Lerp(spr.color, Color.gray, 4f * Time.deltaTime);
+                }
+            }
+        }
+
+    }
     public void CheckingDamageBars()
     {
         if (damageLifeShrinkTimer > 0)

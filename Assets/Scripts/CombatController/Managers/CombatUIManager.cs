@@ -74,7 +74,7 @@ public class CombatUIManager : MonoBehaviour
         HidingSkillMenu();
 
         yield return new WaitForSeconds(0.5f);
-        UpdateCurrentCharacter();
+        GetCurrentCharacter();
 
         numberOfAllies = CombatCharManager.GetInstance().GetNumberOfAllies();
         numberOfEnemies = CombatCharManager.GetInstance().GetNumberOfEnemies();
@@ -84,8 +84,9 @@ public class CombatUIManager : MonoBehaviour
         actualStatus = ActualTBSStatus.MainMenu;
     }
 
-    public void UpdateCurrentCharacter()
+    public void GetCurrentCharacter()
     {
+
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
 
         Debug.Log(actualCharacter.char_name);
@@ -98,6 +99,15 @@ public class CombatUIManager : MonoBehaviour
         skill1 = actualCharacter.skillList[0].sequence;
         skill2 = actualCharacter.skillList[1].sequence;
         skill3 = actualCharacter.skillList[2].sequence;
+    }
+
+    public IEnumerator UpdateCurrentCharacter()
+    {
+        CombatCharManager.GetInstance().RotateCharacters();
+
+        yield return new WaitForSeconds(0.5f);
+
+        GetCurrentCharacter();
     }
 
     // Update is called once per frame
@@ -393,7 +403,7 @@ public class CombatUIManager : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
         }
         comboList.Clear();
-        UpdateCurrentCharacter();
+        StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
@@ -437,7 +447,7 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAttackTargetMenu();
-        UpdateCurrentCharacter();
+        StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
@@ -474,7 +484,7 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "Bloqueando";
         yield return new WaitForSeconds(1.0f);
         turnIndicator.text = "";
-        UpdateCurrentCharacter();
+        StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
