@@ -42,6 +42,7 @@ public class CombatUIManager : MonoBehaviour
     private List<int> arrowCodes;
     private List<int> comboList;
     private int attackTargetIndex = 0;
+    private CharacterInfo actualCharacter;
 
     private static CombatUIManager instance;
     private ActualTBSStatus actualStatus;
@@ -62,18 +63,35 @@ public class CombatUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        APLimit = 5;
+        StartCoroutine(Setup());
+    }
+
+    public IEnumerator Setup()
+    {
+        HidingSkillMenu();
+
+        yield return new WaitForSeconds(0.5f);
+        UpdateCurrentCharacter();
+
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(CallMainMenu());
+        actualStatus = ActualTBSStatus.MainMenu;
+    }
+
+    public void UpdateCurrentCharacter()
+    {
+        actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
+
+        Debug.Log(actualCharacter.char_name);
+
+        APLimit = actualCharacter.APSlots;
         APindex = 0;
         arrowCodes = new List<int>();
         comboList = new List<int>();
 
-        skill1 = new List<int> { 2, 1, 3 };
-        skill2 = new List<int> { 2, 2, 1 };
-        skill3 = new List<int> { 4, 4, 3 };
-
-        HidingSkillMenu();
-        StartCoroutine(CallMainMenu());
-        actualStatus = ActualTBSStatus.MainMenu;
+        skill1 = actualCharacter.skillList[0].sequence;
+        skill2 = actualCharacter.skillList[1].sequence;
+        skill3 = actualCharacter.skillList[2].sequence;
     }
 
     // Update is called once per frame
@@ -218,6 +236,7 @@ public class CombatUIManager : MonoBehaviour
                 break;
             // Erase the entire combo
             case 3:
+                comboList.Clear();
                 ClearComboArray();
                 break;
             case 4:
@@ -269,10 +288,14 @@ public class CombatUIManager : MonoBehaviour
             bool canHighlight = false;
 
             // testa se a sequencia entra inteira no escopo de ações.
-            if ((APindex + sequences.Count < APLimit) && techniqueCode != 0)
+            if ((APindex + sequences.Count <= APLimit))
             {
-                canHighlight = true;
-                comboList.Add(techniqueCode);
+                if (techniqueCode != 0)
+                {
+                    canHighlight = true;
+                    comboList.Add(techniqueCode);
+                }
+                
             }
 
             foreach (int sequence in sequences)
@@ -288,12 +311,12 @@ public class CombatUIManager : MonoBehaviour
                 }
             }
             if (canHighlight) { HighlightSkillArrows(); }
-        }
+        } 
     }
 
     public int CheckingChainCombo(List<int> sequences)
     {
-        if (APindex > 0)
+        if ((APindex > 0) && (APindex + 1 < APLimit))
         {
             // Variáveis de controle
             // chainSize vai checar o tamanho da sequencia a ser colocada, para iterar em cima desse numero e saber se existem semelhanças entre o final do combo e o começo da sequência.
@@ -364,6 +387,8 @@ public class CombatUIManager : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
         }
         comboList.Clear();
+        UpdateCurrentCharacter();
+        yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
 
@@ -402,6 +427,8 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAttackTargetMenu();
+        UpdateCurrentCharacter();
+        yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
 
@@ -437,6 +464,8 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "Bloqueando";
         yield return new WaitForSeconds(1.0f);
         turnIndicator.text = "";
+        UpdateCurrentCharacter();
+        yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
 }

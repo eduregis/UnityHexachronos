@@ -44,6 +44,7 @@ public class CombatCharManager : MonoBehaviour
     private List<CharacterInfo> heroes;
     private List<CharacterInfo> enemies;
 
+    private int heroesIndex = 0;
     private bool playerTurn = true;
 
     private static CombatCharManager instance;
@@ -112,6 +113,12 @@ public class CombatCharManager : MonoBehaviour
         {
             enemies.Add(characterInfo);
         }
+    }
+
+    public CharacterInfo GetCurrentCharacter()
+    {
+        if (heroesIndex == heroes.Count) { heroesIndex = 0; }
+        return heroes[heroesIndex++];
     }
 
     // Update is called once per frame
