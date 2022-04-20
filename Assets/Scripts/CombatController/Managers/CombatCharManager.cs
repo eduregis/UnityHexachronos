@@ -216,7 +216,15 @@ public class CombatCharManager : MonoBehaviour
             if (i == targetIndex) { enemiesTargets[i].SetActive(true); }
             else { enemiesTargets[i].SetActive(false); }
         }
-    } 
+    }
+    
+    public void HideAllTargets()
+    {
+        for (int i = 0; i < enemiesTargets.Length; i++)
+        {
+            enemiesTargets[i].SetActive(false);
+        }
+    }
 
     public void LoseHP(CharacterInfo attackChar, int index, bool isEnemy)
     {

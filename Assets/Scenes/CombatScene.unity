@@ -1907,7 +1907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &499923002
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4570,6 +4570,8 @@ MonoBehaviour:
   - {fileID: 1672620411}
   - {fileID: 1037373679}
   - {fileID: 947740916}
+  backgroundSkillDescription: {fileID: 499923001}
+  textSkillDescription: {fileID: 1588381738}
   enemiesSpotted:
   - {fileID: 475207795}
   - {fileID: 592710238}
@@ -7572,7 +7574,7 @@ GameObject:
   - component: {fileID: 1588381739}
   - component: {fileID: 1588381738}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: SkillDescription
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

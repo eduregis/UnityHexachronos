@@ -12,6 +12,7 @@ public enum ActualTBSStatus
     Attack,
     SkillMenu,
     Skill,
+    IntoSkills,
     Block,
     EnemiesTurn
 }
@@ -43,6 +44,9 @@ public class CombatUIManager : MonoBehaviour
     private int APindex;
     private List<int> arrowCodes;
     private List<int> comboList;
+    private List<int> comboInputs;
+    private int comboIndex = 0;
+
     private int skillButtonIndex = 0;
     private int attackTargetIndex = 0;
 
@@ -98,6 +102,7 @@ public class CombatUIManager : MonoBehaviour
         APindex = 0;
         arrowCodes = new List<int>();
         comboList = new List<int>();
+        comboInputs = new List<int>();
 
         skill1 = actualCharacter.skillList[0].sequence;
         skill2 = actualCharacter.skillList[1].sequence;
@@ -190,7 +195,7 @@ public class CombatUIManager : MonoBehaviour
             case 0:
                 HidingMainMenu();
                 actualStatus = ActualTBSStatus.Attack;
-                StartCoroutine(CallAttackMenu());
+                StartCoroutine(CallEnemyTargetMenu());
                 break;
             case 1:
                 HidingMainMenu();
@@ -436,23 +441,17 @@ public class CombatUIManager : MonoBehaviour
 
     public IEnumerator ExecutingCombo()
     {
+
+        
         actualStatus = ActualTBSStatus.Skill;
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(CallAttackMenu());
-        /*foreach (int combo in comboList)
-        {
-            turnIndicator.text = "Executando técnica: " + combo;
-            yield return new WaitForSeconds(1.0f);
-        }
-        comboList.Clear();
-        StartCoroutine(UpdateCurrentCharacter());
-        yield return new WaitForSeconds(0.2f);
-        StartCoroutine(CallMainMenu());*/
+        // checar antes qual o input da skill
+        StartCoroutine(CallEnemyTargetMenu());
     }
 
 
     // Attacking Methods
-    private IEnumerator CallAttackMenu()
+    private IEnumerator CallEnemyTargetMenu()
     {
         turnIndicator.text = "Selecione um alvo";
         yield return new WaitForSeconds(1.0f);
@@ -477,15 +476,39 @@ public class CombatUIManager : MonoBehaviour
 
     public void ChooseAttackTargetMenuButton(int attackTargetMenuButtonIndex)
     {
-        Debug.Log(actualStatus);
         if (actualStatus == ActualTBSStatus.Attack)
         {
             StartCoroutine(Attacking(attackTargetMenuButtonIndex));
         } else if (actualStatus == ActualTBSStatus.Skill)
         {
-            Debug.Log("vapo");
+            HidingAttackTargetMenu();
+            CombatCharManager.GetInstance().HideAllTargets();
+            turnIndicator.text = "";
+            StartCoroutine(ReceiveInputCombo(attackTargetMenuButtonIndex));
+            
         }
+    }
 
+    private IEnumerator ReceiveInputCombo(int input)
+    {
+        comboInputs.Add(input);
+        if (comboInputs.Count < comboList.Count)
+        {
+            yield return new WaitForSeconds(0.5f);
+            StartCoroutine(CallEnemyTargetMenu());
+        } else
+        {
+            for(int i = 0; i < comboInputs.Count; i++)
+            {
+                Debug.Log("Codigo do combo:" + comboList[i] + ", Input do combo: " + comboInputs[i]);
+            }
+            comboList.Clear();
+            comboInputs.Clear();
+            yield return new WaitForSeconds(1.0f);
+            StartCoroutine(UpdateCurrentCharacter());
+            yield return new WaitForSeconds(1.0f);
+            StartCoroutine(CallMainMenu());
+        }
 
     }
 
