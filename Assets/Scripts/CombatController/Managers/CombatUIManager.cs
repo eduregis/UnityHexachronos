@@ -24,8 +24,6 @@ public class CombatUIManager : MonoBehaviour
 
     [Header("Skill Menu UI")]
     [SerializeField] private GameObject[] skillMenuButtons;
-    [SerializeField] private Image[] actionPoints;
-    [SerializeField] private Image[] arrows;
     [SerializeField] private GameObject backgroundSkillDescription;
     [SerializeField] private TextMeshProUGUI textSkillDescription;
 
@@ -35,19 +33,10 @@ public class CombatUIManager : MonoBehaviour
     [Header("Turn Indicator")]
     [SerializeField] private TextMeshProUGUI turnIndicator;
 
-    private List<int> skill1;
-    private List<int> skill2;
-    private List<int> skill3;
 
     // Control Variables
-    private int APLimit;
-    private int APindex;
-    private List<int> arrowCodes;
-    private List<int> comboList;
-    private List<int> comboInputs;
-    private int comboIndex = 0;
 
-    private int skillButtonIndex = 0;
+    private int skillButtonIndex = 1;
     private int attackTargetIndex = 0;
 
     private CharacterInfo actualCharacter;
@@ -97,16 +86,6 @@ public class CombatUIManager : MonoBehaviour
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
 
         Debug.Log(actualCharacter.char_name);
-
-        APLimit = actualCharacter.APSlots;
-        APindex = 0;
-        arrowCodes = new List<int>();
-        comboList = new List<int>();
-        comboInputs = new List<int>();
-
-        skill1 = actualCharacter.skillList[0].sequence;
-        skill2 = actualCharacter.skillList[1].sequence;
-        skill3 = actualCharacter.skillList[2].sequence;
     }
 
     public IEnumerator UpdateCurrentCharacter()
@@ -127,9 +106,6 @@ public class CombatUIManager : MonoBehaviour
                 break;
             case ActualTBSStatus.SkillMenu:
                 CheckingSkillDescription();
-                break;
-            case ActualTBSStatus.Skill:
-                CheckingTarget();
                 break;
             case ActualTBSStatus.Attack:
                 CheckingTarget();
@@ -218,17 +194,6 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "Menu de Skills";
 
         yield return new WaitForSeconds(1.0f);
-        for (int i = 0; i < APLimit; i++)
-        {
-            actionPoints[i].enabled = true;
-            arrows[i].enabled = true;
-        }
-
-        for (int i = APLimit; i < actionPoints.Length; i++)
-        {
-            actionPoints[i].enabled = false;
-            arrows[i].enabled = false;
-        }
 
         for (int i = 0; i < skillMenuButtons.Length; i++)
         {
@@ -240,18 +205,11 @@ public class CombatUIManager : MonoBehaviour
 
         StartCoroutine(SelectSkillMenuFirstOption());
 
-        HighlightSkillArrows();
-
         turnIndicator.text = "";
     }
 
     private void HidingSkillMenu()
     {
-        for (int i = 0; i < actionPoints.Length; i++)
-        {
-            actionPoints[i].enabled = false;
-            arrows[i].enabled = false;
-        }
         for (int i = 0; i < skillMenuButtons.Length; i++)
         {
             skillMenuButtons[i].gameObject.SetActive(false);
@@ -265,195 +223,66 @@ public class CombatUIManager : MonoBehaviour
         // for at least one frame before we set the current selected object.
         EventSystem.current.SetSelectedGameObject(null);
         yield return new WaitForEndOfFrame();
-        EventSystem.current.SetSelectedGameObject(skillMenuButtons[0].gameObject);
+        EventSystem.current.SetSelectedGameObject(skillMenuButtons[1].gameObject);
     }
 
     public void ChooseSkillMenuButton(int skillMenuButtonIndex)
     {
-        switch (skillMenuButtonIndex)
+        if (skillMenuButtonIndex == 0)
         {
-            case 0:
-                SettingSkill(skill1, 1);
-                break;
-            case 1:
-                SettingSkill(skill2, 2);
-                break;
-            case 2:
-                SettingSkill(skill3, 3);
-                break;
-            // Erase the entire combo
-            case 3:
-                comboList.Clear();
-                ClearComboArray();
-                break;
-            case 4:
-                HidingSkillMenu();
-                PrintCombo();
-                // faz os combos
-                actualStatus = ActualTBSStatus.SkillMenu;
-                ClearComboArray();
-                StartCoroutine(ExecutingCombo());
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void HighlightSkillArrows()
-    {
-        SkillArrowsManager.GetInstance().ShowSkillCombo(skill1, 1, CheckingChainCombo(skill1));
-        SkillArrowsManager.GetInstance().ShowSkillCombo(skill2, 2, CheckingChainCombo(skill2));
-        SkillArrowsManager.GetInstance().ShowSkillCombo(skill3, 3, CheckingChainCombo(skill3));
-    }
-
-    public void PrintCombo()
-    {
-        String combo = "";
-        foreach (int x in comboList)
+            HidingSkillMenu();
+            actualStatus = ActualTBSStatus.Attack;
+            StartCoroutine(CallMainMenu());
+        } else
         {
-            combo += (" " + x.ToString());
+            actualStatus = ActualTBSStatus.Skill;
+            StartCoroutine(ExecutingSkill(skillMenuButtonIndex));
         }
-        Debug.Log(combo);
-    }
 
-    public void ClearComboArray()
-    {
-        List<int> sequences = new List<int>();
-        APindex = 0;
-        sequences = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        SettingSkill(sequences, 0);
-        arrowCodes.Clear();
-        APindex = 0;
-    }
 
-    public void SettingSkill(List<int> sequences, int techniqueCode)
-    {
-        // verifica a quantidade de posições que podemos recuar ao introduzir essa sequencia no combo.
-        if (APindex != APLimit)
-        {
-            APindex -= CheckingChainCombo(sequences);
-            bool canHighlight = false;
-
-            // testa se a sequencia entra inteira no escopo de ações.
-            if ((APindex + sequences.Count <= APLimit))
-            {
-                if (techniqueCode != 0)
-                {
-                    canHighlight = true;
-                    comboList.Add(techniqueCode);
-                }
-
-            }
-
-            foreach (int sequence in sequences)
-            {
-                if (APindex < APLimit)
-                {
-                    SettingArrow(APindex, sequence);
-                    APindex++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if (canHighlight) { HighlightSkillArrows(); }
-        }
-    }
-
-    public int CheckingChainCombo(List<int> sequences)
-    {
-        if ((APindex > 0) && (APindex + 1 < APLimit))
-        {
-            // Variáveis de controle
-            // chainSize vai checar o tamanho da sequencia a ser colocada, para iterar em cima desse numero e saber se existem semelhanças entre o final do combo e o começo da sequência.
-            int chainSize = sequences.Count - 1;
-            // suffixIndex pega o tamanho atual do combo.
-            int suffixIndex = arrowCodes.Count;
-            // prefixIndex subtrai o tamanho da sequencia ( menos 1) e o tamanho atual do combo, para saber a partir de posição do combo começamos a testar a semelhança dos combos.
-            int prefixIndex = suffixIndex - chainSize;
-            // Essa variável recebe 'true' se a sequencia e combo coincidirem;
-            bool isChained = false;
-            // chainBreaker inicia com 0, e é acrescida de 1 toda vez que a sequencia não coincidir com combo, utilizada para avançar uma casa do combo antes de testar novamente.
-            int chainBreaker = 0;
-
-            //a cada falha de teste, a chainBreaker se aproxima de chainSize
-            while (chainSize > chainBreaker)
-            {
-                for (int index = 0; (index + chainBreaker) < chainSize; index++)
-                {
-                    // testamos se o prefixo da sequencia é semelhante ao sufixo do combo.
-                    isChained = (sequences[index] == arrowCodes[index + prefixIndex + chainBreaker]);
-
-                }
-                if (isChained)
-                {
-                    // se passar por todo o for e a variavel isChained ainda for 'true', retornamos o tamanho que o APindex deverá recuar.
-                    return chainSize - chainBreaker;
-                } else
-                {
-                    // se falhar no teste, avançamos a posição inicial testada em 1.
-                    chainBreaker++;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public void SettingArrow(int index, int spriteCode)
-    {
-        arrowCodes.Add(spriteCode);
-        arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 1f);
-        switch (spriteCode)
-        {
-            case 1:
-                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_up");
-                break;
-            case 2:
-                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_left");
-                break;
-            case 3:
-                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_right");
-                break;
-            case 4:
-                arrows[index].sprite = ArrowSpriteManager.GetInstance().ChangeArrowSprite("arrow_down");
-                break;
-            default:
-                arrows[index].color = new Color(arrows[index].color.r, arrows[index].color.g, arrows[index].color.b, 0f);
-                break;
-        }
     }
 
     private void CheckingSkillDescription() 
     { 
-        for (int i = 0; i < skillMenuButtons.Length - 2; i++)
+        for (int i = 0; i < skillMenuButtons.Length; i++)
         {
             if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skillMenuButtons[i].gameObject))
             {
-                if (i != skillButtonIndex)
+                if (i == 0)
+                {
+                    textSkillDescription.text = "";
+                }
+                if (i != (skillButtonIndex))
                 {
                     skillButtonIndex = i;
-                    textSkillDescription.text = actualCharacter.skillList[i].description;
+                    if (i != 0) { textSkillDescription.text = actualCharacter.skillList[i - 1].description; } 
                 }
             }
         }
     }
 
-    public IEnumerator ExecutingCombo()
+    public IEnumerator ExecutingSkill(int skillIndex)
     {
-
-        
         actualStatus = ActualTBSStatus.Skill;
         yield return new WaitForSeconds(0.5f);
+        Debug.Log("Executando skill: " + skillIndex);
         // checar antes qual o input da skill
-        StartCoroutine(CallEnemyTargetMenu());
+        //StartCoroutine(CallEnemyTargetMenu());
     }
 
 
     // Attacking Methods
     private IEnumerator CallEnemyTargetMenu()
     {
-        turnIndicator.text = "Selecione um alvo";
+        if (actualStatus == ActualTBSStatus.Attack)
+        {
+            turnIndicator.text = "Selecione um alvo";
+        }
+        else if (actualStatus == ActualTBSStatus.Skill)
+        {
+            turnIndicator.text = "Selecione um alvo da skill";
+        }
+            
         yield return new WaitForSeconds(1.0f);
         for (int i = 0; i < numberOfEnemies; i++)
         {
@@ -479,37 +308,7 @@ public class CombatUIManager : MonoBehaviour
         if (actualStatus == ActualTBSStatus.Attack)
         {
             StartCoroutine(Attacking(attackTargetMenuButtonIndex));
-        } else if (actualStatus == ActualTBSStatus.Skill)
-        {
-            HidingAttackTargetMenu();
-            CombatCharManager.GetInstance().HideAllTargets();
-            turnIndicator.text = "";
-            StartCoroutine(ReceiveInputCombo(attackTargetMenuButtonIndex));
-            
-        }
-    }
-
-    private IEnumerator ReceiveInputCombo(int input)
-    {
-        comboInputs.Add(input);
-        if (comboInputs.Count < comboList.Count)
-        {
-            yield return new WaitForSeconds(0.5f);
-            StartCoroutine(CallEnemyTargetMenu());
-        } else
-        {
-            for(int i = 0; i < comboInputs.Count; i++)
-            {
-                Debug.Log("Codigo do combo:" + comboList[i] + ", Input do combo: " + comboInputs[i]);
-            }
-            comboList.Clear();
-            comboInputs.Clear();
-            yield return new WaitForSeconds(1.0f);
-            StartCoroutine(UpdateCurrentCharacter());
-            yield return new WaitForSeconds(1.0f);
-            StartCoroutine(CallMainMenu());
-        }
-
+        } 
     }
 
     private IEnumerator Attacking(int attackTargetMenuButtonIndex)

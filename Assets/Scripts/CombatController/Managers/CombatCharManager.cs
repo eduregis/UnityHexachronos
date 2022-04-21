@@ -241,7 +241,7 @@ public class CombatCharManager : MonoBehaviour
             damage = damage + (damage * (int)((float)attackChar.critDamage) / 100);
         }
 
-        Debug.Log(attackChar.char_name + " causou " + damage + " (" + attackChar.damage + ") pontos de dano em " + enemies[index].char_name); 
+       
 
 
         if (isEnemy)
@@ -251,6 +251,7 @@ public class CombatCharManager : MonoBehaviour
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
+                Debug.Log(attackChar.char_name + " causou " + damage + " (" + attackChar.damage + ") pontos de dano em " + enemies[index].char_name);
             } else
             {
                 Debug.Log("Errou");
@@ -263,6 +264,7 @@ public class CombatCharManager : MonoBehaviour
                 else { heroes[index].life -= damage; }
                 heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
+                Debug.Log(attackChar.char_name + " causou " + damage + " (" + attackChar.damage + ") pontos de dano em " + heroes[index].char_name);
             }
             else
             {
