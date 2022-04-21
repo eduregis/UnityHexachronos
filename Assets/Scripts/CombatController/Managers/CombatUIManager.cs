@@ -12,7 +12,7 @@ public enum ActualTBSStatus
     Attack,
     SkillMenu,
     Skill,
-    IntoSkills,
+    EnemyTargetSkill,
     Block,
     EnemiesTurn
 }
@@ -38,6 +38,8 @@ public class CombatUIManager : MonoBehaviour
 
     private int skillButtonIndex = 1;
     private int attackTargetIndex = 0;
+
+    private int selectedSkill = -1;
 
     private CharacterInfo actualCharacter;
     private int numberOfAllies = 0;
@@ -108,6 +110,9 @@ public class CombatUIManager : MonoBehaviour
                 CheckingSkillDescription();
                 break;
             case ActualTBSStatus.Attack:
+                CheckingTarget();
+                break;
+            case ActualTBSStatus.EnemyTargetSkill:
                 CheckingTarget();
                 break;
             case ActualTBSStatus.EnemiesTurn:
@@ -263,11 +268,20 @@ public class CombatUIManager : MonoBehaviour
 
     public IEnumerator ExecutingSkill(int skillIndex)
     {
+        HidingSkillMenu();
         actualStatus = ActualTBSStatus.Skill;
         yield return new WaitForSeconds(0.5f);
-        Debug.Log("Executando skill: " + skillIndex);
+        selectedSkill = skillIndex - 1;
         // checar antes qual o input da skill
-        //StartCoroutine(CallEnemyTargetMenu());
+        switch(actualCharacter.skillList[selectedSkill].affectType)
+        {
+            case AffectType.EnemyTarget:
+                actualStatus = ActualTBSStatus.EnemyTargetSkill;
+                StartCoroutine(CallEnemyTargetMenu());
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -278,7 +292,7 @@ public class CombatUIManager : MonoBehaviour
         {
             turnIndicator.text = "Selecione um alvo";
         }
-        else if (actualStatus == ActualTBSStatus.Skill)
+        else if (actualStatus == ActualTBSStatus.EnemyTargetSkill)
         {
             turnIndicator.text = "Selecione um alvo da skill";
         }
@@ -308,12 +322,29 @@ public class CombatUIManager : MonoBehaviour
         if (actualStatus == ActualTBSStatus.Attack)
         {
             StartCoroutine(Attacking(attackTargetMenuButtonIndex));
-        } 
+        }
+        else if (actualStatus == ActualTBSStatus.EnemyTargetSkill) {
+            StartCoroutine(ApllyingEnemyTargetSkill(attackTargetMenuButtonIndex));
+        }
     }
 
     private IEnumerator Attacking(int attackTargetMenuButtonIndex)
     {
         turnIndicator.text = "Atacando";
+        CombatCharManager.GetInstance().ShowEnemyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        CombatCharManager.GetInstance().LoseHP(actualCharacter, attackTargetMenuButtonIndex, true);
+        turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingAttackTargetMenu();
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
+
+    private IEnumerator ApllyingEnemyTargetSkill(int attackTargetMenuButtonIndex)
+    {
+        turnIndicator.text = "executando skill " + actualCharacter.skillList[selectedSkill].skill_name + "no inimigo " + attackTargetMenuButtonIndex;
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
         CombatCharManager.GetInstance().LoseHP(actualCharacter, attackTargetMenuButtonIndex, true);
