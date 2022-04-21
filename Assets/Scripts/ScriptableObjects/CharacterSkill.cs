@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum Skill
+{
+    Jab,
+    NailBomb,
+    HealingInjection,
+    EnergizedHammer
+}
+
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]
 
 public class CharacterSkill : ScriptableObject
 {
-    public List<int> sequence;
+    public Skill skill_id;
     public string skill_name;
     public string description;
     public int cost;

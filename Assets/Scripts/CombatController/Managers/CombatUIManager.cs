@@ -12,7 +12,10 @@ public enum ActualTBSStatus
     Attack,
     SkillMenu,
     Skill,
-    EnemyTargetSkill,
+    AllySingleTargetSkill,
+    AllyMultiTargetSkill,
+    EnemySingleTargetSkill,
+    EnemyMultiTargetSkill,
     Block,
     EnemiesTurn
 }
@@ -112,7 +115,7 @@ public class CombatUIManager : MonoBehaviour
             case ActualTBSStatus.Attack:
                 CheckingTarget();
                 break;
-            case ActualTBSStatus.EnemyTargetSkill:
+            case ActualTBSStatus.EnemySingleTargetSkill:
                 CheckingTarget();
                 break;
             case ActualTBSStatus.EnemiesTurn:
@@ -276,7 +279,7 @@ public class CombatUIManager : MonoBehaviour
         switch(actualCharacter.skillList[selectedSkill].affectType)
         {
             case AffectType.EnemyTarget:
-                actualStatus = ActualTBSStatus.EnemyTargetSkill;
+                actualStatus = ActualTBSStatus.EnemySingleTargetSkill;
                 StartCoroutine(CallEnemyTargetMenu());
                 break;
             default:
@@ -292,7 +295,7 @@ public class CombatUIManager : MonoBehaviour
         {
             turnIndicator.text = "Selecione um alvo";
         }
-        else if (actualStatus == ActualTBSStatus.EnemyTargetSkill)
+        else if (actualStatus == ActualTBSStatus.EnemySingleTargetSkill)
         {
             turnIndicator.text = "Selecione um alvo da skill";
         }
@@ -323,8 +326,8 @@ public class CombatUIManager : MonoBehaviour
         {
             StartCoroutine(Attacking(attackTargetMenuButtonIndex));
         }
-        else if (actualStatus == ActualTBSStatus.EnemyTargetSkill) {
-            StartCoroutine(ApllyingEnemyTargetSkill(attackTargetMenuButtonIndex));
+        else if (actualStatus == ActualTBSStatus.EnemySingleTargetSkill) {
+            StartCoroutine(ApllyingEnemySingleTargetSkill(attackTargetMenuButtonIndex));
         }
     }
 
@@ -333,7 +336,7 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "Atacando";
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
-        CombatCharManager.GetInstance().LoseHP(actualCharacter, attackTargetMenuButtonIndex, true);
+        CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAttackTargetMenu();
@@ -342,12 +345,11 @@ public class CombatUIManager : MonoBehaviour
         StartCoroutine(CallMainMenu());
     }
 
-    private IEnumerator ApllyingEnemyTargetSkill(int attackTargetMenuButtonIndex)
+    private IEnumerator ApllyingEnemySingleTargetSkill(int attackTargetMenuButtonIndex)
     {
-        turnIndicator.text = "executando skill " + actualCharacter.skillList[selectedSkill].skill_name + "no inimigo " + attackTargetMenuButtonIndex;
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
-        CombatCharManager.GetInstance().LoseHP(actualCharacter, attackTargetMenuButtonIndex, true);
+        SkillManager.GetInstance().TriggerringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAttackTargetMenu();
@@ -413,7 +415,7 @@ public class CombatUIManager : MonoBehaviour
             System.Random rnd = new System.Random();
             int targetIndex = rnd.Next(0, heroes.Count - 1);
 
-            CombatCharManager.GetInstance().LoseHP(enemy, targetIndex, false);
+            CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
             yield return new WaitForSeconds(1.0f);
             turnIndicator.text = "";
             yield return new WaitForSeconds(0.1f);
