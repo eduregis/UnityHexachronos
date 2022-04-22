@@ -303,7 +303,7 @@ public class CombatCharManager : MonoBehaviour
             if ((hitRate < attackChar.hitRate) || (evasionRate > attackChar.evasionRate)) {
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
-                enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
+                enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
             } else
@@ -316,7 +316,7 @@ public class CombatCharManager : MonoBehaviour
             {
                 if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
                 else { heroes[index].life -= damage; }
-                heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)enemies[index].maxLife), 0, 1f);
+                heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + heroes[index].char_name);
             }
@@ -325,6 +325,11 @@ public class CombatCharManager : MonoBehaviour
                 Debug.Log("Errou");
             }
         }
+    }
+
+    public float adjustHexagonBarPercentage(float actualValue, float maxValue)
+    {
+        return (actualValue / maxValue);
     }
 
     public void MovingSpriteCharsIfNeeded()
@@ -387,7 +392,6 @@ public class CombatCharManager : MonoBehaviour
     {
         if (damageLifeShrinkTimer > 0)
         {
-            Debug.Log("aaaa");
             damageLifeShrinkTimer -= Time.deltaTime;
 
             for (var i = 0; i < enemies.Count; i++)
@@ -411,7 +415,6 @@ public class CombatCharManager : MonoBehaviour
     {
         if (gainLifeShrinkTimer > 0)
         {
-            Debug.Log("bbbb");
             gainLifeShrinkTimer -= Time.deltaTime;
 
             for (var i = 0; i < enemies.Count; i++)
