@@ -257,6 +257,56 @@ public class CombatUIManager : MonoBehaviour
         }
     }
 
+    private void CheckingSkillDescription()
+    {
+        for (int i = 0; i < skillMenuButtons.Length; i++)
+        {
+            if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skillMenuButtons[i].gameObject))
+            {
+                if (i == 0)
+                {
+                    textSkillDescription.text = "";
+                }
+                if (i != (skillButtonIndex))
+                {
+                    skillButtonIndex = i;
+                    if (i != 0) { textSkillDescription.text = actualCharacter.skillList[i - 1].description; }
+                }
+            }
+        }
+    }
+
+    public IEnumerator ExecutingSkill(int skillIndex)
+    {
+        HidingSkillMenu();
+        actualStatus = ActualTBSStatus.Skill;
+        yield return new WaitForSeconds(0.5f);
+        selectedSkill = skillIndex - 1;
+        // checar antes qual o input da skill
+        switch (actualCharacter.skillList[selectedSkill].affectType)
+        {
+            case AffectType.EnemyTarget:
+                actualStatus = ActualTBSStatus.EnemySingleTargetSkill;
+                StartCoroutine(CallEnemyTargetMenu());
+                break;
+            case AffectType.AllyTarget:
+                actualStatus = ActualTBSStatus.AllySingleTargetSkill;
+                StartCoroutine(CallAllyTargetMenu());
+                break;
+            case AffectType.AllEnemies:
+                actualStatus = ActualTBSStatus.EnemyMultiTargetSkill;
+                StartCoroutine(CallAllEnemiesTargetMenu());
+                break;
+            case AffectType.AllAllies:
+                actualStatus = ActualTBSStatus.AllyMultiTargetSkill;
+                //StartCoroutine(CallAllyTargetMenu());
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Skill With Ally Targets
     private IEnumerator CallAllyTargetMenu()
     {
         turnIndicator.text = "Selecione um alvo da skill";
@@ -326,47 +376,41 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().ShowAllyTarget(0);
     }
 
-    private void CheckingSkillDescription() 
-    { 
-        for (int i = 0; i < skillMenuButtons.Length; i++)
-        {
-            if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skillMenuButtons[i].gameObject))
-            {
-                if (i == 0)
-                {
-                    textSkillDescription.text = "";
-                }
-                if (i != (skillButtonIndex))
-                {
-                    skillButtonIndex = i;
-                    if (i != 0) { textSkillDescription.text = actualCharacter.skillList[i - 1].description; } 
-                }
-            }
-        }
-    }
+    // Skill With Multi Enemies Targets
 
-    public IEnumerator ExecutingSkill(int skillIndex)
+    private IEnumerator CallAllEnemiesTargetMenu()
     {
-        HidingSkillMenu();
-        actualStatus = ActualTBSStatus.Skill;
-        yield return new WaitForSeconds(0.5f);
-        selectedSkill = skillIndex - 1;
-        // checar antes qual o input da skill
-        switch(actualCharacter.skillList[selectedSkill].affectType)
+        
+        turnIndicator.text = "A skill marca todos os alvos";
+
+        yield return new WaitForSeconds(1.0f);
+        for (int i = 0; i < enemiesSpotted.Length; i++)
         {
-            case AffectType.EnemyTarget:
-                actualStatus = ActualTBSStatus.EnemySingleTargetSkill;
-                StartCoroutine(CallEnemyTargetMenu());
-                break;
-            case AffectType.AllyTarget:
-                actualStatus = ActualTBSStatus.AllySingleTargetSkill;
-                StartCoroutine(CallAllyTargetMenu());
-                break;
-            default:
-                break;
+            enemiesSpotted[i].gameObject.SetActive(true);
         }
+        StartCoroutine(SelectAllAttackTargetMenu());
     }
 
+    private IEnumerator SelectAllAttackTargetMenu()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(enemiesSpotted[0].gameObject);
+        CombatCharManager.GetInstance().ShowAllEnemiesTarget();
+    }
+
+    private IEnumerator ApllyingEnemyMultiTargetSkill()
+    {
+        CombatCharManager.GetInstance().ShowEnemyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, 0, true);
+        turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingEnemyTargetMenu();
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
 
     // Attacking Methods
     private IEnumerator CallEnemyTargetMenu()
@@ -408,6 +452,10 @@ public class CombatUIManager : MonoBehaviour
         }
         else if (actualStatus == ActualTBSStatus.EnemySingleTargetSkill) {
             StartCoroutine(ApllyingEnemySingleTargetSkill(attackTargetMenuButtonIndex));
+        }
+        else if (actualStatus == ActualTBSStatus.EnemyMultiTargetSkill)
+        {
+            StartCoroutine(ApllyingEnemyMultiTargetSkill());
         }
     }
 

@@ -50,7 +50,12 @@ public class SkillManager : MonoBehaviour
     }
     private void NailBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
-        CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
+        int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
+        for (int i = 0; i < numberOfEnemies; i++)
+        {
+            CombatCharManager.GetInstance().LoseHP(charInfo, 30, i, isEnemy);
+        }
+        
     }
 
     private void EnergizedHammer(CharacterInfo charInfo, int targetIndex, bool isEnemy)

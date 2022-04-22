@@ -220,12 +220,28 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    public void ShowAllEnemiesTarget()
+    {
+        for (int i = 0; i < enemiesTargets.Length; i++)
+        {
+             enemiesTargets[i].SetActive(true); 
+        }
+    }
+
     public void ShowAllyTarget(int targetIndex)
     {
         for (int i = 0; i < heroesTargets.Length; i++)
         {
             if (i == targetIndex) { heroesTargets[i].SetActive(true); }
             else { heroesTargets[i].SetActive(false); }
+        }
+    }
+
+    public void ShowAllAlliesTarget()
+    {
+        for (int i = 0; i < heroesTargets.Length; i++)
+        {
+            heroesTargets[i].SetActive(true);
         }
     }
 
