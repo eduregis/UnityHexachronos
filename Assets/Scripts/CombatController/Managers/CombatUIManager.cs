@@ -299,7 +299,7 @@ public class CombatUIManager : MonoBehaviour
                 break;
             case AffectType.AllAllies:
                 actualStatus = ActualTBSStatus.AllyMultiTargetSkill;
-                //StartCoroutine(CallAllyTargetMenu());
+                StartCoroutine(CallAllAlliesTargetMenu());
                 break;
             default:
                 break;
@@ -335,6 +335,10 @@ public class CombatUIManager : MonoBehaviour
         if (actualStatus == ActualTBSStatus.AllySingleTargetSkill)
         {
             StartCoroutine(ApllyingAllySingleTargetSkill(allyTargetMenuButtonIndex));
+        }
+        else if (actualStatus == ActualTBSStatus.AllyMultiTargetSkill)
+        {
+            StartCoroutine(ApllyingAlliesMultiTargetSkill());
         }
     }
 
@@ -380,7 +384,6 @@ public class CombatUIManager : MonoBehaviour
 
     private IEnumerator CallAllEnemiesTargetMenu()
     {
-        
         turnIndicator.text = "A skill marca todos os alvos";
 
         yield return new WaitForSeconds(1.0f);
@@ -407,6 +410,41 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingEnemyTargetMenu();
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
+
+    // Skill With Multi Allies Targets
+
+    private IEnumerator CallAllAlliesTargetMenu()
+    {
+        turnIndicator.text = "A skill marca todos os alvos";
+
+        yield return new WaitForSeconds(1.0f);
+        for (int i = 0; i < heroesSpotted.Length; i++)
+        {
+            heroesSpotted[i].gameObject.SetActive(true);
+        }
+        StartCoroutine(SelectAllAlliesTargetMenu());
+    }
+
+    private IEnumerator SelectAllAlliesTargetMenu()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(heroesSpotted[0].gameObject);
+        CombatCharManager.GetInstance().ShowAllAlliesTarget();
+    }
+
+    private IEnumerator ApllyingAlliesMultiTargetSkill()
+    {
+        CombatCharManager.GetInstance().ShowAllyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, 0, false);
+        turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingAllyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
