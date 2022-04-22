@@ -91,12 +91,7 @@ public class CombatUIManager : MonoBehaviour
 
     public void GetCurrentCharacter()
     {
-
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
-
-
-
-        Debug.Log(actualCharacter.char_name);
     }
 
     public IEnumerator UpdateCurrentCharacter()
@@ -106,6 +101,30 @@ public class CombatUIManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         GetCurrentCharacter();
+
+        TranslateAllySpotted();
+    }
+
+    private void TranslateAllySpotted()
+    {
+        Debug.Log(actualCharacter.char_name);
+
+        int numberOfAllies = CombatCharManager.GetInstance().GetNumberOfAllies();
+
+        Vector3 pos_0 = heroesSpotted[0].transform.position;
+        Vector3 pos_1 = heroesSpotted[1].transform.position;
+        Vector3 pos_2 = heroesSpotted[2].transform.position;
+
+        if (numberOfAllies == 3)
+        {
+            heroesSpotted[0].transform.position = pos_2;
+            heroesSpotted[1].transform.position = pos_0;
+            heroesSpotted[2].transform.position = pos_1;
+        } else if (numberOfAllies == 2)
+        {
+            heroesSpotted[1].transform.position = pos_0;
+            heroesSpotted[0].transform.position = pos_1;
+        }
     }
 
     // Update is called once per frame

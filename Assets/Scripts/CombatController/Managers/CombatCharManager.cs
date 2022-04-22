@@ -41,7 +41,7 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private Image[] heroesPortraits;
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
-    [SerializeField] private Image[] heroesEmptyLifebars;
+    [SerializeField] private Image[] heroesEnergybars;
     [SerializeField] private Image[] enemiesPortraits;
     [SerializeField] private Image[] enemiesFullLifebars;
     [SerializeField] private Image[] enemiesDamageLifebars;
@@ -98,7 +98,7 @@ public class CombatCharManager : MonoBehaviour
     {
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
@@ -144,7 +144,7 @@ public class CombatCharManager : MonoBehaviour
             heroesTargets[i].SetActive(false);
             heroesDamageLifebars[i].enabled = false;
             heroesFullLifebars[i].enabled = false;
-            heroesEmptyLifebars[i].enabled = false;
+            heroesEnergybars[i].enabled = false;
             heroesPortraits[i].enabled = false;
         }
         for (int i = enemies.Count; i < enemiesSprites.Length; i++)
