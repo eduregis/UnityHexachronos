@@ -4,29 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class CharacterInfo
-{
-    public string char_name;
-    // basic status
-    public int strength;
-    public int intelligence;
-    public int vitality;
-    public int technique;
-    public int agility;
-    public int luck;
-    public int level;
-    // advanced status
-    public int life;
-    public int maxLife;
-    public int damage;
-    public int hitRate;
-    public int evasionRate;
-    public int APSlots;
-    public int critRate;
-    public int critDamage;
-
-    public List<CharacterSkill> skillList;
-}
 public class CombatCharManager : MonoBehaviour
 {
 
@@ -37,10 +14,11 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private GameObject[] enemiesTargets;
 
     [Header("CharacterLifebars")]
+    [SerializeField] private GameObject[] heroesHUD;
     [SerializeField] private Image[] heroesPortraits;
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
-    [SerializeField] private Image[] heroesEmptyLifebars;
+    [SerializeField] private Image[] heroesEnergybars;
     [SerializeField] private Image[] enemiesPortraits;
     [SerializeField] private Image[] enemiesFullLifebars;
     [SerializeField] private Image[] enemiesDamageLifebars;
@@ -58,12 +36,16 @@ public class CombatCharManager : MonoBehaviour
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
     private float rotateCharTimer = 0;
+    private float hudAnimateTimer = 0;
 
     Vector3 pos1;
     Vector3 pos2;
     Vector3 pos3;
-    Vector3 scaleMain = new Vector3(90,90,1);
-    Vector3 scaleNormal = new Vector3(80,80,1);
+    Vector3 scaleMain = new Vector3(120,120,1);
+    Vector3 scaleNormal = new Vector3(100,100,1);
+
+    Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
+    Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);
     private void Awake()
     {
         if (instance != null)
@@ -93,7 +75,7 @@ public class CombatCharManager : MonoBehaviour
     {
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
@@ -139,7 +121,7 @@ public class CombatCharManager : MonoBehaviour
             heroesTargets[i].SetActive(false);
             heroesDamageLifebars[i].enabled = false;
             heroesFullLifebars[i].enabled = false;
-            heroesEmptyLifebars[i].enabled = false;
+            heroesEnergybars[i].enabled = false;
             heroesPortraits[i].enabled = false;
         }
         for (int i = enemies.Count; i < enemiesSprites.Length; i++)
@@ -168,6 +150,7 @@ public class CombatCharManager : MonoBehaviour
 
     public CharacterInfo GetCurrentCharacter()
     {
+        hudAnimateTimer = 1f;
         return heroes[heroesIndex];
     }
 
@@ -207,6 +190,7 @@ public class CombatCharManager : MonoBehaviour
     void Update()
     {
         MovingSpriteCharsIfNeeded();
+        AnimatingHUDIfNeeded();
         CheckingDamageBars();
         CheckingGainBars();
     }
@@ -296,7 +280,7 @@ public class CombatCharManager : MonoBehaviour
             if ((hitRate < attackChar.hitRate) || (evasionRate > attackChar.evasionRate)) {
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
-                enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
+                enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
             } else
@@ -309,7 +293,7 @@ public class CombatCharManager : MonoBehaviour
             {
                 if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
                 else { heroes[index].life -= damage; }
-                heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)enemies[index].maxLife), 0, 1f);
+                heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + heroes[index].char_name);
             }
@@ -318,6 +302,11 @@ public class CombatCharManager : MonoBehaviour
                 Debug.Log("Errou");
             }
         }
+    }
+
+    public float adjustHexagonBarPercentage(float actualValue, float maxValue)
+    {
+        return (actualValue / maxValue);
     }
 
     public void MovingSpriteCharsIfNeeded()
@@ -355,13 +344,31 @@ public class CombatCharManager : MonoBehaviour
                 }
             }
         }
+    }
 
+    public void AnimatingHUDIfNeeded()
+    {
+        if (hudAnimateTimer > 0)
+        {
+            hudAnimateTimer -= Time.deltaTime;
+            
+            for (int i = 0; i < heroesHUD.Length; i++)
+            {
+                if (i == heroesIndex)
+                {
+                    heroesHUD[i].transform.localScale = Vector3.Lerp(heroesHUD[i].transform.localScale, HUDMain, 8f * Time.deltaTime);
+                }
+                else
+                {
+                    heroesHUD[i].transform.localScale = Vector3.Lerp(heroesHUD[i].transform.localScale, HUDNormal, 8f * Time.deltaTime);
+                }
+            }
+        }
     }
     public void CheckingDamageBars()
     {
         if (damageLifeShrinkTimer > 0)
         {
-            Debug.Log("aaaa");
             damageLifeShrinkTimer -= Time.deltaTime;
 
             for (var i = 0; i < enemies.Count; i++)
@@ -385,7 +392,6 @@ public class CombatCharManager : MonoBehaviour
     {
         if (gainLifeShrinkTimer > 0)
         {
-            Debug.Log("bbbb");
             gainLifeShrinkTimer -= Time.deltaTime;
 
             for (var i = 0; i < enemies.Count; i++)
