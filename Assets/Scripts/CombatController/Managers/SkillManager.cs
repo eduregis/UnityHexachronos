@@ -36,6 +36,9 @@ public class SkillManager : MonoBehaviour
             case Skill.EnergizedHammer:
                 EnergizedHammer(charInfo, targetIndex, isEnemy);
                 break;
+            case Skill.SmokeBomb:
+                SmokeBomb(charInfo, targetIndex, isEnemy);
+                break;
         }
     }
 
@@ -61,6 +64,16 @@ public class SkillManager : MonoBehaviour
     private void EnergizedHammer(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
+    }
+
+    private void SmokeBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int numberOfEnemies = CombatCharManager.GetInstance().heroes.Count;
+        for (int i = 0; i < numberOfEnemies; i++)
+        {
+            CombatCharManager.GetInstance().GainHP(20, i, isEnemy);
+        }
+        
     }
 }
 
