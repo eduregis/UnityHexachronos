@@ -55,7 +55,8 @@ public class CombatCharManager : MonoBehaviour
     private static CombatCharManager instance;
 
     // Animation control variables
-    private float damageLifeShrinkTimer = 1f;
+    private float damageLifeShrinkTimer = 0;
+    private float gainLifeShrinkTimer = 0;
     private float rotateCharTimer = 0;
 
     Vector3 pos1;
@@ -96,7 +97,7 @@ public class CombatCharManager : MonoBehaviour
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
-       // CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
+        //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
     }
     private void CreateCharacter(BasicCharacterStats basicStats, bool isHero)
     {
@@ -207,6 +208,7 @@ public class CombatCharManager : MonoBehaviour
     {
         MovingSpriteCharsIfNeeded();
         CheckingDamageBars();
+        CheckingGainBars();
     }
 
     public void ShowEnemyTarget(int targetIndex)
@@ -217,7 +219,16 @@ public class CombatCharManager : MonoBehaviour
             else { enemiesTargets[i].SetActive(false); }
         }
     }
-    
+
+    public void ShowAllyTarget(int targetIndex)
+    {
+        for (int i = 0; i < heroesTargets.Length; i++)
+        {
+            if (i == targetIndex) { heroesTargets[i].SetActive(true); }
+            else { heroesTargets[i].SetActive(false); }
+        }
+    }
+
     public void HideAllTargets()
     {
         for (int i = 0; i < enemiesTargets.Length; i++)
@@ -238,15 +249,15 @@ public class CombatCharManager : MonoBehaviour
         {
             if (enemies[index].life + hpGain > enemies[index].maxLife) { enemies[index].life = enemies[index].maxLife; }
             else { enemies[index].life += hpGain; }
-            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
-            damageLifeShrinkTimer = 1f;
+            enemiesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
+            gainLifeShrinkTimer = 1f;
         }
         else
         {
             if (heroes[index].life + hpGain > heroes[index].maxLife) { heroes[index].life = heroes[index].maxLife; }
             else { heroes[index].life += hpGain; }
-            heroesFullLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)heroes[index].maxLife), 0, 1f);
-            damageLifeShrinkTimer = 1f;
+            heroesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)heroes[index].maxLife), 0, 1f);
+            gainLifeShrinkTimer = 1f;
         }
     }
     public void LoseHP(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
@@ -334,9 +345,9 @@ public class CombatCharManager : MonoBehaviour
     {
         if (damageLifeShrinkTimer > 0)
         {
+            Debug.Log("aaaa");
             damageLifeShrinkTimer -= Time.deltaTime;
-        } else
-        {
+
             for (var i = 0; i < enemies.Count; i++)
             {
                 if (enemiesFullLifebars[i].fillAmount < enemiesDamageLifebars[i].fillAmount)
@@ -351,7 +362,30 @@ public class CombatCharManager : MonoBehaviour
                     heroesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
                 }
             }
+        } 
+    }
+
+    public void CheckingGainBars()
+    {
+        if (gainLifeShrinkTimer > 0)
+        {
+            Debug.Log("bbbb");
+            gainLifeShrinkTimer -= Time.deltaTime;
+
+            for (var i = 0; i < enemies.Count; i++)
+            {
+                if (enemiesFullLifebars[i].fillAmount < enemiesDamageLifebars[i].fillAmount)
+                {
+                    enemiesFullLifebars[i].fillAmount += 0.5f * Time.deltaTime;
+                }
+            }
+            for (var i = 0; i < heroes.Count; i++)
+            {
+                if (heroesFullLifebars[i].fillAmount < heroesDamageLifebars[i].fillAmount)
+                {
+                    heroesFullLifebars[i].fillAmount += 0.5f * Time.deltaTime;
+                }
+            }
         }
-        
     }
 }

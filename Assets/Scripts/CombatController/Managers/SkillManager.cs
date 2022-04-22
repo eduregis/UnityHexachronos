@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 
 public class SkillManager : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class SkillManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("Found more than one CombatUIManager in the scene");
+            Debug.LogWarning("Found more than one SkillManager in the scene");
         }
         instance = this;
     }
@@ -18,7 +20,7 @@ public class SkillManager : MonoBehaviour
         return instance;
     }
 
-    public void TriggerringSkill(Skill skill_id, CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    public void TriggeringSkill(Skill skill_id, CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         switch (skill_id)
         {
@@ -26,7 +28,7 @@ public class SkillManager : MonoBehaviour
                 Jab(charInfo, targetIndex, isEnemy);
                 break;
             case Skill.HealingInjection:
-               HealingInjection(charInfo, targetIndex, isEnemy);
+                HealingInjection(charInfo, targetIndex, isEnemy);
                 break;
             case Skill.NailBomb:
                 NailBomb(charInfo, targetIndex, isEnemy);

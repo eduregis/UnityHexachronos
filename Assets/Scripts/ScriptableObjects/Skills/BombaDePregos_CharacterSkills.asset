@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
   m_Name: BombaDePregos_CharacterSkills
   m_EditorClassIdentifier: 
-  sequence: 040000000300000004000000
+  skill_id: 1
   skill_name: Bomba de Pregos
   description: Um explosivo dentro de uma lata de pregos, acerta todos os inimigos.
   cost: 40

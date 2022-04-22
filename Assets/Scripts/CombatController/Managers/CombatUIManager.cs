@@ -24,6 +24,7 @@ public class CombatUIManager : MonoBehaviour
 {
     [Header("Main Menu UI")]
     [SerializeField] private GameObject[] mainMenuButtons;
+    [SerializeField] private Image charPortrait;
 
     [Header("Skill Menu UI")]
     [SerializeField] private GameObject[] skillMenuButtons;
@@ -32,6 +33,9 @@ public class CombatUIManager : MonoBehaviour
 
     [Header("Attack Target Menu UI")]
     [SerializeField] private GameObject[] enemiesSpotted;
+
+    [Header("Allies Target Menu UI")]
+    [SerializeField] private GameObject[] heroesSpotted;
 
     [Header("Turn Indicator")]
     [SerializeField] private TextMeshProUGUI turnIndicator;
@@ -90,6 +94,8 @@ public class CombatUIManager : MonoBehaviour
 
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
 
+
+
         Debug.Log(actualCharacter.char_name);
     }
 
@@ -113,10 +119,13 @@ public class CombatUIManager : MonoBehaviour
                 CheckingSkillDescription();
                 break;
             case ActualTBSStatus.Attack:
-                CheckingTarget();
+                CheckingEnemyTarget();
                 break;
             case ActualTBSStatus.EnemySingleTargetSkill:
-                CheckingTarget();
+                CheckingEnemyTarget();
+                break;
+            case ActualTBSStatus.AllySingleTargetSkill:
+                CheckingAllyTarget();
                 break;
             case ActualTBSStatus.EnemiesTurn:
                 CheckingIsPlayerTurn();
@@ -246,8 +255,75 @@ public class CombatUIManager : MonoBehaviour
             actualStatus = ActualTBSStatus.Skill;
             StartCoroutine(ExecutingSkill(skillMenuButtonIndex));
         }
+    }
 
+    private IEnumerator CallAllyTargetMenu()
+    {
+        turnIndicator.text = "Selecione um alvo da skill";
+        yield return new WaitForSeconds(1.0f);
+        for (int i = 0; i < numberOfAllies; i++)
+        {
+            heroesSpotted[i].gameObject.SetActive(true);
+        }
+        for (int i = numberOfAllies; i < heroesSpotted.Length; i++)
+        {
+            heroesSpotted[i].gameObject.SetActive(false);
+        }
+        StartCoroutine(SelectAllyTargetMenuFirstOption());
+    }
 
+    private void HidingAllyTargetMenu()
+    {
+        for (int i = 0; i < heroesSpotted.Length; i++)
+        {
+            heroesSpotted[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void ChooseAllyTargetMenuButton(int allyTargetMenuButtonIndex)
+    {
+        if (actualStatus == ActualTBSStatus.AllySingleTargetSkill)
+        {
+            StartCoroutine(ApllyingAllySingleTargetSkill(allyTargetMenuButtonIndex));
+        }
+    }
+
+    private IEnumerator ApllyingAllySingleTargetSkill(int allyTargetMenuButtonIndex)
+    {
+        CombatCharManager.GetInstance().ShowAllyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, allyTargetMenuButtonIndex, false);
+        turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingAllyTargetMenu();
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
+
+    private void CheckingAllyTarget()
+    {
+        for (int i = 0; i < heroesSpotted.Length; i++)
+        {
+            if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, heroesSpotted[i].gameObject))
+            {
+                if (i != attackTargetIndex)
+                {
+                    attackTargetIndex = i;
+                    CombatCharManager.GetInstance().ShowAllyTarget(i);
+                }
+            }
+        }
+    }
+
+    private IEnumerator SelectAllyTargetMenuFirstOption()
+    {
+        // Event System requires we clear it first, then wait
+        // for at least one frame before we set the current selected object.
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(heroesSpotted[0].gameObject);
+        CombatCharManager.GetInstance().ShowAllyTarget(0);
     }
 
     private void CheckingSkillDescription() 
@@ -282,6 +358,10 @@ public class CombatUIManager : MonoBehaviour
                 actualStatus = ActualTBSStatus.EnemySingleTargetSkill;
                 StartCoroutine(CallEnemyTargetMenu());
                 break;
+            case AffectType.AllyTarget:
+                actualStatus = ActualTBSStatus.AllySingleTargetSkill;
+                StartCoroutine(CallAllyTargetMenu());
+                break;
             default:
                 break;
         }
@@ -312,7 +392,7 @@ public class CombatUIManager : MonoBehaviour
         StartCoroutine(SelectAttackTargetMenuFirstOption());
     }
 
-    private void HidingAttackTargetMenu()
+    private void HidingEnemyTargetMenu()
     {
         for (int i = 0; i < enemiesSpotted.Length; i++)
         {
@@ -339,7 +419,7 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
-        HidingAttackTargetMenu();
+        HidingEnemyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
@@ -349,16 +429,16 @@ public class CombatUIManager : MonoBehaviour
     {
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
-        SkillManager.GetInstance().TriggerringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
+        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
-        HidingAttackTargetMenu();
+        HidingEnemyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
     }
 
-    private void CheckingTarget()
+    private void CheckingEnemyTarget()
     {
         for (int i = 0; i < enemiesSpotted.Length; i++)
         {
@@ -416,9 +496,9 @@ public class CombatUIManager : MonoBehaviour
             int targetIndex = rnd.Next(0, heroes.Count - 1);
 
             CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.5f);
             turnIndicator.text = "";
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(1.5f);
         }
         CombatCharManager.GetInstance().SetPlayerTurn();
     }
