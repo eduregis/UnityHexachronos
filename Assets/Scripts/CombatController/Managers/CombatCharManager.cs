@@ -296,15 +296,21 @@ public class CombatCharManager : MonoBehaviour
         int critRate = rnd.Next(1, 101);
 
         int damage = basicDamage;
+        // Setting Buffs and Debuffs
+        damage = GenericBuffApplier(attackChar, damage, BuffType.DamageUp, BuffType.DamageDown);
+        int attackCritRate = GenericBuffApplier(attackChar, attackChar.critRate, BuffType.CritRateUp, BuffType.CritRateDown);
+        int attackCritDamage = GenericBuffApplier(attackChar, attackChar.critDamage, BuffType.CritDamageUp, BuffType.CritDamageDown);
+        int attackHitRate = GenericBuffApplier(attackChar, attackChar.hitRate, BuffType.HitRateUp, BuffType.HitRateDown);
 
-        if (critRate < attackChar.critRate)
+        if (critRate < attackCritRate)
         {
-            damage = damage + (damage * (int)((float)attackChar.critDamage) / 100);
+            damage = damage + (damage * (int)((float)attackCritDamage) / 100);
         }
-
         if (isEnemy)
         {
-            if ((hitRate < attackChar.hitRate) || (evasionRate > attackChar.evasionRate)) {
+            int defenderEvasionRate = GenericBuffApplier(enemies[index], enemies[index].evasionRate, BuffType.EvasionUp, BuffType.EvasionDown);
+            // TODO: Aplicar defesa e buffs
+            if ((hitRate < attackHitRate) || (evasionRate > defenderEvasionRate)) {
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
@@ -316,7 +322,9 @@ public class CombatCharManager : MonoBehaviour
             }
         } else
         {
-            if ((hitRate < attackChar.hitRate) || (evasionRate > attackChar.evasionRate))
+            int defenderEvasionRate = GenericBuffApplier(heroes[index], heroes[index].evasionRate, BuffType.EvasionUp, BuffType.EvasionDown);
+            // TODO: Aplicar defesa e buffs
+            if ((hitRate < attackHitRate) || (evasionRate > defenderEvasionRate))
             {
                 if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
                 else { heroes[index].life -= damage; }
@@ -331,15 +339,53 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    // Buff Appliers
+    private int GenericBuffApplier(CharacterInfo attackChar, int initialValue, BuffType buffTypeUp, BuffType buffTypeDown)
+    {
+        float finalValue = (float)initialValue;
+
+        foreach(Buff buff in attackChar.buffList)
+        {
+            if (buff.buffType == buffTypeUp)
+            {
+                if (buff.modifier == BuffModifier.Multiplier)
+                {
+                    finalValue *= buff.value;
+                } else if (buff.modifier == BuffModifier.Constant)
+                {
+                    finalValue += buff.value;
+                }
+            }
+            if (buff.buffType == buffTypeDown)
+            {
+                if (buff.modifier == BuffModifier.Multiplier)
+                {
+                    finalValue /= buff.value;
+                }
+                else if (buff.modifier == BuffModifier.Constant)
+                {
+                    finalValue -= buff.value;
+                }
+            }
+        }
+        return (int)finalValue;
+    }
+
     public void SettingBuff(Buff buff, int index, bool isEnemy)
     {
         if (isEnemy)
         {
-            enemies[index].buffList.Add(buff);
+            if(enemies[index].buffList.Count < 4)
+            {
+                enemies[index].buffList.Add(buff);
+            }
         }
         else
         {
-            heroes[index].buffList.Add(buff);
+            if (heroes[index].buffList.Count < 4)
+            {
+                heroes[index].buffList.Add(buff);
+            }   
         }
         isUpdatingBuffs = true;
     }

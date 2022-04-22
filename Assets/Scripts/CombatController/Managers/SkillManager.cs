@@ -51,8 +51,9 @@ public class SkillManager : MonoBehaviour
     {
         CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
         Buff buff = new Buff();
-        buff.value = 2;
+        buff.value = 2f;
         buff.buffType = BuffType.DamageUp;
+        buff.modifier = BuffModifier.Constant;
         buff.duration = 1;
 
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);

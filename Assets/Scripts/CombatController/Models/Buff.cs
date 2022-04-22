@@ -18,9 +18,16 @@ public enum BuffType
     HitRateUp,
     HitRateDown
 }
+
+public enum BuffModifier
+{
+    Multiplier,
+    Constant
+}
 public class Buff 
 {
-    public int value;
+    public float value;
     public BuffType buffType;
+    public BuffModifier modifier;
     public int duration;
 }
