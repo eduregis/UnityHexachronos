@@ -8,7 +8,8 @@ public enum Skill
     Jab,
     NailBomb,
     HealingInjection,
-    EnergizedHammer
+    EnergizedHammer,
+    SmokeBomb
 }
 
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]
