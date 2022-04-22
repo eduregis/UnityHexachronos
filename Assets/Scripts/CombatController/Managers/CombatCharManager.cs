@@ -37,6 +37,7 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private GameObject[] enemiesTargets;
 
     [Header("CharacterLifebars")]
+    [SerializeField] private GameObject[] heroesHUD;
     [SerializeField] private Image[] heroesPortraits;
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
@@ -58,12 +59,16 @@ public class CombatCharManager : MonoBehaviour
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
     private float rotateCharTimer = 0;
+    private float hudAnimateTimer = 0;
 
     Vector3 pos1;
     Vector3 pos2;
     Vector3 pos3;
-    Vector3 scaleMain = new Vector3(90,90,1);
-    Vector3 scaleNormal = new Vector3(80,80,1);
+    Vector3 scaleMain = new Vector3(120,120,1);
+    Vector3 scaleNormal = new Vector3(100,100,1);
+
+    Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
+    Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);
     private void Awake()
     {
         if (instance != null)
@@ -168,6 +173,7 @@ public class CombatCharManager : MonoBehaviour
 
     public CharacterInfo GetCurrentCharacter()
     {
+        hudAnimateTimer = 1f;
         return heroes[heroesIndex];
     }
 
@@ -207,6 +213,7 @@ public class CombatCharManager : MonoBehaviour
     void Update()
     {
         MovingSpriteCharsIfNeeded();
+        AnimatingHUDIfNeeded();
         CheckingDamageBars();
         CheckingGainBars();
     }
@@ -355,7 +362,26 @@ public class CombatCharManager : MonoBehaviour
                 }
             }
         }
+    }
 
+    public void AnimatingHUDIfNeeded()
+    {
+        if (hudAnimateTimer > 0)
+        {
+            hudAnimateTimer -= Time.deltaTime;
+            
+            for (int i = 0; i < heroesHUD.Length; i++)
+            {
+                if (i == heroesIndex)
+                {
+                    heroesHUD[i].transform.localScale = Vector3.Lerp(heroesHUD[i].transform.localScale, HUDMain, 8f * Time.deltaTime);
+                }
+                else
+                {
+                    heroesHUD[i].transform.localScale = Vector3.Lerp(heroesHUD[i].transform.localScale, HUDNormal, 8f * Time.deltaTime);
+                }
+            }
+        }
     }
     public void CheckingDamageBars()
     {
