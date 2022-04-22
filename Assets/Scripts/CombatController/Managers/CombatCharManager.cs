@@ -37,6 +37,7 @@ public class CombatCharManager : MonoBehaviour
     private float gainLifeShrinkTimer = 0;
     private float rotateCharTimer = 0;
     private float hudAnimateTimer = 0;
+    private bool isUpdatingBuffs = false;
 
     Vector3 pos1;
     Vector3 pos2;
@@ -95,6 +96,7 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.luck = basicStats.luck;
         characterInfo.level = basicStats.level;
         characterInfo.skillList = basicStats.skills;
+        characterInfo.buffList = new List<Buff>();
 
         characterInfo.maxLife = ((basicStats.vitality + basicStats.level ) * 5);
         characterInfo.life = characterInfo.maxLife;
@@ -192,6 +194,10 @@ public class CombatCharManager : MonoBehaviour
         AnimatingHUDIfNeeded();
         CheckingDamageBars();
         CheckingGainBars();
+        if (isUpdatingBuffs)
+        {
+            UpdatingBuffsUI();
+        }
     }
 
     public void ShowEnemyTarget(int targetIndex)
@@ -303,6 +309,19 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    public void SettingBuff(Buff buff, int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            enemies[index].buffList.Add(buff);
+        }
+        else
+        {
+            heroes[index].buffList.Add(buff);
+        }
+        isUpdatingBuffs = true;
+    }
+
     public float adjustHexagonBarPercentage(float actualValue, float maxValue)
     {
         return (actualValue / maxValue);
@@ -408,5 +427,15 @@ public class CombatCharManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void UpdatingBuffsUI()
+    {
+        for(int i = 0; i < heroes.Count; i++)
+        {
+            BuffIconManager.GetInstance().UpdateUI(heroes[i], i);
+        }
+        // TODO: Colocar para atualizar buff de inimigos tb
+        isUpdatingBuffs = false;
     }
 }

@@ -20,7 +20,7 @@ public enum BuffType
 }
 public class Buff 
 {
-    int value;
-    BuffType type;
-    int duration;
+    public int value;
+    public BuffType buffType;
+    public int duration;
 }
