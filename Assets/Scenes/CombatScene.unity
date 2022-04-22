@@ -2701,6 +2701,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61e60df04162d0e439ccd845635b0fee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Luca_Portrait: {fileID: 21300000, guid: aba781617aeaf874ab39d7f417193e16, type: 3}
+  Sam_Portrait: {fileID: 21300000, guid: 45aa78e52d2fc0541a94b26f07026dcc, type: 3}
+  Borell_Portrait: {fileID: 21300000, guid: 87937fcf879effd47bbafd4d7a840f14, type: 3}
+  BasicSoldier_Portrait: {fileID: 21300000, guid: 8ba0a07a3a95e1f4c915859c2b3a0bda, type: 3}
 --- !u!1 &660182467
 GameObject:
   m_ObjectHideFlags: 0

@@ -101,7 +101,6 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.damage = (basicStats.strength + (basicStats.technique / 2) + (basicStats.level / 5));
         characterInfo.hitRate = (50 + basicStats.technique + (basicStats.agility / 2) + (basicStats.luck / 4));
         characterInfo.evasionRate = ((basicStats.agility / 3) + (basicStats.luck / 3) + (basicStats.intelligence / 3));
-        characterInfo.APSlots = ((basicStats.technique / 5) + (basicStats.level / 7) - 1);
         characterInfo.critRate = (5 + (basicStats.luck / 2));
         characterInfo.critDamage = 50;
 
