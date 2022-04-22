@@ -138,8 +138,6 @@ public class CombatCharManager : MonoBehaviour
 
     public void RotateCharacters()
     {
-        ;
-
         pos1 = heroesSprites[0].transform.position;
         pos2 = heroesSprites[1].transform.position;
         pos3 = heroesSprites[2].transform.position;
@@ -166,6 +164,30 @@ public class CombatCharManager : MonoBehaviour
             playerTurn = true;
             heroesIndex++;
         }
+
+        BuffListIterator();
+    }
+
+    public void BuffListIterator()
+    {
+        List<int> removedIndexes = new List<int>();
+
+        for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)
+        {
+            heroes[heroesIndex].buffList[i].duration -= 1;
+
+            if (heroes[heroesIndex].buffList[i].duration == -1)
+            {
+                removedIndexes.Add(i);
+            }
+        }
+
+        for (int i = 0; i < removedIndexes.Count; i++)
+        {
+            heroes[heroesIndex].buffList.RemoveAt(i);
+        }
+
+        isUpdatingBuffs = true;
     }
     
     public bool IsPlayerTurn()

@@ -164,6 +164,7 @@ public class CombatUIManager : MonoBehaviour
             turnIndicator.text = "Menu Principal";
 
             yield return new WaitForSeconds(1.0f);
+
             for (int i = 0; i < mainMenuButtons.Length; i++)
             {
                 mainMenuButtons[i].gameObject.SetActive(true);

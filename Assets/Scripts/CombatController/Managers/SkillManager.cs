@@ -53,7 +53,7 @@ public class SkillManager : MonoBehaviour
         Buff buff = new Buff();
         buff.value = 2;
         buff.buffType = BuffType.DamageUp;
-        buff.duration = 2;
+        buff.duration = 1;
 
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
     }
