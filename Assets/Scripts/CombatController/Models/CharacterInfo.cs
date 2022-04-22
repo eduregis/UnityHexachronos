@@ -19,9 +19,9 @@ public class CharacterInfo
     public int damage;
     public int hitRate;
     public int evasionRate;
-    public int APSlots;
     public int critRate;
     public int critDamage;
 
     public List<CharacterSkill> skillList;
+    public List<Buff> buffList;
 }

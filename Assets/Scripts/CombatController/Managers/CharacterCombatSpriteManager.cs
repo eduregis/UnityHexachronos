@@ -7,6 +7,7 @@ public class CharacterCombatSpriteManager : MonoBehaviour
 {
     private static CharacterCombatSpriteManager instance;
 
+    [Header("CharacterPortraits")]
     public Sprite Luca_Portrait;
     public Sprite Sam_Portrait;
     public Sprite Borell_Portrait;

@@ -50,6 +50,13 @@ public class SkillManager : MonoBehaviour
     private void HealingInjection(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
+        Buff buff = new Buff();
+        buff.value = 2f;
+        buff.buffType = BuffType.DamageUp;
+        buff.modifier = BuffModifier.Constant;
+        buff.duration = 1;
+
+        CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
     }
 
     private void NailBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
