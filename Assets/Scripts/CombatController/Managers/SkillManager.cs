@@ -42,6 +42,16 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    private Buff CreateBuff(float value, BuffType buffType, BuffModifier modifier, int duration)
+    {
+        Buff buff = new Buff();
+        buff.value = value;
+        buff.buffType = buffType;
+        buff.modifier = modifier;
+        buff.duration = duration;
+        return buff;
+    }
+
     private void Jab(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
@@ -50,11 +60,7 @@ public class SkillManager : MonoBehaviour
     private void HealingInjection(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
-        Buff buff = new Buff();
-        buff.value = 2f;
-        buff.buffType = BuffType.DamageUp;
-        buff.modifier = BuffModifier.Constant;
-        buff.duration = 1;
+        Buff buff = CreateBuff(2f, BuffType.DamageUp, BuffModifier.Constant, 1);
 
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
     }

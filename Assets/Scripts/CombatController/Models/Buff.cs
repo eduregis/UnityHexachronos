@@ -16,7 +16,9 @@ public enum BuffType
     EvasionUp,
     EvasionDown,
     HitRateUp,
-    HitRateDown
+    HitRateDown,
+    Stunned,
+    Bleeding
 }
 
 public enum BuffModifier
