@@ -3720,6 +3720,8 @@ MonoBehaviour:
   hitRateDown: {fileID: 21300000, guid: ee4725788c153c848a069e0d405cbf82, type: 3}
   evasionUp: {fileID: 21300000, guid: cdbd5e320fe2bda4caa278acad671d31, type: 3}
   evasionDown: {fileID: 21300000, guid: b5cc7a536bacc234eb41bb5d8c29cd4c, type: 3}
+  stunned: {fileID: 21300000, guid: 4f7576512889ada438198b5b46b74579, type: 3}
+  bleeding: {fileID: 21300000, guid: c7f6e7e0b18470c478357d5d3a6dabdb, type: 3}
 --- !u!1 &791667228
 GameObject:
   m_ObjectHideFlags: 0

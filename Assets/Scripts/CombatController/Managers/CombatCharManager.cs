@@ -277,14 +277,14 @@ public class CombatCharManager : MonoBehaviour
             if (enemies[index].life + hpGain > enemies[index].maxLife) { enemies[index].life = enemies[index].maxLife; }
             else { enemies[index].life += hpGain; }
             enemiesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
-            gainLifeShrinkTimer = 1f;
+            gainLifeShrinkTimer = 1.5f;
         }
         else
         {
             if (heroes[index].life + hpGain > heroes[index].maxLife) { heroes[index].life = heroes[index].maxLife; }
             else { heroes[index].life += hpGain; }
             heroesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)heroes[index].maxLife), 0, 1f);
-            gainLifeShrinkTimer = 1f;
+            gainLifeShrinkTimer = 1.5f;
         }
     }
     public void LoseHP(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
@@ -314,7 +314,7 @@ public class CombatCharManager : MonoBehaviour
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
-                damageLifeShrinkTimer = 1f;
+                damageLifeShrinkTimer = 1.5f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
             } else
             {
@@ -329,7 +329,7 @@ public class CombatCharManager : MonoBehaviour
                 if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
                 else { heroes[index].life -= damage; }
                 heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
-                damageLifeShrinkTimer = 1f;
+                damageLifeShrinkTimer = 1.5f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + heroes[index].char_name);
             }
             else

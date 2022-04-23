@@ -24,7 +24,8 @@ public enum BuffType
 public enum BuffModifier
 {
     Multiplier,
-    Constant
+    Constant,
+    Status
 }
 public class Buff 
 {

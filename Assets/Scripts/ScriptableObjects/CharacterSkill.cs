@@ -5,6 +5,10 @@ using UnityEngine;
 
 public enum Skill
 {
+    TryToCatchMe,
+    DesencanaComIsso,
+    BehindYou,
+    LetsGetThisOverWith,
     Jab,
     NailBomb,
     HealingInjection,

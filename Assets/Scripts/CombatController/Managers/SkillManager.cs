@@ -24,6 +24,18 @@ public class SkillManager : MonoBehaviour
     {
         switch (skill_id)
         {
+            case Skill.TryToCatchMe:
+                TryToCatchMe(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.DesencanaComIsso:
+                DesencanaComIsso(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.BehindYou:
+                BehindYou(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.LetsGetThisOverWith:
+                StartCoroutine(LetsGetThisOverWith(charInfo, targetIndex, isEnemy));
+                break;
             case Skill.Jab:
                 Jab(charInfo, targetIndex, isEnemy);
                 break;
@@ -52,12 +64,82 @@ public class SkillManager : MonoBehaviour
         return buff;
     }
 
-    private void Jab(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    // Lucca Skills
+
+    private void TryToCatchMe (CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        Buff buff1 = CreateBuff(1.5f, BuffType.EvasionUp, BuffModifier.Multiplier, 3);
+        CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+
+        Buff buff2 = CreateBuff(10, BuffType.CritRateUp, BuffModifier.Constant, 3);
+        CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+    }
+
+    private void DesencanaComIsso (CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 0.6);
+        CombatCharManager.GetInstance().LoseHP(charInfo, damage, targetIndex, isEnemy);
+
+        System.Random rnd = new System.Random();
+
+        int stunRate = rnd.Next(1, 101);
+        if (stunRate > 50)
+        {
+            Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
+            CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        }
+    }
+
+    private void BehindYou (CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 0.7);
+        CombatCharManager.GetInstance().LoseHP(charInfo, damage, targetIndex, isEnemy);
+
+        System.Random rnd = new System.Random();
+
+        int bleedingRate = rnd.Next(1, 101);
+        if (bleedingRate > 50)
+        {
+            Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
+            CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        }
+    }
+
+    private IEnumerator LetsGetThisOverWith (CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 0.65);
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(0.1f);
+            CombatCharManager.GetInstance().LoseHP(charInfo, damage, targetIndex, isEnemy);
+        }
+    }
+
+    // Sam Skills
+
+
+    // Borell Skills
+
+
+    // Billy Skills
+
+
+    // Salvato Skills
+
+
+    // Dandara Skills
+
+
+    // Sniper Skills
+
+
+
+    private void Jab (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
     }
 
-    private void HealingInjection(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    private void HealingInjection (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
         Buff buff = CreateBuff(2f, BuffType.DamageUp, BuffModifier.Constant, 1);
@@ -65,7 +147,7 @@ public class SkillManager : MonoBehaviour
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
     }
 
-    private void NailBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    private void NailBomb (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
         for (int i = 0; i < numberOfEnemies; i++)
@@ -74,12 +156,12 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    private void EnergizedHammer(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    private void EnergizedHammer (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
     }
 
-    private void SmokeBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    private void SmokeBomb (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         int numberOfEnemies = CombatCharManager.GetInstance().heroes.Count;
         for (int i = 0; i < numberOfEnemies; i++)
