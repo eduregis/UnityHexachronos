@@ -111,9 +111,9 @@ public class BuffIconManager : MonoBehaviour
             case BuffType.EvasionDown:
                 return evasionDown;
             case BuffType.Stunned:
-                return evasionUp;
+                return stunned;
             case BuffType.Bleeding:
-                return evasionDown;
+                return bleeding;
             default:
                 return attackUp;
         }

@@ -170,6 +170,7 @@ public class CombatCharManager : MonoBehaviour
 
     public void BuffListIterator()
     {
+        Debug.Log("passei aqui");
         List<int> removedIndexes = new List<int>();
 
         for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)

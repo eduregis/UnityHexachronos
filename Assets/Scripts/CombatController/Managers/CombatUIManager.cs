@@ -79,7 +79,7 @@ public class CombatUIManager : MonoBehaviour
         HidingSkillMenu();
 
         yield return new WaitForSeconds(0.5f);
-        GetCurrentCharacter();
+        StartCoroutine(GetCurrentCharacter());
 
         numberOfAllies = CombatCharManager.GetInstance().GetNumberOfAllies();
         numberOfEnemies = CombatCharManager.GetInstance().GetNumberOfEnemies();
@@ -89,9 +89,25 @@ public class CombatUIManager : MonoBehaviour
         actualStatus = ActualTBSStatus.MainMenu;
     }
 
-    public void GetCurrentCharacter()
+    public IEnumerator GetCurrentCharacter()
     {
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
+
+        foreach(Buff buff in actualCharacter.buffList)
+        {
+            if (buff.modifier == BuffModifier.Status)
+            {
+                if (buff.buffType == BuffType.Stunned)
+                {
+                    turnIndicator.text = "Atordoado";
+                    yield return new WaitForSeconds(1.0f);
+                    turnIndicator.text = "";
+                    StartCoroutine(UpdateCurrentCharacter());
+                    yield return new WaitForSeconds(0.2f);
+                    StartCoroutine(CallMainMenu());
+                }
+            }
+        }
     }
 
     public IEnumerator UpdateCurrentCharacter()
@@ -100,7 +116,7 @@ public class CombatUIManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        GetCurrentCharacter();
+        StartCoroutine(GetCurrentCharacter());
 
         TranslateAllySpotted();
     }
@@ -159,6 +175,8 @@ public class CombatUIManager : MonoBehaviour
     {
         if (CombatCharManager.GetInstance().IsPlayerTurn())
         {
+ 
+
             actualStatus = ActualTBSStatus.MainMenu;
 
             turnIndicator.text = "Menu Principal";
