@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -79,7 +78,7 @@ public class CombatUIManager : MonoBehaviour
         HidingSkillMenu();
 
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(GetCurrentCharacter());
+        GetCurrentCharacter();
 
         numberOfAllies = CombatCharManager.GetInstance().GetNumberOfAllies();
         numberOfEnemies = CombatCharManager.GetInstance().GetNumberOfEnemies();
@@ -89,34 +88,49 @@ public class CombatUIManager : MonoBehaviour
         actualStatus = ActualTBSStatus.MainMenu;
     }
 
-    public IEnumerator GetCurrentCharacter()
+    public void GetCurrentCharacter()
     {
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
 
-        foreach(Buff buff in actualCharacter.buffList)
+        if (actualCharacter.life == 0 )
         {
-            if (buff.modifier == BuffModifier.Status)
+            StartCoroutine(PassTurnToNext());
+        } else
+        {
+            foreach (Buff buff in actualCharacter.buffList)
             {
-                if (buff.buffType == BuffType.Stunned)
+                if (buff.modifier == BuffModifier.Status)
                 {
-                    turnIndicator.text = "Atordoado";
-                    yield return new WaitForSeconds(1.0f);
-                    turnIndicator.text = "";
-                    StartCoroutine(UpdateCurrentCharacter());
-                    yield return new WaitForSeconds(0.2f);
-                    StartCoroutine(CallMainMenu());
+                    if (buff.buffType == BuffType.Stunned)
+                    {
+                        StartCoroutine(PassTurnToNext());
+                    }
                 }
             }
         }
     }
 
+    public IEnumerator PassTurnToNext()
+    {
+        turnIndicator.text = "Atordoado";
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
+
     public IEnumerator UpdateCurrentCharacter()
     {
-        CombatCharManager.GetInstance().RotateCharacters();
+        CombatCharManager.GetInstance().GoToNextCharacter();
+        if (CombatCharManager.GetInstance().IsPlayerTurn())
+        {
+            CombatCharManager.GetInstance().RotateCharacters();
+        }
 
         yield return new WaitForSeconds(0.5f);
 
-        StartCoroutine(GetCurrentCharacter());
+        GetCurrentCharacter();
 
         TranslateAllySpotted();
     }
@@ -614,16 +628,40 @@ public class CombatUIManager : MonoBehaviour
 
         foreach (CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
         {
-            turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
+            bool isAbleTo = true;
 
-            System.Random rnd = new System.Random();
-            int targetIndex = rnd.Next(0, heroes.Count - 1);
+            yield return new WaitForSeconds(1.0f);
 
-            CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
-            yield return new WaitForSeconds(1.5f);
+            if (enemy.life == 0)
+            {
+                isAbleTo = false;
+            }
+            else 
+            {
+                foreach (Buff buff in enemy.buffList)
+                {
+                    if (buff.modifier == BuffModifier.Status)
+                    {
+                        if (buff.buffType == BuffType.Stunned)
+                        {
+                            isAbleTo = false;
+                        }
+                    }
+                }
+            }
+
+            if (isAbleTo)
+            {
+                turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
+                int targetIndex = Random.Range(0, heroes.Count);
+                CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
+            }
+            yield return new WaitForSeconds(1.0f);
             turnIndicator.text = "";
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.0f);
+
         }
+        CombatCharManager.GetInstance().RotateCharacters();
         CombatCharManager.GetInstance().SetPlayerTurn();
     }
 

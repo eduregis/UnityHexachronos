@@ -142,8 +142,6 @@ public class CombatCharManager : MonoBehaviour
         pos2 = heroesSprites[1].transform.position;
         pos3 = heroesSprites[2].transform.position;
 
-        GoToNextCharacter();
-
         rotateCharTimer = 1f;
     }
 
@@ -199,6 +197,7 @@ public class CombatCharManager : MonoBehaviour
     public void SetPlayerTurn()
     {
         playerTurn = true;
+        hudAnimateTimer = 1f;
     }
     public int GetNumberOfAllies()
     {
@@ -441,7 +440,7 @@ public class CombatCharManager : MonoBehaviour
             
             for (int i = 0; i < heroesHUD.Length; i++)
             {
-                if (i == heroesIndex)
+                if (i == heroesIndex && playerTurn)
                 {
                     heroesHUD[i].transform.localScale = Vector3.Lerp(heroesHUD[i].transform.localScale, HUDMain, 8f * Time.deltaTime);
                 }
