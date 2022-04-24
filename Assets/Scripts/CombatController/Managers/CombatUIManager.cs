@@ -94,35 +94,9 @@ public class CombatUIManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
 
-       /* if (actualCharacter.life == 0 )
+        if (!IsTheHeroAbleToFight())
         {
-            StartCoroutine(PassTurnToNext());
-        } else
-        {
-            foreach (Buff buff in actualCharacter.buffList)
-            {
-                if (buff.modifier == BuffModifier.Status)
-                {
-                    if (buff.buffType == BuffType.Stunned)
-                    {
-                        StartCoroutine(PassTurnToNext());
-                    }
-                }
-            }
-        }*/
-    }
-
-    public IEnumerator PassTurnToNext()
-    {
-        yield return new WaitForSeconds(0.5f);
-        turnIndicator.text = "Atordoado";
-        yield return new WaitForSeconds(0.5f);
-        turnIndicator.text = "";
-        StartCoroutine(UpdateCurrentCharacter());
-        yield return new WaitForSeconds(0.2f);
-        if (!CombatCharManager.GetInstance().IsItLastHero())
-        {
-            StartCoroutine(CallMainMenu());
+            StartCoroutine(PassTurn());
         }
     }
 
@@ -131,7 +105,6 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().GoToNextCharacter();
         if (CombatCharManager.GetInstance().IsPlayerTurn())
         {
-            Debug.Log("PASSOU 1");
             CombatCharManager.GetInstance().RotateCharacters();
         }
 
@@ -193,7 +166,7 @@ public class CombatUIManager : MonoBehaviour
 
     // Main Menu Methods
     private IEnumerator CallMainMenu()
-    {
+    {   
         if (CombatCharManager.GetInstance().IsPlayerTurn())
         {
             actualStatus = ActualTBSStatus.MainMenu;
@@ -202,14 +175,17 @@ public class CombatUIManager : MonoBehaviour
 
             yield return new WaitForSeconds(1.0f);
 
-            for (int i = 0; i < mainMenuButtons.Length; i++)
+            if (IsTheHeroAbleToFight())
             {
-                mainMenuButtons[i].gameObject.SetActive(true);
+                for (int i = 0; i < mainMenuButtons.Length; i++)
+                {
+                    mainMenuButtons[i].gameObject.SetActive(true);
+                }
+                StartCoroutine(SelectMainMenuFirstOption());
             }
-            StartCoroutine(SelectMainMenuFirstOption());
-
             turnIndicator.text = "";
-        } else
+        }
+        else
         {
             actualStatus = ActualTBSStatus.EnemiesTurn;
             yield return new WaitForSeconds(1.0f);
@@ -217,8 +193,6 @@ public class CombatUIManager : MonoBehaviour
 
             StartCoroutine(EnemyTurnActions());
         }
-
-
     }
 
     private void HidingMainMenu()
@@ -617,6 +591,18 @@ public class CombatUIManager : MonoBehaviour
         StartCoroutine(CallMainMenu());
     }
 
+    private IEnumerator PassTurn()
+    {
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        if (!CombatCharManager.GetInstance().IsItLastHero())
+        {
+            StartCoroutine(CallMainMenu());
+        }
+    }
+
     // Enemeies Turn Methods
     private void CheckingIsPlayerTurn()
     {
@@ -664,7 +650,7 @@ public class CombatUIManager : MonoBehaviour
             {
                 turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
                 //int targetIndex = Random.Range(0, heroes.Count);
-                int targetIndex = 0;
+                int targetIndex = 1;
                 CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
             }
 
@@ -674,22 +660,21 @@ public class CombatUIManager : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
         }
 
-        Debug.Log("PASSOU 2");
-
         CombatCharManager.GetInstance().RotateEnemies();
         CombatCharManager.GetInstance().RotateCharacters();
         CombatCharManager.GetInstance().SetPlayerTurn();
         
-       // StartCoroutine(IsTheFirstHeroAbleToFight());
-        
+        if (!IsTheHeroAbleToFight())
+        {
+            StartCoroutine(PassTurn());
+        }
     }
 
-    public IEnumerator IsTheFirstHeroAbleToFight()
+    public bool IsTheHeroAbleToFight()
     {
         if (actualCharacter.life == 0)
         {
-            yield return new WaitForSeconds(0.5f);
-            StartCoroutine(UpdateCurrentCharacter());
+            return false;
         }
         else
         {
@@ -699,12 +684,12 @@ public class CombatUIManager : MonoBehaviour
                 {
                     if (buff.buffType == BuffType.Stunned)
                     {
-                        yield return new WaitForSeconds(0.5f);
-                        StartCoroutine(UpdateCurrentCharacter());
+                        return false;
                     }
                 }
             }
         }
+        return true;
     }
 
 }

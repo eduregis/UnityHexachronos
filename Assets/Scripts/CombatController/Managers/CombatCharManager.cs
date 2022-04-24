@@ -421,11 +421,6 @@ public class CombatCharManager : MonoBehaviour
 
     public void MovingSpriteCharsIfNeeded()
     {
-        if (rotateCharTimer == 1f)
-        {
-            Debug.Log("ATIVOU");
-        }
-
         if (rotateCharTimer > 0)
         {
             rotateCharTimer -= Time.deltaTime;
