@@ -649,8 +649,8 @@ public class CombatUIManager : MonoBehaviour
             if (isAbleTo)
             {
                 turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
-                //int targetIndex = Random.Range(0, heroes.Count);
-                int targetIndex = 1;
+                int targetIndex = Random.Range(0, heroes.Count);
+                //int targetIndex = 1;
                 CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
             }
 

@@ -3854,6 +3854,10 @@ MonoBehaviour:
   - {fileID: 420256743}
   - {fileID: 1902877258}
   - {fileID: 1482510505}
+  enemiesHUD:
+  - {fileID: 1043228131}
+  - {fileID: 131641718}
+  - {fileID: 1461516975}
   enemiesPortraits:
   - {fileID: 494048829}
   - {fileID: 1225486673}
@@ -4053,6 +4057,21 @@ MonoBehaviour:
   - {fileID: 1004158517}
   - {fileID: 911122409}
   - {fileID: 612957616}
+  enemy1Buffs:
+  - {fileID: 1913784197}
+  - {fileID: 203645332}
+  - {fileID: 497733682}
+  - {fileID: 874385178}
+  enemy2Buffs:
+  - {fileID: 1527337519}
+  - {fileID: 1560198257}
+  - {fileID: 1392068284}
+  - {fileID: 90070366}
+  enemy3Buffs:
+  - {fileID: 1023832549}
+  - {fileID: 1034767288}
+  - {fileID: 1694674523}
+  - {fileID: 588080042}
   attackUp: {fileID: 21300000, guid: 8f7dce6027679484cb29f193677b3dc9, type: 3}
   attackDown: {fileID: 21300000, guid: a06a7d5bcf0b65442998d8281efe72bc, type: 3}
   defenseUp: {fileID: 21300000, guid: bcd9ba7f737159f44b834384a9166bd9, type: 3}

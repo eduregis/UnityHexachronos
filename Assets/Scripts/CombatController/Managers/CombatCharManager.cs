@@ -546,7 +546,11 @@ public class CombatCharManager : MonoBehaviour
     {
         for(int i = 0; i < heroes.Count; i++)
         {
-            BuffIconManager.GetInstance().UpdateUI(heroes[i], i);
+            BuffIconManager.GetInstance().UpdateUI(heroes[i], i, false);
+        }
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            BuffIconManager.GetInstance().UpdateUI(enemies[i], i, true);
         }
         // TODO: Colocar para atualizar buff de inimigos tb
         isUpdatingBuffs = false;
