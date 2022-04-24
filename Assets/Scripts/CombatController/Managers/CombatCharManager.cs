@@ -13,12 +13,15 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private GameObject[] enemiesSprites;
     [SerializeField] private GameObject[] enemiesTargets;
 
-    [Header("CharacterLifebars")]
+    [Header("Heroes HUD")]
     [SerializeField] private GameObject[] heroesHUD;
     [SerializeField] private Image[] heroesPortraits;
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
     [SerializeField] private Image[] heroesEnergybars;
+
+    [Header("Enemies HUD")]
+    [SerializeField] private GameObject[] enemiesHUD;
     [SerializeField] private Image[] enemiesPortraits;
     [SerializeField] private Image[] enemiesFullLifebars;
     [SerializeField] private Image[] enemiesDamageLifebars;
@@ -28,6 +31,7 @@ public class CombatCharManager : MonoBehaviour
     public List<CharacterInfo> enemies;
 
     private int heroesIndex = 0;
+    private int enemiesIndex = 0;
     private bool playerTurn = true;
 
     private static CombatCharManager instance;
@@ -36,7 +40,8 @@ public class CombatCharManager : MonoBehaviour
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
     private float rotateCharTimer = 0;
-    private float hudAnimateTimer = 0;
+    private float hudHeroesAnimateTimer = 0;
+    private float hudEnemiesAnimateTimer = 0;
     private bool isUpdatingBuffs = false;
 
     Vector3 pos1;
@@ -47,6 +52,9 @@ public class CombatCharManager : MonoBehaviour
 
     Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
     Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);
+
+    Vector3 HUDOldMain = new Vector3(1.1f, 1.1f, 1);
+    Vector3 HUDOldNormal = new Vector3(1.0f, 1.0f, 1);
     private void Awake()
     {
         if (instance != null)
@@ -147,8 +155,18 @@ public class CombatCharManager : MonoBehaviour
 
     public CharacterInfo GetCurrentCharacter()
     {
-        hudAnimateTimer = 1f;
+        hudHeroesAnimateTimer = 1f;
         return heroes[heroesIndex];
+    }
+
+    public void RotateEnemies()
+    {
+        hudEnemiesAnimateTimer = 1f;
+    }
+
+    public void GoToNextEnemy()
+    {
+        enemiesIndex++;
     }
 
     public void GoToNextCharacter()
@@ -168,7 +186,6 @@ public class CombatCharManager : MonoBehaviour
 
     public void BuffListIterator()
     {
-        Debug.Log("passei aqui");
         List<int> removedIndexes = new List<int>();
 
         for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)
@@ -197,11 +214,17 @@ public class CombatCharManager : MonoBehaviour
     public void SetPlayerTurn()
     {
         playerTurn = true;
-        hudAnimateTimer = 1f;
+        hudHeroesAnimateTimer = 1f;
+        enemiesIndex = 0;
     }
     public int GetNumberOfAllies()
     {
         return heroes.Count;
+    }
+
+    public bool IsItLastHero()
+    {
+        return (heroesIndex == (heroes.Count - 1));
     }
 
     public int GetNumberOfEnemies()
@@ -213,7 +236,8 @@ public class CombatCharManager : MonoBehaviour
     void Update()
     {
         MovingSpriteCharsIfNeeded();
-        AnimatingHUDIfNeeded();
+        AnimatingHeroesHUDIfNeeded();
+        AnimatingEnemiesHUDIfNeeded();
         CheckingDamageBars();
         CheckingGainBars();
         if (isUpdatingBuffs)
@@ -397,6 +421,11 @@ public class CombatCharManager : MonoBehaviour
 
     public void MovingSpriteCharsIfNeeded()
     {
+        if (rotateCharTimer == 1f)
+        {
+            Debug.Log("ATIVOU");
+        }
+
         if (rotateCharTimer > 0)
         {
             rotateCharTimer -= Time.deltaTime;
@@ -432,11 +461,11 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
-    public void AnimatingHUDIfNeeded()
+    public void AnimatingHeroesHUDIfNeeded()
     {
-        if (hudAnimateTimer > 0)
+        if (hudHeroesAnimateTimer > 0)
         {
-            hudAnimateTimer -= Time.deltaTime;
+            hudHeroesAnimateTimer -= Time.deltaTime;
             
             for (int i = 0; i < heroesHUD.Length; i++)
             {
@@ -451,6 +480,27 @@ public class CombatCharManager : MonoBehaviour
             }
         }
     }
+
+    public void AnimatingEnemiesHUDIfNeeded()
+    {
+        if (hudEnemiesAnimateTimer > 0)
+        {
+            hudEnemiesAnimateTimer -= Time.deltaTime;
+
+            for (int i = 0; i < enemiesHUD.Length; i++)
+            {
+                if (i == enemiesIndex && !playerTurn)
+                {
+                    enemiesHUD[i].transform.localScale = Vector3.Lerp(enemiesHUD[i].transform.localScale, HUDOldMain, 8f * Time.deltaTime);
+                }
+                else
+                {
+                    enemiesHUD[i].transform.localScale = Vector3.Lerp(enemiesHUD[i].transform.localScale, HUDOldNormal, 8f * Time.deltaTime);
+                }
+            }
+        }
+    }
+
     public void CheckingDamageBars()
     {
         if (damageLifeShrinkTimer > 0)
