@@ -48,8 +48,17 @@ public class SkillManager : MonoBehaviour
             case Skill.FinishIt:
                 FinishIt(charInfo, targetIndex, isEnemy);
                 break;
-            case Skill.Jab:
-                Jab(charInfo, targetIndex, isEnemy);
+            case Skill.HandShield:
+                HandShield(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.LongLiveTheRevolution:
+                LongLiveTheRevolution(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.JustAScratch:
+                JustAScratch(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.PowerJab:
+                PowerJab(charInfo, targetIndex, isEnemy);
                 break;
             case Skill.HealingInjection:
                 HealingInjection(charInfo, targetIndex, isEnemy);
@@ -171,6 +180,28 @@ public class SkillManager : MonoBehaviour
 
     // Borell Skills
 
+    private void HandShield(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        Buff buff = CreateBuff(1.5f, BuffType.DefenseUp, BuffModifier.Multiplier, 3);
+        CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+    }
+
+    private void LongLiveTheRevolution(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        Buff buff = CreateBuff(1.5f, BuffType.Taunt, BuffModifier.Multiplier, 3);
+        CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+    }
+
+    private void JustAScratch(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        CombatCharManager.GetInstance().GainHP(50, targetIndex, isEnemy);
+    }
+
+    private void PowerJab(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 2.5);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+    }
 
     // Billy Skills
 
@@ -185,10 +216,7 @@ public class SkillManager : MonoBehaviour
 
 
 
-    private void Jab (CharacterInfo charInfo, int targetIndex, bool isEnemy)
-    {
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, 30, targetIndex, isEnemy);
-    }
+
 
     private void HealingInjection (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {

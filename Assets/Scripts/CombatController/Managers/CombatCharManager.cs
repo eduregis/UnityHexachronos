@@ -84,7 +84,7 @@ public class CombatCharManager : MonoBehaviour
     {
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
-        //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
@@ -254,6 +254,19 @@ public class CombatCharManager : MonoBehaviour
     {
         return (heroesIndex == (heroes.Count - 1));
     }
+
+    public bool IsTauntActive(int index)
+    {
+        foreach( Buff buff in heroes[index].buffList)
+        {
+            if (buff.buffType == BuffType.Taunt)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int GetNumberOfAllies()
     {
         return heroes.Count;

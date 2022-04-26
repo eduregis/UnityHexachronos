@@ -13,7 +13,10 @@ public enum Skill
     SmokeBomb,
     HealingPulse,
     FinishIt,
-    Jab,
+    HandShield,
+    LongLiveTheRevolution,
+    JustAScratch,
+    PowerJab,
     NailBomb,
     HealingInjection,
     EnergizedHammer

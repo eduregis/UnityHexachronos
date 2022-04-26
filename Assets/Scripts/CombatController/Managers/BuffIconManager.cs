@@ -32,6 +32,7 @@ public class BuffIconManager : MonoBehaviour
     public Sprite evasionDown;
     public Sprite stunned;
     public Sprite bleeding;
+    public Sprite taunt;
 
     private void Awake()
     {
@@ -162,6 +163,8 @@ public class BuffIconManager : MonoBehaviour
                 return stunned;
             case BuffType.Bleeding:
                 return bleeding;
+            case BuffType.Taunt:
+                return taunt;
             default:
                 return attackUp;
         }
