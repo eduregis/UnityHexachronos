@@ -78,7 +78,7 @@ public class SkillManager : MonoBehaviour
     private void DesencanaComIsso (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         int damage = (int)((float)charInfo.damage * 0.6);
-        CombatCharManager.GetInstance().LoseHP(charInfo, damage, targetIndex, isEnemy);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
 
         System.Random rnd = new System.Random();
 
@@ -93,7 +93,7 @@ public class SkillManager : MonoBehaviour
     private void BehindYou (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         int damage = (int)((float)charInfo.damage * 0.7);
-        CombatCharManager.GetInstance().LoseHP(charInfo, damage, targetIndex, isEnemy);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
 
         System.Random rnd = new System.Random();
 
@@ -111,7 +111,7 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitForSeconds(0.1f);
-            CombatCharManager.GetInstance().LoseHP(charInfo, damage, targetIndex, isEnemy);
+            CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
         }
     }
 
@@ -136,7 +136,7 @@ public class SkillManager : MonoBehaviour
 
     private void Jab (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
-        CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, 30, targetIndex, isEnemy);
     }
 
     private void HealingInjection (CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -152,13 +152,13 @@ public class SkillManager : MonoBehaviour
         int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
         for (int i = 0; i < numberOfEnemies; i++)
         {
-            CombatCharManager.GetInstance().LoseHP(charInfo, 30, i, isEnemy);
+            CombatCharManager.GetInstance().InflictingDamage(charInfo, 30, i, isEnemy);
         }
     }
 
     private void EnergizedHammer (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
-        CombatCharManager.GetInstance().LoseHP(charInfo, 30, targetIndex, isEnemy);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, 30, targetIndex, isEnemy);
     }
 
     private void SmokeBomb (CharacterInfo charInfo, int targetIndex, bool isEnemy)

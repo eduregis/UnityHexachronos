@@ -184,8 +184,8 @@ public class CombatCharManager : MonoBehaviour
         BuffListIterator();
     }
 
-    public void BuffListIterator()
-    {
+    public void BuffListIterator() 
+    { 
         List<int> removedIndexes = new List<int>();
 
         for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)
@@ -217,19 +217,27 @@ public class CombatCharManager : MonoBehaviour
         hudHeroesAnimateTimer = 1f;
         enemiesIndex = 0;
     }
-    public int GetNumberOfAllies()
-    {
-        return heroes.Count;
-    }
 
     public bool IsItLastHero()
     {
         return (heroesIndex == (heroes.Count - 1));
     }
-
+    public int GetNumberOfAllies()
+    {
+        return heroes.Count;
+    }
     public int GetNumberOfEnemies()
     {
         return enemies.Count;
+    }
+
+    public int GetHeroesIndex()
+    {
+        return heroesIndex;
+    }
+    public int GetEnemiesIndex()
+    {
+        return enemiesIndex;
     }
 
     // Update is called once per frame
@@ -290,7 +298,7 @@ public class CombatCharManager : MonoBehaviour
 
     public void BasicAttack(CharacterInfo attackChar, int index, bool isEnemy)
     {
-        LoseHP(attackChar, attackChar.damage, index, isEnemy);
+        InflictingDamage(attackChar, attackChar.damage, index, isEnemy);
     }
 
 
@@ -311,7 +319,7 @@ public class CombatCharManager : MonoBehaviour
             gainLifeShrinkTimer = 1.5f;
         }
     }
-    public void LoseHP(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
+    public void InflictingDamage(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
     {
         System.Random rnd = new System.Random();
 
@@ -360,6 +368,25 @@ public class CombatCharManager : MonoBehaviour
             {
                 Debug.Log("Errou");
             }
+        }
+    }
+
+    public void LoseHP(int damage, int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
+            else { enemies[index].life -= damage; }
+            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
+            damageLifeShrinkTimer = 1.0f;
+        }
+        else
+        {
+            if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
+            else { heroes[index].life -= damage; }
+            heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
+            damageLifeShrinkTimer = 1.0f;
+            Debug.Log(heroes[index].char_name + " tomou " + damage + " (" + damage + ") pontos de dano.");
         }
     }
 

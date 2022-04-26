@@ -103,6 +103,7 @@ public class CombatUIManager : MonoBehaviour
     public IEnumerator UpdateCurrentCharacter()
     {
         CombatCharManager.GetInstance().GoToNextCharacter();
+
         if (CombatCharManager.GetInstance().IsPlayerTurn())
         {
             CombatCharManager.GetInstance().RotateCharacters();
@@ -113,6 +114,11 @@ public class CombatUIManager : MonoBehaviour
         StartCoroutine(GetCurrentCharacter());
 
         TranslateAllySpotted();
+
+        if (CombatCharManager.GetInstance().IsItLastHero())
+        {
+            TestingHeroesNegativeStatus();
+        }
     }
 
     private void TranslateAllySpotted()
@@ -622,7 +628,6 @@ public class CombatUIManager : MonoBehaviour
         foreach (CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
         {
             CombatCharManager.GetInstance().RotateEnemies();
-            
 
             bool isAbleTo = true;
 
@@ -663,7 +668,9 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().RotateEnemies();
         CombatCharManager.GetInstance().RotateCharacters();
         CombatCharManager.GetInstance().SetPlayerTurn();
-        
+
+        TestingHeroesNegativeStatus();
+
         if (!IsTheHeroAbleToFight())
         {
             StartCoroutine(PassTurn());
@@ -684,12 +691,28 @@ public class CombatUIManager : MonoBehaviour
                 {
                     if (buff.buffType == BuffType.Stunned)
                     {
+                        Debug.Log("stunnado");
                         return false;
-                    }
+                    } 
                 }
             }
         }
         return true;
+    }
+
+
+    public void TestingHeroesNegativeStatus ()
+    {
+        foreach (Buff buff in actualCharacter.buffList)
+        {
+            if (buff.modifier == BuffModifier.Status)
+            {
+                if (buff.buffType == BuffType.Bleeding)
+                {
+                    CombatCharManager.GetInstance().LoseHP((int)buff.value, CombatCharManager.GetInstance().GetHeroesIndex(), false);
+                }
+            }
+        }
     }
 
 }
