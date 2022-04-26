@@ -16,13 +16,17 @@ public enum BuffType
     EvasionUp,
     EvasionDown,
     HitRateUp,
-    HitRateDown
+    HitRateDown,
+    Stunned,
+    Bleeding,
+    Taunt
 }
 
 public enum BuffModifier
 {
     Multiplier,
-    Constant
+    Constant,
+    Status
 }
 public class Buff 
 {

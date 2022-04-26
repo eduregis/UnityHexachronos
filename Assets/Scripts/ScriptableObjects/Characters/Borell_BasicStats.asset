@@ -21,7 +21,7 @@ MonoBehaviour:
   luck: 17
   level: 1
   skills:
+  - {fileID: 11400000, guid: ac2b67369c8838543bbc88434d2d09fc, type: 2}
+  - {fileID: 11400000, guid: e9a33254310f18e43b49735dd949a85c, type: 2}
+  - {fileID: 11400000, guid: 6a84d68bca50178419ebc3eb91788ecf, type: 2}
   - {fileID: 11400000, guid: 791869e728f38f341b5929deaf0cdb1f, type: 2}
-  - {fileID: 11400000, guid: c08451eed8c683e48bed37783856bcc0, type: 2}
-  - {fileID: 11400000, guid: 5453e6cee512b2d40b69bbbf457df719, type: 2}
-  - {fileID: 11400000, guid: 33b444af2dd30314baa938ea4491c0b6, type: 2}

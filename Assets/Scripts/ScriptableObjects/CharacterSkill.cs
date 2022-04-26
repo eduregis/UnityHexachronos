@@ -5,11 +5,21 @@ using UnityEngine;
 
 public enum Skill
 {
-    Jab,
+    TryToCatchMe,
+    DesencanaComIsso,
+    BehindYou,
+    LetsGetThisOverWith,
+    Taser,
+    SmokeBomb,
+    HealingPulse,
+    FinishIt,
+    HandShield,
+    LongLiveTheRevolution,
+    JustAScratch,
+    PowerJab,
     NailBomb,
     HealingInjection,
-    EnergizedHammer,
-    SmokeBomb
+    EnergizedHammer
 }
 
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]

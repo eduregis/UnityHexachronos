@@ -7,10 +7,15 @@ public class BuffIconManager : MonoBehaviour
 {
     private static BuffIconManager instance;
 
-    [Header("Buffs UI")]
+    [Header("Heroes Buffs UI")]
     [SerializeField] private Image[] char1Buffs;
     [SerializeField] private Image[] char2Buffs;
     [SerializeField] private Image[] char3Buffs;
+
+    [Header("Enemies Buffs UI")]
+    [SerializeField] private Image[] enemy1Buffs;
+    [SerializeField] private Image[] enemy2Buffs;
+    [SerializeField] private Image[] enemy3Buffs;
 
     [Header("Buffs Images")]
     public Sprite attackUp;
@@ -25,6 +30,9 @@ public class BuffIconManager : MonoBehaviour
     public Sprite hitRateDown;
     public Sprite evasionUp;
     public Sprite evasionDown;
+    public Sprite stunned;
+    public Sprite bleeding;
+    public Sprite taunt;
 
     private void Awake()
     {
@@ -39,43 +47,86 @@ public class BuffIconManager : MonoBehaviour
         return instance;
     }
 
-    public void UpdateUI(CharacterInfo characterInfo, int index)
+    public void UpdateUI(CharacterInfo characterInfo, int index, bool isEnemy)
     {
-        for (int i = 0; i < characterInfo.buffList.Count; i++)
+        if (isEnemy)
         {
-            switch (index)
+            for (int i = 0; i < characterInfo.buffList.Count; i++)
             {
-                case 0:
-                    char1Buffs[i].gameObject.SetActive(true);
-                    char1Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
-                    break;
-                case 1:
-                    char2Buffs[i].gameObject.SetActive(true);
-                    char2Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
-                    break;
-                case 2:
-                    char3Buffs[i].gameObject.SetActive(true);
-                    char3Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
-                    break;
-                default:
-                    break;
+                switch (index)
+                {
+                    case 0:
+                        enemy1Buffs[i].gameObject.SetActive(true);
+                        enemy1Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
+                        break;
+                    case 1:
+                        enemy2Buffs[i].gameObject.SetActive(true);
+                        enemy2Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
+                        break;
+                    case 2:
+                        enemy3Buffs[i].gameObject.SetActive(true);
+                        enemy3Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-        for (int i = characterInfo.buffList.Count; i < char1Buffs.Length; i++)
-        {
-            switch (index)
+            for (int i = characterInfo.buffList.Count; i < enemy1Buffs.Length; i++)
             {
-                case 0:
-                    char1Buffs[i].gameObject.SetActive(false);
-                    break;
-                case 1:
-                    char2Buffs[i].gameObject.SetActive(false);
-                    break;
-                case 2:
-                    char3Buffs[i].gameObject.SetActive(false);
-                    break;
-                default:
-                    break;
+                switch (index)
+                {
+                    case 0:
+                        enemy1Buffs[i].gameObject.SetActive(false);
+                        break;
+                    case 1:
+                        enemy2Buffs[i].gameObject.SetActive(false);
+                        break;
+                    case 2:
+                        enemy3Buffs[i].gameObject.SetActive(false);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } 
+        else
+        {
+            for (int i = 0; i < characterInfo.buffList.Count; i++)
+            {
+                switch (index)
+                {
+                    case 0:
+                        char1Buffs[i].gameObject.SetActive(true);
+                        char1Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
+                        break;
+                    case 1:
+                        char2Buffs[i].gameObject.SetActive(true);
+                        char2Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
+                        break;
+                    case 2:
+                        char3Buffs[i].gameObject.SetActive(true);
+                        char3Buffs[i].sprite = BuffSpriteImage(characterInfo.buffList[i].buffType);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            for (int i = characterInfo.buffList.Count; i < char1Buffs.Length; i++)
+            {
+                switch (index)
+                {
+                    case 0:
+                        char1Buffs[i].gameObject.SetActive(false);
+                        break;
+                    case 1:
+                        char2Buffs[i].gameObject.SetActive(false);
+                        break;
+                    case 2:
+                        char3Buffs[i].gameObject.SetActive(false);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -108,6 +159,12 @@ public class BuffIconManager : MonoBehaviour
                 return evasionUp;
             case BuffType.EvasionDown:
                 return evasionDown;
+            case BuffType.Stunned:
+                return stunned;
+            case BuffType.Bleeding:
+                return bleeding;
+            case BuffType.Taunt:
+                return taunt;
             default:
                 return attackUp;
         }

@@ -13,12 +13,15 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private GameObject[] enemiesSprites;
     [SerializeField] private GameObject[] enemiesTargets;
 
-    [Header("CharacterLifebars")]
+    [Header("Heroes HUD")]
     [SerializeField] private GameObject[] heroesHUD;
     [SerializeField] private Image[] heroesPortraits;
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
     [SerializeField] private Image[] heroesEnergybars;
+
+    [Header("Enemies HUD")]
+    [SerializeField] private GameObject[] enemiesHUD;
     [SerializeField] private Image[] enemiesPortraits;
     [SerializeField] private Image[] enemiesFullLifebars;
     [SerializeField] private Image[] enemiesDamageLifebars;
@@ -28,6 +31,7 @@ public class CombatCharManager : MonoBehaviour
     public List<CharacterInfo> enemies;
 
     private int heroesIndex = 0;
+    private int enemiesIndex = 0;
     private bool playerTurn = true;
 
     private static CombatCharManager instance;
@@ -36,7 +40,8 @@ public class CombatCharManager : MonoBehaviour
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
     private float rotateCharTimer = 0;
-    private float hudAnimateTimer = 0;
+    private float hudHeroesAnimateTimer = 0;
+    private float hudEnemiesAnimateTimer = 0;
     private bool isUpdatingBuffs = false;
 
     Vector3 pos1;
@@ -47,6 +52,9 @@ public class CombatCharManager : MonoBehaviour
 
     Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
     Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);
+
+    Vector3 HUDOldMain = new Vector3(1.1f, 1.1f, 1);
+    Vector3 HUDOldNormal = new Vector3(1.0f, 1.0f, 1);
     private void Awake()
     {
         if (instance != null)
@@ -74,9 +82,9 @@ public class CombatCharManager : MonoBehaviour
 
     public void SetupCharacters()
     {
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
-        //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
@@ -116,6 +124,11 @@ public class CombatCharManager : MonoBehaviour
 
     private void UpdateUI()
     {
+        for (int i = 0; i < heroes.Count; i++)
+        {
+            heroesSprites[i].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroes[i].char_name);
+            heroesPortraits[i].sprite = CharacterCombatSpriteManager.GetInstance().CharacterPortraitImage(heroes[i].char_name);
+        }
         for (int i = heroes.Count; i < heroesSprites.Length; i++)
         {
             heroesSprites[i].SetActive(false);
@@ -124,6 +137,13 @@ public class CombatCharManager : MonoBehaviour
             heroesFullLifebars[i].enabled = false;
             heroesEnergybars[i].enabled = false;
             heroesPortraits[i].enabled = false;
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Debug.Log(enemies[i].char_name);
+            enemiesSprites[i].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemies[i].char_name);
+            enemiesPortraits[i].sprite = CharacterCombatSpriteManager.GetInstance().CharacterPortraitImage(enemies[i].char_name);
         }
         for (int i = enemies.Count; i < enemiesSprites.Length; i++)
         {
@@ -142,15 +162,23 @@ public class CombatCharManager : MonoBehaviour
         pos2 = heroesSprites[1].transform.position;
         pos3 = heroesSprites[2].transform.position;
 
-        GoToNextCharacter();
-
         rotateCharTimer = 1f;
     }
 
     public CharacterInfo GetCurrentCharacter()
     {
-        hudAnimateTimer = 1f;
+        hudHeroesAnimateTimer = 1f;
         return heroes[heroesIndex];
+    }
+
+    public void RotateEnemies()
+    {
+        hudEnemiesAnimateTimer = 1f;
+    }
+
+    public void GoToNextEnemy()
+    {
+        enemiesIndex++;
     }
 
     public void GoToNextCharacter()
@@ -164,11 +192,9 @@ public class CombatCharManager : MonoBehaviour
             playerTurn = true;
             heroesIndex++;
         }
-
-        BuffListIterator();
     }
 
-    public void BuffListIterator()
+    public void BuffListHeroIterator() 
     {
         List<int> removedIndexes = new List<int>();
 
@@ -182,14 +208,36 @@ public class CombatCharManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < removedIndexes.Count; i++)
+        for (int i = (removedIndexes.Count - 1); i >= 0; i--)
         {
-            heroes[heroesIndex].buffList.RemoveAt(i);
+            heroes[heroesIndex].buffList.RemoveAt(removedIndexes[i]);
         }
 
         isUpdatingBuffs = true;
     }
-    
+
+    public void BuffListEnemyIterator()
+    {
+        List<int> removedIndexes = new List<int>();
+
+        for (int i = 0; i < enemies[enemiesIndex].buffList.Count; i++)
+        {
+            enemies[enemiesIndex].buffList[i].duration -= 1;
+
+            if (enemies[enemiesIndex].buffList[i].duration == -1)
+            {
+                removedIndexes.Add(i);
+            }
+        }
+
+        for (int i = (removedIndexes.Count - 1); i >= 0; i--)
+        {
+            enemies[enemiesIndex].buffList.RemoveAt(removedIndexes[i]);
+        }
+
+        isUpdatingBuffs = true;
+    }
+
     public bool IsPlayerTurn()
     {
         return playerTurn;
@@ -198,22 +246,51 @@ public class CombatCharManager : MonoBehaviour
     public void SetPlayerTurn()
     {
         playerTurn = true;
+        hudHeroesAnimateTimer = 1f;
+        enemiesIndex = 0;
     }
+
+    public bool IsItLastHero()
+    {
+        return (heroesIndex == (heroes.Count - 1));
+    }
+
+    public bool IsTauntActive(int index)
+    {
+        foreach( Buff buff in heroes[index].buffList)
+        {
+            if (buff.buffType == BuffType.Taunt)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int GetNumberOfAllies()
     {
         return heroes.Count;
     }
-
     public int GetNumberOfEnemies()
     {
         return enemies.Count;
+    }
+
+    public int GetHeroesIndex()
+    {
+        return heroesIndex;
+    }
+    public int GetEnemiesIndex()
+    {
+        return enemiesIndex;
     }
 
     // Update is called once per frame
     void Update()
     {
         MovingSpriteCharsIfNeeded();
-        AnimatingHUDIfNeeded();
+        AnimatingHeroesHUDIfNeeded();
+        AnimatingEnemiesHUDIfNeeded();
         CheckingDamageBars();
         CheckingGainBars();
         if (isUpdatingBuffs)
@@ -266,7 +343,7 @@ public class CombatCharManager : MonoBehaviour
 
     public void BasicAttack(CharacterInfo attackChar, int index, bool isEnemy)
     {
-        LoseHP(attackChar, attackChar.damage, index, isEnemy);
+        InflictingDamage(attackChar, attackChar.damage, index, isEnemy);
     }
 
 
@@ -277,17 +354,17 @@ public class CombatCharManager : MonoBehaviour
             if (enemies[index].life + hpGain > enemies[index].maxLife) { enemies[index].life = enemies[index].maxLife; }
             else { enemies[index].life += hpGain; }
             enemiesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
-            gainLifeShrinkTimer = 1f;
+            gainLifeShrinkTimer = 1.5f;
         }
         else
         {
             if (heroes[index].life + hpGain > heroes[index].maxLife) { heroes[index].life = heroes[index].maxLife; }
             else { heroes[index].life += hpGain; }
             heroesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)heroes[index].maxLife), 0, 1f);
-            gainLifeShrinkTimer = 1f;
+            gainLifeShrinkTimer = 1.5f;
         }
     }
-    public void LoseHP(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
+    public void InflictingDamage(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
     {
         System.Random rnd = new System.Random();
 
@@ -314,7 +391,7 @@ public class CombatCharManager : MonoBehaviour
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
-                damageLifeShrinkTimer = 1f;
+                damageLifeShrinkTimer = 1.5f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
             } else
             {
@@ -329,13 +406,33 @@ public class CombatCharManager : MonoBehaviour
                 if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
                 else { heroes[index].life -= damage; }
                 heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
-                damageLifeShrinkTimer = 1f;
+                damageLifeShrinkTimer = 1.5f;
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + heroes[index].char_name);
             }
             else
             {
                 Debug.Log("Errou");
             }
+        }
+    }
+
+    public void LoseHP(int damage, int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
+            else { enemies[index].life -= damage; }
+            enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
+            damageLifeShrinkTimer = 1.0f;
+            Debug.Log(enemies[index].char_name + " tomou " + damage + " (" + damage + ") pontos de dano.");
+        }
+        else
+        {
+            if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
+            else { heroes[index].life -= damage; }
+            heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
+            damageLifeShrinkTimer = 1.0f;
+            Debug.Log(heroes[index].char_name + " tomou " + damage + " (" + damage + ") pontos de dano.");
         }
     }
 
@@ -432,15 +529,15 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
-    public void AnimatingHUDIfNeeded()
+    public void AnimatingHeroesHUDIfNeeded()
     {
-        if (hudAnimateTimer > 0)
+        if (hudHeroesAnimateTimer > 0)
         {
-            hudAnimateTimer -= Time.deltaTime;
+            hudHeroesAnimateTimer -= Time.deltaTime;
             
             for (int i = 0; i < heroesHUD.Length; i++)
             {
-                if (i == heroesIndex)
+                if (i == heroesIndex && playerTurn)
                 {
                     heroesHUD[i].transform.localScale = Vector3.Lerp(heroesHUD[i].transform.localScale, HUDMain, 8f * Time.deltaTime);
                 }
@@ -451,6 +548,27 @@ public class CombatCharManager : MonoBehaviour
             }
         }
     }
+
+    public void AnimatingEnemiesHUDIfNeeded()
+    {
+        if (hudEnemiesAnimateTimer > 0)
+        {
+            hudEnemiesAnimateTimer -= Time.deltaTime;
+
+            for (int i = 0; i < enemiesHUD.Length; i++)
+            {
+                if (i == enemiesIndex && !playerTurn)
+                {
+                    enemiesHUD[i].transform.localScale = Vector3.Lerp(enemiesHUD[i].transform.localScale, HUDOldMain, 8f * Time.deltaTime);
+                }
+                else
+                {
+                    enemiesHUD[i].transform.localScale = Vector3.Lerp(enemiesHUD[i].transform.localScale, HUDOldNormal, 8f * Time.deltaTime);
+                }
+            }
+        }
+    }
+
     public void CheckingDamageBars()
     {
         if (damageLifeShrinkTimer > 0)
@@ -501,7 +619,11 @@ public class CombatCharManager : MonoBehaviour
     {
         for(int i = 0; i < heroes.Count; i++)
         {
-            BuffIconManager.GetInstance().UpdateUI(heroes[i], i);
+            BuffIconManager.GetInstance().UpdateUI(heroes[i], i, false);
+        }
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            BuffIconManager.GetInstance().UpdateUI(enemies[i], i, true);
         }
         // TODO: Colocar para atualizar buff de inimigos tb
         isUpdatingBuffs = false;

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -16,6 +15,7 @@ public enum ActualTBSStatus
     AllyMultiTargetSkill,
     EnemySingleTargetSkill,
     EnemyMultiTargetSkill,
+    SelfTargetSkill,
     Block,
     EnemiesTurn
 }
@@ -79,7 +79,7 @@ public class CombatUIManager : MonoBehaviour
         HidingSkillMenu();
 
         yield return new WaitForSeconds(0.5f);
-        GetCurrentCharacter();
+        StartCoroutine(GetCurrentCharacter());
 
         numberOfAllies = CombatCharManager.GetInstance().GetNumberOfAllies();
         numberOfEnemies = CombatCharManager.GetInstance().GetNumberOfEnemies();
@@ -89,20 +89,38 @@ public class CombatUIManager : MonoBehaviour
         actualStatus = ActualTBSStatus.MainMenu;
     }
 
-    public void GetCurrentCharacter()
+    public IEnumerator GetCurrentCharacter()
     {
         actualCharacter = CombatCharManager.GetInstance().GetCurrentCharacter();
+
+        yield return new WaitForSeconds(0.2f);
+
+        if (!IsTheHeroAbleToFight())
+        {
+            StartCoroutine(PassTurn());
+        }
     }
 
     public IEnumerator UpdateCurrentCharacter()
     {
-        CombatCharManager.GetInstance().RotateCharacters();
+        CombatCharManager.GetInstance().GoToNextCharacter();
+
+        if (CombatCharManager.GetInstance().IsPlayerTurn())
+        {
+            CombatCharManager.GetInstance().RotateCharacters();
+        }
 
         yield return new WaitForSeconds(0.5f);
 
-        GetCurrentCharacter();
+        StartCoroutine(GetCurrentCharacter());
 
         TranslateAllySpotted();
+
+        if (CombatCharManager.GetInstance().IsItLastHero())
+        {
+            CombatCharManager.GetInstance().BuffListHeroIterator();
+            TestingHeroesNegativeStatus();
+        }
     }
 
     private void TranslateAllySpotted()
@@ -146,6 +164,9 @@ public class CombatUIManager : MonoBehaviour
             case ActualTBSStatus.AllySingleTargetSkill:
                 CheckingAllyTarget();
                 break;
+            case ActualTBSStatus.SelfTargetSkill:
+                CheckingAllyTarget();
+                break;
             case ActualTBSStatus.EnemiesTurn:
                 CheckingIsPlayerTurn();
                 break;
@@ -156,7 +177,7 @@ public class CombatUIManager : MonoBehaviour
 
     // Main Menu Methods
     private IEnumerator CallMainMenu()
-    {
+    {   
         if (CombatCharManager.GetInstance().IsPlayerTurn())
         {
             actualStatus = ActualTBSStatus.MainMenu;
@@ -165,14 +186,17 @@ public class CombatUIManager : MonoBehaviour
 
             yield return new WaitForSeconds(1.0f);
 
-            for (int i = 0; i < mainMenuButtons.Length; i++)
+            if (IsTheHeroAbleToFight())
             {
-                mainMenuButtons[i].gameObject.SetActive(true);
+                for (int i = 0; i < mainMenuButtons.Length; i++)
+                {
+                    mainMenuButtons[i].gameObject.SetActive(true);
+                }
+                StartCoroutine(SelectMainMenuFirstOption());
             }
-            StartCoroutine(SelectMainMenuFirstOption());
-
             turnIndicator.text = "";
-        } else
+        }
+        else
         {
             actualStatus = ActualTBSStatus.EnemiesTurn;
             yield return new WaitForSeconds(1.0f);
@@ -180,8 +204,6 @@ public class CombatUIManager : MonoBehaviour
 
             StartCoroutine(EnemyTurnActions());
         }
-
-
     }
 
     private void HidingMainMenu()
@@ -321,6 +343,10 @@ public class CombatUIManager : MonoBehaviour
                 actualStatus = ActualTBSStatus.AllyMultiTargetSkill;
                 StartCoroutine(CallAllAlliesTargetMenu());
                 break;
+            case AffectType.Self:
+                actualStatus = ActualTBSStatus.SelfTargetSkill;
+                StartCoroutine(CallSelfTargetMenu());
+                break;
             default:
                 break;
         }
@@ -359,6 +385,10 @@ public class CombatUIManager : MonoBehaviour
         else if (actualStatus == ActualTBSStatus.AllyMultiTargetSkill)
         {
             StartCoroutine(ApllyingAlliesMultiTargetSkill());
+        }
+        else if (actualStatus == ActualTBSStatus.SelfTargetSkill)
+        {
+            StartCoroutine(ApllyingSelfTargetSkill());
         }
     }
 
@@ -430,6 +460,52 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingEnemyTargetMenu();
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
+
+    // Skill With Self Targets
+
+    private IEnumerator CallSelfTargetMenu()
+    {
+        turnIndicator.text = "A skill marca a si mesmo";
+
+        yield return new WaitForSeconds(1.0f);
+
+        int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
+
+        for (int i = 0; i < heroesSpotted.Length; i++)
+        {
+            if (i == targetIndex)
+            {
+                heroesSpotted[i].gameObject.SetActive(true);
+            } else
+            {
+                heroesSpotted[i].gameObject.SetActive(false);
+            }
+            
+        }
+        StartCoroutine(SelectSelfTargetMenu(targetIndex));
+    }
+
+    private IEnumerator SelectSelfTargetMenu(int targetIndex)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(heroesSpotted[targetIndex].gameObject);
+        CombatCharManager.GetInstance().ShowAllyTarget(targetIndex);
+    }
+
+    private IEnumerator ApllyingSelfTargetSkill()
+    {
+        CombatCharManager.GetInstance().ShowAllyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
+        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, targetIndex, false);
+        turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingAllyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
@@ -580,6 +656,18 @@ public class CombatUIManager : MonoBehaviour
         StartCoroutine(CallMainMenu());
     }
 
+    private IEnumerator PassTurn()
+    {
+        yield return new WaitForSeconds(1.0f);
+        turnIndicator.text = "";
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        if (!CombatCharManager.GetInstance().IsItLastHero())
+        {
+            StartCoroutine(CallMainMenu());
+        }
+    }
+
     // Enemeies Turn Methods
     private void CheckingIsPlayerTurn()
     {
@@ -592,21 +680,112 @@ public class CombatUIManager : MonoBehaviour
 
     private IEnumerator EnemyTurnActions()
     {
+        HidingMainMenu();
+
         List<CharacterInfo> heroes = CombatCharManager.GetInstance().heroes;
 
         foreach (CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
         {
-            turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
+            CombatCharManager.GetInstance().RotateEnemies();
 
-            System.Random rnd = new System.Random();
-            int targetIndex = rnd.Next(0, heroes.Count - 1);
+            bool isAbleTo = true;
 
-            CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.0f);
+
+            CombatCharManager.GetInstance().BuffListEnemyIterator();
+
+            if (enemy.life == 0)
+            {
+                isAbleTo = false;
+            }
+            else 
+            {
+                foreach (Buff buff in enemy.buffList)
+                {
+                    if (buff.modifier == BuffModifier.Status)
+                    {
+                        if (buff.buffType == BuffType.Stunned)
+                        {
+                            isAbleTo = false;
+                        }
+                    }
+                    if (buff.buffType == BuffType.Bleeding)
+                    {
+                        CombatCharManager.GetInstance().LoseHP((int)buff.value, CombatCharManager.GetInstance().GetEnemiesIndex(), true);
+                    }
+                }
+            }
+
+            if (isAbleTo)
+            {
+                turnIndicator.text = "Ação do inimigo: " + enemy.char_name;
+                int targetIndex = Random.Range(0, heroes.Count);
+
+                for (int i = 0; i < heroes.Count; i++)
+                {
+                    if (CombatCharManager.GetInstance().IsTauntActive(i))
+                    {
+                        targetIndex = i;
+                    }
+                }
+
+                CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
+            }
+
+            yield return new WaitForSeconds(1.0f);
+            CombatCharManager.GetInstance().GoToNextEnemy();
             turnIndicator.text = "";
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.0f);
         }
+
+        CombatCharManager.GetInstance().RotateEnemies();
+        CombatCharManager.GetInstance().RotateCharacters();
         CombatCharManager.GetInstance().SetPlayerTurn();
+
+        CombatCharManager.GetInstance().BuffListHeroIterator();
+        TestingHeroesNegativeStatus();
+
+        if (!IsTheHeroAbleToFight())
+        {
+            StartCoroutine(PassTurn());
+        }
+    }
+
+    public bool IsTheHeroAbleToFight()
+    {
+        if (actualCharacter.life == 0)
+        {
+            return false;
+        }
+        else
+        {
+            foreach (Buff buff in actualCharacter.buffList)
+            {
+                if (buff.modifier == BuffModifier.Status)
+                {
+                    if (buff.buffType == BuffType.Stunned)
+                    {
+                        return false;
+                    } 
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public void TestingHeroesNegativeStatus ()
+    {
+        foreach (Buff buff in actualCharacter.buffList)
+        {
+            if (buff.modifier == BuffModifier.Status)
+            {
+                if (buff.buffType == BuffType.Bleeding)
+                {
+                    CombatCharManager.GetInstance().LoseHP((int)buff.value, CombatCharManager.GetInstance().GetHeroesIndex(), false);
+                }
+            }
+        }
     }
 
 }
