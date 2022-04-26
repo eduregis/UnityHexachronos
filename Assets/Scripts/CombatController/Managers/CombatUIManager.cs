@@ -648,6 +648,10 @@ public class CombatUIManager : MonoBehaviour
                             isAbleTo = false;
                         }
                     }
+                    if (buff.buffType == BuffType.Bleeding)
+                    {
+                        CombatCharManager.GetInstance().LoseHP((int)buff.value, CombatCharManager.GetInstance().GetEnemiesIndex(), true);
+                    }
                 }
             }
 
