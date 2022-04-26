@@ -117,6 +117,7 @@ public class CombatUIManager : MonoBehaviour
 
         if (CombatCharManager.GetInstance().IsItLastHero())
         {
+            CombatCharManager.GetInstance().BuffListHeroIterator();
             TestingHeroesNegativeStatus();
         }
     }
@@ -633,6 +634,8 @@ public class CombatUIManager : MonoBehaviour
 
             yield return new WaitForSeconds(1.0f);
 
+            CombatCharManager.GetInstance().BuffListEnemyIterator();
+
             if (enemy.life == 0)
             {
                 isAbleTo = false;
@@ -673,6 +676,7 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().RotateCharacters();
         CombatCharManager.GetInstance().SetPlayerTurn();
 
+        CombatCharManager.GetInstance().BuffListHeroIterator();
         TestingHeroesNegativeStatus();
 
         if (!IsTheHeroAbleToFight())
@@ -695,7 +699,6 @@ public class CombatUIManager : MonoBehaviour
                 {
                     if (buff.buffType == BuffType.Stunned)
                     {
-                        Debug.Log("stunnado");
                         return false;
                     } 
                 }

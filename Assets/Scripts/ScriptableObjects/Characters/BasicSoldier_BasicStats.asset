@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicSoldier_BasicStats
   m_EditorClassIdentifier: 
   char_name: Basic Soldier
-  strength: 15
+  strength: 0
   intelligence: 21
   vitality: 23
   technique: 18

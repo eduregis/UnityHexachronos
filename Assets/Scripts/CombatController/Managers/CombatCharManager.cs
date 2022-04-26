@@ -180,16 +180,17 @@ public class CombatCharManager : MonoBehaviour
             playerTurn = true;
             heroesIndex++;
         }
-
-        BuffListIterator();
     }
 
-    public void BuffListIterator() 
-    { 
+    public void BuffListHeroIterator() 
+    {
         List<int> removedIndexes = new List<int>();
+
+        Debug.Log("buffs presentes: " + heroes[heroesIndex].buffList.Count);
 
         for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)
         {
+            Debug.Log("turnos restantes do efeito " + heroes[heroesIndex].buffList[i].buffType + ": " + heroes[heroesIndex].buffList[i].duration);
             heroes[heroesIndex].buffList[i].duration -= 1;
 
             if (heroes[heroesIndex].buffList[i].duration == -1)
@@ -200,12 +201,34 @@ public class CombatCharManager : MonoBehaviour
 
         for (int i = 0; i < removedIndexes.Count; i++)
         {
-            heroes[heroesIndex].buffList.RemoveAt(i);
+            heroes[heroesIndex].buffList.RemoveAt(removedIndexes[i]);
         }
 
         isUpdatingBuffs = true;
     }
-    
+
+    public void BuffListEnemyIterator()
+    {
+        List<int> removedIndexes = new List<int>();
+
+        for (int i = 0; i < enemies[enemiesIndex].buffList.Count; i++)
+        {
+            enemies[enemiesIndex].buffList[i].duration -= 1;
+
+            if (enemies[enemiesIndex].buffList[i].duration == -1)
+            {
+                removedIndexes.Add(i);
+            }
+        }
+
+        for (int i = 0; i < removedIndexes.Count; i++)
+        {
+            enemies[enemiesIndex].buffList.RemoveAt(removedIndexes[i]);
+        }
+
+        isUpdatingBuffs = true;
+    }
+
     public bool IsPlayerTurn()
     {
         return playerTurn;
