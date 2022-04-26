@@ -82,8 +82,8 @@ public class CombatCharManager : MonoBehaviour
 
     public void SetupCharacters()
     {
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
         //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
 
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
@@ -124,6 +124,11 @@ public class CombatCharManager : MonoBehaviour
 
     private void UpdateUI()
     {
+        for (int i = 0; i < heroes.Count; i++)
+        {
+            heroesSprites[i].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroes[i].char_name);
+            heroesPortraits[i].sprite = CharacterCombatSpriteManager.GetInstance().CharacterPortraitImage(heroes[i].char_name);
+        }
         for (int i = heroes.Count; i < heroesSprites.Length; i++)
         {
             heroesSprites[i].SetActive(false);
@@ -132,6 +137,13 @@ public class CombatCharManager : MonoBehaviour
             heroesFullLifebars[i].enabled = false;
             heroesEnergybars[i].enabled = false;
             heroesPortraits[i].enabled = false;
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Debug.Log(enemies[i].char_name);
+            enemiesSprites[i].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemies[i].char_name);
+            enemiesPortraits[i].sprite = CharacterCombatSpriteManager.GetInstance().CharacterPortraitImage(enemies[i].char_name);
         }
         for (int i = enemies.Count; i < enemiesSprites.Length; i++)
         {
@@ -353,8 +365,6 @@ public class CombatCharManager : MonoBehaviour
         int attackCritRate = GenericBuffApplier(attackChar, attackChar.critRate, BuffType.CritRateUp, BuffType.CritRateDown);
         int attackCritDamage = GenericBuffApplier(attackChar, attackChar.critDamage, BuffType.CritDamageUp, BuffType.CritDamageDown);
         int attackHitRate = GenericBuffApplier(attackChar, attackChar.hitRate, BuffType.HitRateUp, BuffType.HitRateDown);
-
-        Debug.Log(attackCritRate);
 
         if (critRate < attackCritRate)
         {
