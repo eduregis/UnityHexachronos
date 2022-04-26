@@ -60,6 +60,18 @@ public class SkillManager : MonoBehaviour
             case Skill.PowerJab:
                 PowerJab(charInfo, targetIndex, isEnemy);
                 break;
+            case Skill.DoubleSlash:
+                StartCoroutine(DoubleSlash(charInfo, targetIndex, isEnemy));
+                break;
+            case Skill.BlankStare:
+                BlankStare(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.OpenWounds:
+                OpenWounds(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.BerserkMode:
+                BerserkMode(charInfo, targetIndex, isEnemy);
+                break;
             case Skill.HealingInjection:
                 HealingInjection(charInfo, targetIndex, isEnemy);
                 break;
@@ -101,7 +113,7 @@ public class SkillManager : MonoBehaviour
         System.Random rnd = new System.Random();
 
         int stunRate = rnd.Next(1, 101);
-        if (stunRate > 50)
+        if (stunRate > 30)
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -116,7 +128,7 @@ public class SkillManager : MonoBehaviour
         System.Random rnd = new System.Random();
 
         int bleedingRate = rnd.Next(1, 101);
-        if (bleedingRate > 50)
+        if (bleedingRate > 40)
         {
             Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -205,9 +217,61 @@ public class SkillManager : MonoBehaviour
 
     // Billy Skills
 
+    private IEnumerator DoubleSlash(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage1 = (int)((float)charInfo.damage * 0.7);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage1, targetIndex, isEnemy);
+
+        yield return new WaitForSeconds(0.1f);
+
+        int damage2 = (int)((float)charInfo.damage * 0.8);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage2, targetIndex, isEnemy);
+    }
+
+    private void BlankStare(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        System.Random rnd = new System.Random();
+        int stunRate = rnd.Next(1, 101);
+        if (stunRate > 50)
+        {
+            Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
+            CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        }
+    }
+
+    private void OpenWounds(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 0.5);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+
+        System.Random rnd = new System.Random();
+
+        int bleedingRate = rnd.Next(1, 101);
+        if (bleedingRate > 70)
+        {
+            Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
+            CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        }
+    }
+
+    private void BerserkMode(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        Buff buff1 = CreateBuff(2.5f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
+        CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+
+        Buff buff2 = CreateBuff(2.5f, BuffType.DamageUp, BuffModifier.Multiplier, 2);
+        CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+    }
 
     // Salvato Skills
 
+    private void HealingInjection(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
+        Buff buff = CreateBuff(2f, BuffType.DamageUp, BuffModifier.Constant, 1);
+
+        CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+    }
 
     // Dandara Skills
 
@@ -218,13 +282,7 @@ public class SkillManager : MonoBehaviour
 
 
 
-    private void HealingInjection (CharacterInfo charInfo, int targetIndex, bool isEnemy)
-    {
-        CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
-        Buff buff = CreateBuff(2f, BuffType.DamageUp, BuffModifier.Constant, 1);
 
-        CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
-    }
 
     private void NailBomb (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {

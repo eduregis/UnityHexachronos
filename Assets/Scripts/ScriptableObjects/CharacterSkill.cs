@@ -17,8 +17,12 @@ public enum Skill
     LongLiveTheRevolution,
     JustAScratch,
     PowerJab,
-    NailBomb,
+    DoubleSlash,
+    BlankStare,
+    OpenWounds,
+    BerserkMode,
     HealingInjection,
+    NailBomb,
     EnergizedHammer
 }
 

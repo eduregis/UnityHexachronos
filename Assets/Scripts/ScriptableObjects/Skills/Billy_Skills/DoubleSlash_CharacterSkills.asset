@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
-  m_Name: HealingInjection_CharacterSkills
+  m_Name: DoubleSlash_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 13
-  skill_name: "Inje\xE7\xE3o de Cura"
-  description: Cura 30 pontos de vida de um alvo.
+  skill_id: 12
+  skill_name: Corte duplo
+  description: "Dois ataques em sequ\xEAncia."
   cost: 30
-  affectType: 2
+  affectType: 1
