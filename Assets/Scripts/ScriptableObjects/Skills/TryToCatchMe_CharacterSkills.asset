@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
-  m_Name: TenteMePegar_CharacterSkills
+  m_Name: TryToCatchMe_CharacterSkills
   m_EditorClassIdentifier: 
   skill_id: 0
   skill_name: Tente me pegar!
   description: "Aumenta a evas\xE3o e taxa cr\xEDtica em 3 turnos."
   cost: 30
-  affectType: 2
+  affectType: 0

@@ -15,6 +15,7 @@ public enum ActualTBSStatus
     AllyMultiTargetSkill,
     EnemySingleTargetSkill,
     EnemyMultiTargetSkill,
+    SelfTargetSkill,
     Block,
     EnemiesTurn
 }
@@ -161,6 +162,9 @@ public class CombatUIManager : MonoBehaviour
                 CheckingEnemyTarget();
                 break;
             case ActualTBSStatus.AllySingleTargetSkill:
+                CheckingAllyTarget();
+                break;
+            case ActualTBSStatus.SelfTargetSkill:
                 CheckingAllyTarget();
                 break;
             case ActualTBSStatus.EnemiesTurn:
@@ -339,6 +343,10 @@ public class CombatUIManager : MonoBehaviour
                 actualStatus = ActualTBSStatus.AllyMultiTargetSkill;
                 StartCoroutine(CallAllAlliesTargetMenu());
                 break;
+            case AffectType.Self:
+                actualStatus = ActualTBSStatus.SelfTargetSkill;
+                StartCoroutine(CallSelfTargetMenu());
+                break;
             default:
                 break;
         }
@@ -377,6 +385,10 @@ public class CombatUIManager : MonoBehaviour
         else if (actualStatus == ActualTBSStatus.AllyMultiTargetSkill)
         {
             StartCoroutine(ApllyingAlliesMultiTargetSkill());
+        }
+        else if (actualStatus == ActualTBSStatus.SelfTargetSkill)
+        {
+            StartCoroutine(ApllyingSelfTargetSkill());
         }
     }
 
@@ -448,6 +460,52 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingEnemyTargetMenu();
+        StartCoroutine(UpdateCurrentCharacter());
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(CallMainMenu());
+    }
+
+    // Skill With Self Targets
+
+    private IEnumerator CallSelfTargetMenu()
+    {
+        turnIndicator.text = "A skill marca a si mesmo";
+
+        yield return new WaitForSeconds(1.0f);
+
+        int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
+
+        for (int i = 0; i < heroesSpotted.Length; i++)
+        {
+            if (i == targetIndex)
+            {
+                heroesSpotted[i].gameObject.SetActive(true);
+            } else
+            {
+                heroesSpotted[i].gameObject.SetActive(false);
+            }
+            
+        }
+        StartCoroutine(SelectSelfTargetMenu(targetIndex));
+    }
+
+    private IEnumerator SelectSelfTargetMenu(int targetIndex)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(heroesSpotted[targetIndex].gameObject);
+        CombatCharManager.GetInstance().ShowAllyTarget(targetIndex);
+    }
+
+    private IEnumerator ApllyingSelfTargetSkill()
+    {
+        CombatCharManager.GetInstance().ShowAllyTarget(-1);
+        yield return new WaitForSeconds(0.5f);
+        int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
+        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, targetIndex, false);
+        turnIndicator.text = "";
+        yield return new WaitForSeconds(0.5f);
+        HidingAllyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(CallMainMenu());
