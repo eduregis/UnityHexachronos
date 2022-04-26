@@ -186,11 +186,8 @@ public class CombatCharManager : MonoBehaviour
     {
         List<int> removedIndexes = new List<int>();
 
-        Debug.Log("buffs presentes: " + heroes[heroesIndex].buffList.Count);
-
         for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)
         {
-            Debug.Log("turnos restantes do efeito " + heroes[heroesIndex].buffList[i].buffType + ": " + heroes[heroesIndex].buffList[i].duration);
             heroes[heroesIndex].buffList[i].duration -= 1;
 
             if (heroes[heroesIndex].buffList[i].duration == -1)
@@ -199,7 +196,7 @@ public class CombatCharManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < removedIndexes.Count; i++)
+        for (int i = (removedIndexes.Count - 1); i >= 0; i--)
         {
             heroes[heroesIndex].buffList.RemoveAt(removedIndexes[i]);
         }
@@ -221,7 +218,7 @@ public class CombatCharManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < removedIndexes.Count; i++)
+        for (int i = (removedIndexes.Count - 1); i >= 0; i--)
         {
             enemies[enemiesIndex].buffList.RemoveAt(removedIndexes[i]);
         }
@@ -357,6 +354,8 @@ public class CombatCharManager : MonoBehaviour
         int attackCritDamage = GenericBuffApplier(attackChar, attackChar.critDamage, BuffType.CritDamageUp, BuffType.CritDamageDown);
         int attackHitRate = GenericBuffApplier(attackChar, attackChar.hitRate, BuffType.HitRateUp, BuffType.HitRateDown);
 
+        Debug.Log(attackCritRate);
+
         if (critRate < attackCritRate)
         {
             damage = damage + (damage * (int)((float)attackCritDamage) / 100);
@@ -402,6 +401,7 @@ public class CombatCharManager : MonoBehaviour
             else { enemies[index].life -= damage; }
             enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
             damageLifeShrinkTimer = 1.0f;
+            Debug.Log(enemies[index].char_name + " tomou " + damage + " (" + damage + ") pontos de dano.");
         }
         else
         {

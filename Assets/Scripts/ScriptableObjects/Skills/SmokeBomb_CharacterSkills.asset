@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
   m_Name: SmokeBomb_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 8
+  skill_id: 5
   skill_name: "Bomba de fuma\xE7a"
-  description: "D\xE1 uma pequena cura, aumenta evas\xE3o"
+  description: "Aumenta evas\xE3o de todos do time por 3 turnos."
   cost: 20
   affectType: 4

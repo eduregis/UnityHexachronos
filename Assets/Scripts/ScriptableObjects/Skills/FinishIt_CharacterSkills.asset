@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
-  m_Name: BehindYou_CharacterSkills
+  m_Name: FinishIt_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 2
-  skill_name: "Atr\xE1s de Voc\xEA!"
-  description: Causa dano e tem chance de causar sangramento.
+  skill_id: 7
+  skill_name: Acabe com isso!
+  description: "Aumenta dano e taxa cr\xEDtica por um turno."
   cost: 30
-  affectType: 1
+  affectType: 2

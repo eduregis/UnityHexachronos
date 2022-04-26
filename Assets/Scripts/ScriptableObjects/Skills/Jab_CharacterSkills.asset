@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
   m_Name: Jab_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 4
+  skill_id: 8
   skill_name: "Porrad\xE3o"
   description: "Soc\xE3o nas venta"
   cost: 30

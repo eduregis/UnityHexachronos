@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
-  m_Name: BehindYou_CharacterSkills
+  m_Name: HealingPulse_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 2
-  skill_name: "Atr\xE1s de Voc\xEA!"
-  description: Causa dano e tem chance de causar sangramento.
-  cost: 30
-  affectType: 1
+  skill_id: 6
+  skill_name: Pulso de Cura
+  description: "D\xE1 um pequena cura para todos os aliados."
+  cost: 20
+  affectType: 4

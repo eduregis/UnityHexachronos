@@ -9,11 +9,14 @@ public enum Skill
     DesencanaComIsso,
     BehindYou,
     LetsGetThisOverWith,
+    Taser,
+    SmokeBomb,
+    HealingPulse,
+    FinishIt,
     Jab,
     NailBomb,
     HealingInjection,
-    EnergizedHammer,
-    SmokeBomb
+    EnergizedHammer
 }
 
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]

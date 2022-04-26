@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
   m_Name: EnergizedHammer
   m_EditorClassIdentifier: 
-  skill_id: 7
+  skill_id: 11
   skill_name: Martelo Energizado
   description: Aplica eletricidade no martelo para dar mais dano.
   cost: 30
