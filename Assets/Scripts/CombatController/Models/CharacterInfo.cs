@@ -18,11 +18,13 @@ public class CharacterInfo
     public int maxLife;
     public int energy;
     public int maxEnergy;
+    public float defense;
     public int damage;
     public int hitRate;
     public int evasionRate;
     public int critRate;
     public int critDamage;
+    public bool isBlocking;
 
     public List<CharacterSkill> skillList;
     public List<Buff> buffList;

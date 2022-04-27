@@ -83,7 +83,7 @@ public class CombatCharManager : MonoBehaviour
 
     public void SetupCharacters()
     {
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Morya), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Salvato), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
 
@@ -111,11 +111,13 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.life = characterInfo.maxLife;
         characterInfo.maxEnergy = 100;
         characterInfo.energy = characterInfo.maxEnergy;
+        characterInfo.defense = 1f;
         characterInfo.damage = (basicStats.strength + (basicStats.technique / 2) + (basicStats.level / 5));
         characterInfo.hitRate = (50 + basicStats.technique + (basicStats.agility / 2) + (basicStats.luck / 4));
         characterInfo.evasionRate = ((basicStats.agility / 3) + (basicStats.luck / 3) + (basicStats.intelligence / 3));
         characterInfo.critRate = (5 + (basicStats.luck / 2));
         characterInfo.critDamage = 50;
+        characterInfo.isBlocking = false;
 
         if (isHero) {
             heroes.Add(characterInfo);
@@ -199,6 +201,8 @@ public class CombatCharManager : MonoBehaviour
 
     public void BuffListHeroIterator() 
     {
+        FinishBlock();
+
         List<int> removedIndexes = new List<int>();
 
         for (int i = 0; i < heroes[heroesIndex].buffList.Count; i++)
@@ -389,7 +393,14 @@ public class CombatCharManager : MonoBehaviour
         if (isEnemy)
         {
             int defenderEvasionRate = GenericBuffApplier(enemies[index], enemies[index].evasionRate, BuffType.EvasionUp, BuffType.EvasionDown);
-            // TODO: Aplicar defesa e buffs
+            float defenderDefense = GenericBuffApplierFloat(enemies[index], enemies[index].defense, BuffType.DefenseUp, BuffType.DefenseDown);
+
+            damage = (int)((float)damage / defenderDefense);
+
+            if (enemies[index].isBlocking) {
+                damage = (int)((float)damage / 1.5f);
+            }
+
             if ((hitRate < attackHitRate) || (evasionRate > defenderEvasionRate)) {
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
@@ -403,7 +414,15 @@ public class CombatCharManager : MonoBehaviour
         } else
         {
             int defenderEvasionRate = GenericBuffApplier(heroes[index], heroes[index].evasionRate, BuffType.EvasionUp, BuffType.EvasionDown);
-            // TODO: Aplicar defesa e buffs
+            float defenderDefense = GenericBuffApplierFloat(heroes[index], heroes[index].defense, BuffType.DefenseUp, BuffType.DefenseDown);
+
+            damage = (int)((float)damage / defenderDefense);
+
+            if (heroes[index].isBlocking)
+            {
+                damage = (int)((float)damage / 1.5f);
+            }
+
             if ((hitRate < attackHitRate) || (evasionRate > defenderEvasionRate))
             {
                 if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
@@ -502,6 +521,46 @@ public class CombatCharManager : MonoBehaviour
             }
         }
         return (int)finalValue;
+    }
+
+    private float GenericBuffApplierFloat(CharacterInfo attackChar, float value, BuffType buffTypeUp, BuffType buffTypeDown)
+    {
+        foreach (Buff buff in attackChar.buffList)
+        {
+            if (buff.buffType == buffTypeUp)
+            {
+                if (buff.modifier == BuffModifier.Multiplier)
+                {
+                    value *= buff.value;
+                }
+                else if (buff.modifier == BuffModifier.Constant)
+                {
+                    value += buff.value;
+                }
+            }
+            if (buff.buffType == buffTypeDown)
+            {
+                if (buff.modifier == BuffModifier.Multiplier)
+                {
+                    value /= buff.value;
+                }
+                else if (buff.modifier == BuffModifier.Constant)
+                {
+                    value -= buff.value;
+                }
+            }
+        }
+        return value;
+    }
+
+    public void Blocking()
+    {
+        heroes[heroesIndex].isBlocking = true;
+    }
+
+    public void FinishBlock()
+    {
+        heroes[heroesIndex].isBlocking = false;
     }
 
     public void SettingBuff(Buff buff, int index, bool isEnemy)

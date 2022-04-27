@@ -667,6 +667,7 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator Blocking()
     {
         turnIndicator.text = "Bloqueando";
+        CombatCharManager.GetInstance().Blocking();
         yield return new WaitForSeconds(1.0f);
         turnIndicator.text = "";
         StartCoroutine(UpdateCurrentCharacter());
