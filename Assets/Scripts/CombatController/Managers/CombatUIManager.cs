@@ -30,6 +30,8 @@ public class CombatUIManager : MonoBehaviour
     [SerializeField] private GameObject[] skillMenuButtons;
     [SerializeField] private GameObject backgroundSkillDescription;
     [SerializeField] private TextMeshProUGUI textSkillDescription;
+    [SerializeField] private GameObject backgroundSkillName;
+    [SerializeField] private TextMeshProUGUI textSkillName;
 
     [Header("Attack Target Menu UI")]
     [SerializeField] private GameObject[] enemiesSpotted;
@@ -259,7 +261,10 @@ public class CombatUIManager : MonoBehaviour
             skillMenuButtons[i].gameObject.SetActive(true);
         }
 
+        backgroundSkillName.SetActive(true);
         backgroundSkillDescription.SetActive(true);
+
+        textSkillName.text = actualCharacter.skillList[0].skill_name;
         textSkillDescription.text = actualCharacter.skillList[0].description;
 
         StartCoroutine(SelectSkillMenuFirstOption());
@@ -273,6 +278,7 @@ public class CombatUIManager : MonoBehaviour
         {
             skillMenuButtons[i].gameObject.SetActive(false);
         }
+        backgroundSkillName.SetActive(false);
         backgroundSkillDescription.SetActive(false);
     }
 
@@ -295,7 +301,10 @@ public class CombatUIManager : MonoBehaviour
         } else
         {
             actualStatus = ActualTBSStatus.Skill;
-            StartCoroutine(ExecutingSkill(skillMenuButtonIndex));
+            if(actualCharacter.skillList[skillMenuButtonIndex - 1].cost <= actualCharacter.energy)
+            {
+                StartCoroutine(ExecutingSkill(skillMenuButtonIndex));
+            }
         }
     }
 
@@ -307,12 +316,16 @@ public class CombatUIManager : MonoBehaviour
             {
                 if (i == 0)
                 {
+                    textSkillName.text = "";
                     textSkillDescription.text = "";
                 }
                 if (i != (skillButtonIndex))
                 {
                     skillButtonIndex = i;
-                    if (i != 0) { textSkillDescription.text = actualCharacter.skillList[i - 1].description; }
+                    if (i != 0) {
+                        textSkillName.text = actualCharacter.skillList[i - 1].skill_name;
+                        textSkillDescription.text = actualCharacter.skillList[i - 1].description; 
+                    }
                 }
             }
         }
