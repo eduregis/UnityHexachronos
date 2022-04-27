@@ -84,11 +84,17 @@ public class SkillManager : MonoBehaviour
             case Skill.WordOfCommand:
                 WordOfCommand(charInfo, targetIndex, isEnemy);
                 break;
-            case Skill.NailBomb:
-                NailBomb(charInfo, targetIndex, isEnemy);
+            case Skill.LetsGoGuys:
+                LetsGoGuys(charInfo, targetIndex, isEnemy);
                 break;
             case Skill.EnergizedHammer:
                 EnergizedHammer(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.Charge:
+                Charge(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.SpinAttack:
+                SpinAttack(charInfo, targetIndex, isEnemy);
                 break;
         }
     }
@@ -302,29 +308,42 @@ public class SkillManager : MonoBehaviour
 
     // Dandara Skills
 
+    private void LetsGoGuys(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int numberOfHeroes = CombatCharManager.GetInstance().heroes.Count;
+        for (int i = 0; i < numberOfHeroes; i++)
+        {
+            Buff buff = CreateBuff(1.3f, BuffType.DamageUp, BuffModifier.Multiplier, 3);
+            CombatCharManager.GetInstance().SettingBuff(buff, i, isEnemy);
+        }
+    }
+
+    private void EnergizedHammer(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 1.5);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+    }
+
+    private void Charge(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        CombatCharManager.GetInstance().GainEnergy(50, targetIndex, isEnemy);
+    }
+
+    private void SpinAttack(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
+        for (int i = 0; i < numberOfEnemies; i++)
+        {
+            int damage = (int)((float)charInfo.damage * 1.3);
+            CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, i, isEnemy);
+        }
+
+    
+}
 
     // Sniper Skills
 
 
 
-
-
-
-
-    private void NailBomb (CharacterInfo charInfo, int targetIndex, bool isEnemy)
-    {
-        int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
-        for (int i = 0; i < numberOfEnemies; i++)
-        {
-            CombatCharManager.GetInstance().InflictingDamage(charInfo, 30, i, isEnemy);
-        }
-    }
-
-    private void EnergizedHammer (CharacterInfo charInfo, int targetIndex, bool isEnemy)
-    {
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, 30, targetIndex, isEnemy);
-    }
-
-   
 }
 

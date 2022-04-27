@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
-  m_Name: NailBomb_CharacterSkills
+  m_Name: Charge_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 9
-  skill_name: Bomba de Pregos
-  description: Um explosivo dentro de uma lata de pregos, acerta todos os inimigos.
-  cost: 40
-  affectType: 3
+  skill_id: 0
+  skill_name: 
+  description: 
+  cost: 0
+  affectType: 0

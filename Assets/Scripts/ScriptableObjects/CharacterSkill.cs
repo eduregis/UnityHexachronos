@@ -25,8 +25,10 @@ public enum Skill
     ExtraBattery,
     StayFocused,
     WordOfCommand,
-    NailBomb,
-    EnergizedHammer
+    LetsGoGuys,
+    EnergizedHammer,
+    Charge,
+    SpinAttack
 }
 
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]
