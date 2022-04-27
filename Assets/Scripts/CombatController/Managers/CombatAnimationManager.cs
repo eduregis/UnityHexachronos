@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class CombatAnimationManager : MonoBehaviour
     [SerializeField] private GameObject overlay;
     [SerializeField] private GameObject[] heroesSprites;
     [SerializeField] private GameObject[] enemiesSprites;
+    [SerializeField] private TextMeshProUGUI[] damageTexts;
 
     // Animation control variables
     private float screenTimer = 0;
@@ -45,9 +47,27 @@ public class CombatAnimationManager : MonoBehaviour
                 break;
             case AffectType.EnemyTarget:
                 string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, false);
-                heroesSprites[1].GetComponent<Image>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
+                heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
                 string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
-                enemiesSprites[1].GetComponent<Image>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                
+                for (int i = 0; i < effects.Count; i++)
+                {
+                    int random_x = Random.Range(0, 100);
+                    int random_y = Random.Range(0, 100);
+                    damageTexts[i].text = effects[i].ToString();
+                    if (isEnemy)
+                    {
+                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x, enemiesSprites[0].transform.position.y + random_y + 450.0f, 1);
+                    }
+                    else
+                    {
+                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x, heroesSprites[0].transform.position.y + random_y + 450.0f, 1);
+                    }
+
+                    
+                }
+                
                 break;
             case AffectType.AllyTarget:
                 break;
@@ -86,8 +106,9 @@ public class CombatAnimationManager : MonoBehaviour
             switch(affectType)
             {
                 case AffectType.Self:
-                    heroesSprites[0].SetActive(false);
-                    heroesSprites[1].SetActive(true);
+                    
+                    heroesSprites[0].SetActive(true);
+                    heroesSprites[1].SetActive(false);
                     heroesSprites[2].SetActive(false);
                     foreach (GameObject enemies in enemiesSprites)
                     {
@@ -95,17 +116,18 @@ public class CombatAnimationManager : MonoBehaviour
                     }
                     break;
                 case AffectType.EnemyTarget:
-                    heroesSprites[0].SetActive(false);
-                    heroesSprites[1].SetActive(true);
+                    Debug.Log(enemiesSprites[0].transform.position);
+                    heroesSprites[0].SetActive(true);
+                    heroesSprites[1].SetActive(false);
                     heroesSprites[2].SetActive(false);
 
-                    enemiesSprites[0].SetActive(false);
-                    enemiesSprites[1].SetActive(true);
+                    enemiesSprites[0].SetActive(true);
+                    enemiesSprites[1].SetActive(false);
                     enemiesSprites[2].SetActive(false);
                     break;
                 case AffectType.AllEnemies:
-                    heroesSprites[0].SetActive(false);
-                    heroesSprites[1].SetActive(true);
+                    heroesSprites[0].SetActive(true);
+                    heroesSprites[1].SetActive(false);
                     heroesSprites[2].SetActive(false);
 
                     enemiesSprites[0].SetActive(true);
@@ -146,6 +168,10 @@ public class CombatAnimationManager : MonoBehaviour
             foreach (GameObject enemies in enemiesSprites)
             {
                 enemies.SetActive(false);
+            }
+            foreach(TextMeshProUGUI text in damageTexts)
+            {
+                text.text = "";
             }
         }
     }

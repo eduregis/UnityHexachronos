@@ -753,7 +753,10 @@ public class CombatUIManager : MonoBehaviour
                     }
                 }
 
-                CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
+                int damage = CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
+                List<string> damages = new List<string>();
+                damages.Add(damage.ToString());
+                CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, false);
             }
 
             yield return new WaitForSeconds(1.0f);
