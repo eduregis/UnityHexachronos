@@ -408,6 +408,7 @@ public class CombatCharManager : MonoBehaviour
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1.5f;
+                CombatAnimationManager.GetInstance().ActiveScreen();
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
             } else
             {
@@ -431,6 +432,7 @@ public class CombatCharManager : MonoBehaviour
                 else { heroes[index].life -= damage; }
                 heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1.5f;
+                CombatAnimationManager.GetInstance().ActiveScreen();
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + heroes[index].char_name);
             }
             else
