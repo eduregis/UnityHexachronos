@@ -46,10 +46,7 @@ public class CombatAnimationManager : MonoBehaviour
             case AffectType.Self:
                 break;
             case AffectType.EnemyTarget:
-                string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, false);
-                heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
-                string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
-                enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                
                 
                 for (int i = 0; i < effects.Count; i++)
                 {
@@ -58,14 +55,20 @@ public class CombatAnimationManager : MonoBehaviour
                     damageTexts[i].text = effects[i].ToString();
                     if (isEnemy)
                     {
+                        string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, false);
+                        heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
+                        string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
+                        enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
                         damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x, enemiesSprites[0].transform.position.y + random_y + 400.0f, 1);
                     }
                     else
                     {
+                        string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, false);
+                        heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                        string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, true);
+                        enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
                         damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x, heroesSprites[0].transform.position.y + random_y + 400.0f, 1);
                     }
-
-                    
                 }
                 
                 break;

@@ -134,8 +134,11 @@ public class SkillManager : MonoBehaviour
 
     private void DesencanaComIsso (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 0.6);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
 
         System.Random rnd = new System.Random();
 
@@ -144,13 +147,19 @@ public class SkillManager : MonoBehaviour
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+            texts.Add("Atordoado");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void BehindYou (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 0.7);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
 
         System.Random rnd = new System.Random();
 
@@ -159,25 +168,36 @@ public class SkillManager : MonoBehaviour
         {
             Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+            texts.Add("Sangrando");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private IEnumerator LetsGetThisOverWith (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 0.65);
         for (int i = 0; i < 5; i++)
         {
             yield return new WaitForSeconds(0.1f);
-            CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+            int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+            texts.Add(finalDamage.ToString());
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     // Sam Skills
 
     private void Taser(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 0.7);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
 
         System.Random rnd = new System.Random();
 
@@ -186,7 +206,10 @@ public class SkillManager : MonoBehaviour
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+            texts.Add("Atordoado");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void SmokeBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -238,38 +261,57 @@ public class SkillManager : MonoBehaviour
 
     private void PowerJab(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 2.5);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     // Billy Skills
 
     private IEnumerator DoubleSlash(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage1 = (int)((float)charInfo.damage * 0.7);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage1, targetIndex, isEnemy);
+        int finalDamage1 = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage1, targetIndex, isEnemy);
+        texts.Add(finalDamage1.ToString());
 
         yield return new WaitForSeconds(0.1f);
 
         int damage2 = (int)((float)charInfo.damage * 0.8);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage2, targetIndex, isEnemy);
+        int finalDamage2 = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage2, targetIndex, isEnemy);
+        texts.Add(finalDamage2.ToString());
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void BlankStare(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         System.Random rnd = new System.Random();
         int stunRate = rnd.Next(1, 101);
         if (stunRate > 50)
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+            texts.Add("Atordoado");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void OpenWounds(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 0.5);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
 
         System.Random rnd = new System.Random();
 
@@ -278,7 +320,10 @@ public class SkillManager : MonoBehaviour
         {
             Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+            texts.Add("Sangrando");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void BerserkMode(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -314,8 +359,13 @@ public class SkillManager : MonoBehaviour
 
     private void WordOfCommand(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff = CreateBuff(2f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        texts.Add("Diminuiu defesa");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     // Dandara Skills
@@ -332,8 +382,13 @@ public class SkillManager : MonoBehaviour
 
     private void EnergizedHammer(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 1.5);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void Charge(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -354,11 +409,17 @@ public class SkillManager : MonoBehaviour
     // Sniper Skills
     private void MarkEnemy(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff1 = CreateBuff(10, BuffType.Taunt, BuffModifier.Status, 2);
         CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+        texts.Add("Marcado");
 
         Buff buff2 = CreateBuff(1.5f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
         CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+        texts.Add("Diminuiu defesa");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
     private void KeepCalm(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -387,8 +448,13 @@ public class SkillManager : MonoBehaviour
 
     private void Bullseye(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int damage = (int)((float)charInfo.damage * 3.0);
-        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+        texts.Add(finalDamage.ToString());
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
     }
 
 
