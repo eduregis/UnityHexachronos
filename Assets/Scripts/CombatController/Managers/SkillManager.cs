@@ -181,7 +181,7 @@ public class SkillManager : MonoBehaviour
         int damage = (int)((float)charInfo.damage * 0.65);
         for (int i = 0; i < 5; i++)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
             int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
             texts.Add(finalDamage.ToString());
         }

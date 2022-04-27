@@ -50,8 +50,8 @@ public class CombatAnimationManager : MonoBehaviour
                 
                 for (int i = 0; i < effects.Count; i++)
                 {
-                    int random_x = Random.Range(0, 100);
-                    int random_y = Random.Range(0, 100);
+                    int random_x = Random.Range(0, 200);
+                    int random_y = Random.Range(0, 20);
                     damageTexts[i].text = effects[i].ToString();
                     if (isEnemy)
                     {
@@ -59,7 +59,7 @@ public class CombatAnimationManager : MonoBehaviour
                         heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
                         string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
                         enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
-                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x, enemiesSprites[0].transform.position.y + random_y + 400.0f, 1);
+                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x + 200f, enemiesSprites[0].transform.position.y + random_y + 350.0f + (i* 30.0f), 1);
                     }
                     else
                     {
@@ -67,7 +67,7 @@ public class CombatAnimationManager : MonoBehaviour
                         heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
                         string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, true);
                         enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
-                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x, heroesSprites[0].transform.position.y + random_y + 400.0f, 1);
+                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x + 200f, heroesSprites[0].transform.position.y + random_y + 350.0f + (i * 30.0f), 1);
                     }
                 }
                 

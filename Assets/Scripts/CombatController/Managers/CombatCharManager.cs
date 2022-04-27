@@ -711,18 +711,21 @@ public class CombatCharManager : MonoBehaviour
         {
             damageLifeShrinkTimer -= Time.deltaTime;
 
-            for (var i = 0; i < enemies.Count; i++)
+            if (damageLifeShrinkTimer < 1.0f)
             {
-                if (enemiesFullLifebars[i].fillAmount < enemiesDamageLifebars[i].fillAmount)
+                for (var i = 0; i < enemies.Count; i++)
                 {
-                    enemiesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
+                    if (enemiesFullLifebars[i].fillAmount < enemiesDamageLifebars[i].fillAmount)
+                    {
+                        enemiesDamageLifebars[i].fillAmount -= 1f * Time.deltaTime;
+                    }
                 }
-            }
-            for (var i = 0; i < heroes.Count; i++)
-            {
-                if (heroesFullLifebars[i].fillAmount < heroesDamageLifebars[i].fillAmount)
+                for (var i = 0; i < heroes.Count; i++)
                 {
-                    heroesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
+                    if (heroesFullLifebars[i].fillAmount < heroesDamageLifebars[i].fillAmount)
+                    {
+                        heroesDamageLifebars[i].fillAmount -= 1f * Time.deltaTime;
+                    }
                 }
             }
         } 
