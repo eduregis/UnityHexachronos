@@ -615,7 +615,12 @@ public class CombatUIManager : MonoBehaviour
         turnIndicator.text = "Atacando";
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
-        CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
+        // Calling the animation canvas
+        int damage = CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
+        List<string> damages = new List<string>();
+        damages.Add(damage.ToString());
+        CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetHeroesIndex(), attackTargetMenuButtonIndex, AffectType.EnemyTarget, true);
+
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingEnemyTargetMenu();
