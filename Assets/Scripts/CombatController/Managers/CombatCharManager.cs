@@ -40,7 +40,8 @@ public class CombatCharManager : MonoBehaviour
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
     private float energyShrinkTimer = 0;
-    private float rotateCharTimer = 0;
+    private float rotateHeroesCharTimer = 0;
+    private float rotateEnemiesCharTimer = 0;
     private float hudHeroesAnimateTimer = 0;
     private float hudEnemiesAnimateTimer = 0;
     private bool isUpdatingBuffs = false;
@@ -167,7 +168,7 @@ public class CombatCharManager : MonoBehaviour
         pos2 = heroesSprites[1].transform.position;
         pos3 = heroesSprites[2].transform.position;
 
-        rotateCharTimer = 1f;
+        rotateHeroesCharTimer = 1f;
     }
 
     public CharacterInfo GetCurrentCharacter()
@@ -179,6 +180,7 @@ public class CombatCharManager : MonoBehaviour
     public void RotateEnemies()
     {
         hudEnemiesAnimateTimer = 1f;
+        rotateEnemiesCharTimer = 1f;
     }
 
     public void GoToNextEnemy()
@@ -589,9 +591,9 @@ public class CombatCharManager : MonoBehaviour
 
     public void MovingSpriteCharsIfNeeded()
     {
-        if (rotateCharTimer > 0)
+        if (rotateHeroesCharTimer > 0)
         {
-            rotateCharTimer -= Time.deltaTime;
+            rotateHeroesCharTimer -= Time.deltaTime;
 
             if (heroes.Count == 2)
             {
@@ -617,6 +619,27 @@ public class CombatCharManager : MonoBehaviour
                 {
                     heroesSprites[i].transform.localScale = Vector3.Lerp(heroesSprites[i].transform.localScale, scaleNormal, 4f * Time.deltaTime);
                     SpriteRenderer spr = heroesSprites[i].GetComponent<SpriteRenderer>();
+                    spr.sortingOrder = 3;
+                    spr.color = Color.Lerp(spr.color, Color.gray, 4f * Time.deltaTime);
+                }
+            }
+        }
+
+        if (rotateEnemiesCharTimer > 0)
+        {
+            rotateEnemiesCharTimer -= Time.deltaTime;
+            
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (i == enemiesIndex && !playerTurn)
+                {
+                    SpriteRenderer spr = enemiesSprites[i].GetComponent<SpriteRenderer>();
+                    spr.sortingOrder = 4;
+                    spr.color = Color.Lerp(spr.color, Color.white, 4f * Time.deltaTime);
+                }
+                else
+                {
+                    SpriteRenderer spr = enemiesSprites[i].GetComponent<SpriteRenderer>();
                     spr.sortingOrder = 3;
                     spr.color = Color.Lerp(spr.color, Color.gray, 4f * Time.deltaTime);
                 }
