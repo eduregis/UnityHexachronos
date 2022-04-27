@@ -16,6 +16,8 @@ public class CharacterInfo
     // advanced status
     public int life;
     public int maxLife;
+    public int energy;
+    public int maxEnergy;
     public int damage;
     public int hitRate;
     public int evasionRate;

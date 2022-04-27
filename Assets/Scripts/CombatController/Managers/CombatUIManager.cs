@@ -397,6 +397,7 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().ShowAllyTarget(-1);
         yield return new WaitForSeconds(0.5f);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, allyTargetMenuButtonIndex, false);
+        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAllyTargetMenu();
@@ -457,6 +458,7 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, 0, true);
+        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingEnemyTargetMenu();
@@ -503,6 +505,7 @@ public class CombatUIManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, targetIndex, false);
+        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAllyTargetMenu();
@@ -538,6 +541,7 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().ShowAllyTarget(-1);
         yield return new WaitForSeconds(0.5f);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, 0, false);
+        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingAllyTargetMenu();
@@ -612,6 +616,7 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
         yield return new WaitForSeconds(0.5f);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
+        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
         yield return new WaitForSeconds(0.5f);
         HidingEnemyTargetMenu();

@@ -39,6 +39,7 @@ public class CombatCharManager : MonoBehaviour
     // Animation control variables
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
+    private float energyShrinkTimer = 0;
     private float rotateCharTimer = 0;
     private float hudHeroesAnimateTimer = 0;
     private float hudEnemiesAnimateTimer = 0;
@@ -108,6 +109,8 @@ public class CombatCharManager : MonoBehaviour
 
         characterInfo.maxLife = ((basicStats.vitality + basicStats.level ) * 5);
         characterInfo.life = characterInfo.maxLife;
+        characterInfo.maxEnergy = 100;
+        characterInfo.energy = characterInfo.maxEnergy;
         characterInfo.damage = (basicStats.strength + (basicStats.technique / 2) + (basicStats.level / 5));
         characterInfo.hitRate = (50 + basicStats.technique + (basicStats.agility / 2) + (basicStats.luck / 4));
         characterInfo.evasionRate = ((basicStats.agility / 3) + (basicStats.luck / 3) + (basicStats.intelligence / 3));
@@ -346,7 +349,6 @@ public class CombatCharManager : MonoBehaviour
         InflictingDamage(attackChar, attackChar.damage, index, isEnemy);
     }
 
-
     public void GainHP(int hpGain, int index, bool isEnemy)
     {
         if (isEnemy)
@@ -364,6 +366,7 @@ public class CombatCharManager : MonoBehaviour
             gainLifeShrinkTimer = 1.5f;
         }
     }
+
     public void InflictingDamage(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
     {
         System.Random rnd = new System.Random();
@@ -423,7 +426,7 @@ public class CombatCharManager : MonoBehaviour
             if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
             else { enemies[index].life -= damage; }
             enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
-            damageLifeShrinkTimer = 1.0f;
+            damageLifeShrinkTimer = 1.5f;
             Debug.Log(enemies[index].char_name + " tomou " + damage + " (" + damage + ") pontos de dano.");
         }
         else
@@ -431,8 +434,41 @@ public class CombatCharManager : MonoBehaviour
             if (heroes[index].life - damage < 0) { heroes[index].life = 0; }
             else { heroes[index].life -= damage; }
             heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
-            damageLifeShrinkTimer = 1.0f;
+            damageLifeShrinkTimer = 1.5f;
             Debug.Log(heroes[index].char_name + " tomou " + damage + " (" + damage + ") pontos de dano.");
+        }
+    }
+
+    // Energy Methods
+    public void GainEnergy(int energyGain, int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            if (enemies[index].energy + energyGain > enemies[index].maxEnergy) { enemies[index].energy = enemies[index].maxEnergy; }
+            else { enemies[index].energy += energyGain; }
+        }
+        else
+        {
+            if (heroes[index].energy + energyGain > heroes[index].maxEnergy) { heroes[index].energy = heroes[index].maxEnergy; }
+            else { heroes[index].energy += energyGain; }
+            heroesEnergybars[index].fillAmount = Mathf.Clamp(((float)heroes[index].energy / (float)heroes[index].maxEnergy), 0, 1f);
+            energyShrinkTimer = 1.5f;
+        }
+    }
+
+    public void LoseEnergy(int cost, int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            if (enemies[index].energy - cost < 0) { enemies[index].energy = 0; }
+            else { enemies[index].energy -= cost; }
+        }
+        else
+        {
+            if (heroes[index].energy - cost < 0) { heroes[index].energy = 0; }
+            else { heroes[index].energy -= cost; }
+            heroesEnergybars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].energy, (float)heroes[index].maxEnergy), 0, 1f);
+            energyShrinkTimer = 1.5f;
         }
     }
 
@@ -615,6 +651,21 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    public void CheckingEnergyBars()
+    {
+        if (energyShrinkTimer > 0)
+        {
+            energyShrinkTimer -= Time.deltaTime;
+      
+            /*for (var i = 0; i < heroes.Count; i++)
+            {
+                if (heroesEnergybars[i].fillAmount < heroesDamageLifebars[i].fillAmount)
+                {
+                    heroesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
+                }
+            }*/
+        }
+    }
     public void UpdatingBuffsUI()
     {
         for(int i = 0; i < heroes.Count; i++)
