@@ -40,7 +40,8 @@ public class CombatCharManager : MonoBehaviour
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
     private float energyShrinkTimer = 0;
-    private float rotateCharTimer = 0;
+    private float rotateHeroesCharTimer = 0;
+    private float rotateEnemiesCharTimer = 0;
     private float hudHeroesAnimateTimer = 0;
     private float hudEnemiesAnimateTimer = 0;
     private bool isUpdatingBuffs = false;
@@ -167,7 +168,7 @@ public class CombatCharManager : MonoBehaviour
         pos2 = heroesSprites[1].transform.position;
         pos3 = heroesSprites[2].transform.position;
 
-        rotateCharTimer = 1f;
+        rotateHeroesCharTimer = 1f;
     }
 
     public CharacterInfo GetCurrentCharacter()
@@ -176,9 +177,22 @@ public class CombatCharManager : MonoBehaviour
         return heroes[heroesIndex];
     }
 
+    public string GetCharNameByIndex(int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            return enemies[index].char_name;
+        } else
+        {
+            return heroes[index].char_name;
+        }
+        
+    }
+
     public void RotateEnemies()
     {
         hudEnemiesAnimateTimer = 1f;
+        rotateEnemiesCharTimer = 1f;
     }
 
     public void GoToNextEnemy()
@@ -348,9 +362,9 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
-    public void BasicAttack(CharacterInfo attackChar, int index, bool isEnemy)
+    public int BasicAttack(CharacterInfo attackChar, int index, bool isEnemy)
     {
-        InflictingDamage(attackChar, attackChar.damage, index, isEnemy);
+        return InflictingDamage(attackChar, attackChar.damage, index, isEnemy);
     }
 
     public void GainHP(int hpGain, int index, bool isEnemy)
@@ -371,7 +385,7 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
-    public void InflictingDamage(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
+    public int InflictingDamage(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
     {
         System.Random rnd = new System.Random();
 
@@ -406,10 +420,13 @@ public class CombatCharManager : MonoBehaviour
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1.5f;
+                // CombatAnimationManager.GetInstance().ActiveScreen();
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
+                return damage;
             } else
             {
                 Debug.Log("Errou");
+                return 0;
             }
         } else
         {
@@ -429,11 +446,14 @@ public class CombatCharManager : MonoBehaviour
                 else { heroes[index].life -= damage; }
                 heroesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].life, (float)heroes[index].maxLife), 0, 1f);
                 damageLifeShrinkTimer = 1.5f;
+                // CombatAnimationManager.GetInstance().ActiveScreen();
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + heroes[index].char_name);
+                return damage;
             }
             else
             {
                 Debug.Log("Errou");
+                return 0;
             }
         }
     }
@@ -589,9 +609,9 @@ public class CombatCharManager : MonoBehaviour
 
     public void MovingSpriteCharsIfNeeded()
     {
-        if (rotateCharTimer > 0)
+        if (rotateHeroesCharTimer > 0)
         {
-            rotateCharTimer -= Time.deltaTime;
+            rotateHeroesCharTimer -= Time.deltaTime;
 
             if (heroes.Count == 2)
             {
@@ -617,6 +637,27 @@ public class CombatCharManager : MonoBehaviour
                 {
                     heroesSprites[i].transform.localScale = Vector3.Lerp(heroesSprites[i].transform.localScale, scaleNormal, 4f * Time.deltaTime);
                     SpriteRenderer spr = heroesSprites[i].GetComponent<SpriteRenderer>();
+                    spr.sortingOrder = 3;
+                    spr.color = Color.Lerp(spr.color, Color.gray, 4f * Time.deltaTime);
+                }
+            }
+        }
+
+        if (rotateEnemiesCharTimer > 0)
+        {
+            rotateEnemiesCharTimer -= Time.deltaTime;
+            
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (i == enemiesIndex && !playerTurn)
+                {
+                    SpriteRenderer spr = enemiesSprites[i].GetComponent<SpriteRenderer>();
+                    spr.sortingOrder = 4;
+                    spr.color = Color.Lerp(spr.color, Color.white, 4f * Time.deltaTime);
+                }
+                else
+                {
+                    SpriteRenderer spr = enemiesSprites[i].GetComponent<SpriteRenderer>();
                     spr.sortingOrder = 3;
                     spr.color = Color.Lerp(spr.color, Color.gray, 4f * Time.deltaTime);
                 }
