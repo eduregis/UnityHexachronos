@@ -2150,7 +2150,7 @@ GameObject:
   - component: {fileID: 437398695}
   - component: {fileID: 437398694}
   m_Layer: 5
-  m_Name: SkillDescription
+  m_Name: SkillName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2769,7 +2769,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -20, y: -25.6516}
+  m_AnchoredPosition: {x: -20, y: -25.651596}
   m_SizeDelta: {x: 400, y: 148.6969}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &499923003
@@ -5697,8 +5697,8 @@ MonoBehaviour:
   - {fileID: 660182467}
   backgroundSkillDescription: {fileID: 499923001}
   textSkillDescription: {fileID: 1588381738}
-  backgroundSkillName: {fileID: 0}
-  textSkillName: {fileID: 0}
+  backgroundSkillName: {fileID: 1967085835}
+  textSkillName: {fileID: 437398694}
   enemiesSpotted:
   - {fileID: 475207795}
   - {fileID: 592710238}

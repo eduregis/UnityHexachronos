@@ -22,6 +22,9 @@ public enum Skill
     OpenWounds,
     BerserkMode,
     HealingInjection,
+    ExtraBattery,
+    StayFocused,
+    WordOfCommand,
     NailBomb,
     EnergizedHammer
 }

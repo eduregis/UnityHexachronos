@@ -75,6 +75,15 @@ public class SkillManager : MonoBehaviour
             case Skill.HealingInjection:
                 HealingInjection(charInfo, targetIndex, isEnemy);
                 break;
+            case Skill.ExtraBattery:
+                ExtraBattery(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.StayFocused:
+                StayFocused(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.WordOfCommand:
+                WordOfCommand(charInfo, targetIndex, isEnemy);
+                break;
             case Skill.NailBomb:
                 NailBomb(charInfo, targetIndex, isEnemy);
                 break;
@@ -268,8 +277,26 @@ public class SkillManager : MonoBehaviour
     private void HealingInjection(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
         CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
-        Buff buff = CreateBuff(2f, BuffType.DamageUp, BuffModifier.Constant, 1);
+    }
 
+    private void ExtraBattery(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        CombatCharManager.GetInstance().GainEnergy(50, targetIndex, isEnemy);
+    }
+
+    private void StayFocused(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int numberOfHeroes = CombatCharManager.GetInstance().heroes.Count;
+        for (int i = 0; i < numberOfHeroes; i++)
+        {
+            Buff buff = CreateBuff(25f, BuffType.HitRateUp, BuffModifier.Constant, 3);
+            CombatCharManager.GetInstance().SettingBuff(buff, i, isEnemy);
+        }
+    }
+
+    private void WordOfCommand(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        Buff buff = CreateBuff(2f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
     }
 
