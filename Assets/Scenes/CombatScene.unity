@@ -3567,7 +3567,7 @@ MonoBehaviour:
   Salvato_Portrait: {fileID: 21300000, guid: 84c2a70251b4bf64ba883897edde74d0, type: 3}
   Billy_Portrait: {fileID: 21300000, guid: da9fd20b171daa544b4af3ae41696cf9, type: 3}
   Dandara_Portrait: {fileID: 21300000, guid: 7e3e609f71fd85d478142c4f3f58b5d8, type: 3}
-  Sniper_Portrait: {fileID: 21300000, guid: 51d7ff70b2608a7419d0af7e9b78bfae, type: 3}
+  Morya_Portrait: {fileID: 21300000, guid: 51d7ff70b2608a7419d0af7e9b78bfae, type: 3}
   BasicSoldier_Portrait: {fileID: 21300000, guid: ea011364619297d439c0d9312b33aff8, type: 3}
   Luca_Idle: {fileID: 21300000, guid: 6eeaaa3b2ac51914bac7f477bb8dbe81, type: 3}
   Sam_Idle: {fileID: 21300000, guid: 44b7922fab10d364cac7b099926b4900, type: 3}
@@ -3575,7 +3575,7 @@ MonoBehaviour:
   Salvato_Idle: {fileID: 21300000, guid: 6ec70f3cdce0d264ca230bc4a3379508, type: 3}
   Billy_Idle: {fileID: 21300000, guid: fd6fa7ca5f72b0a4fbfdaf48a84a4cf7, type: 3}
   Dandara_Idle: {fileID: 21300000, guid: b45dc26ca827c154bb4266ec463ebd3f, type: 3}
-  Sniper_Idle: {fileID: 21300000, guid: 5c3d5b454971ea24293581b74a847cf3, type: 3}
+  Morya_Idle: {fileID: 21300000, guid: 5c3d5b454971ea24293581b74a847cf3, type: 3}
   BasicSoldier_Idle: {fileID: 21300000, guid: c0ed567e299a9b34ca404cf46596d8af, type: 3}
 --- !u!1 &660182467
 GameObject:

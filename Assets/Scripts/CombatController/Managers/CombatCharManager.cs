@@ -83,7 +83,7 @@ public class CombatCharManager : MonoBehaviour
 
     public void SetupCharacters()
     {
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Dandara), true);
+        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Morya), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Sam), true);
         CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
 

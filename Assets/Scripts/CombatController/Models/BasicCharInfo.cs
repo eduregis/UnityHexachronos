@@ -10,7 +10,7 @@ public enum CharacterIdentifier
     Salvato = 3,
     Billy = 4,
     Dandara = 5,
-    Sniper = 6,
+    Morya = 6,
     BasicSoldier = 7,
     BasicLiutenant = 8
 }

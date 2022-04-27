@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca469aa74accb34e94e73d8d8cb1ab8, type: 3}
   m_Name: Charge_CharacterSkills
   m_EditorClassIdentifier: 
-  skill_id: 0
-  skill_name: 
-  description: 
+  skill_id: 22
+  skill_name: Carga
+  description: Recupera 50 pontos de energia.
   cost: 0
   affectType: 0

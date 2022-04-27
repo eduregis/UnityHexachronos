@@ -28,7 +28,11 @@ public enum Skill
     LetsGoGuys,
     EnergizedHammer,
     Charge,
-    SpinAttack
+    SpinAttack,
+    MarkEnemy,
+    KeepCalm,
+    SoundBomb,
+    Bullseye
 }
 
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]

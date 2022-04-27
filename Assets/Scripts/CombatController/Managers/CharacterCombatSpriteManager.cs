@@ -14,7 +14,7 @@ public class CharacterCombatSpriteManager : MonoBehaviour
     public Sprite Salvato_Portrait;
     public Sprite Billy_Portrait;
     public Sprite Dandara_Portrait;
-    public Sprite Sniper_Portrait;
+    public Sprite Morya_Portrait;
     public Sprite BasicSoldier_Portrait;
 
     [Header("CharacterIdle")]
@@ -24,7 +24,7 @@ public class CharacterCombatSpriteManager : MonoBehaviour
     public Sprite Salvato_Idle;
     public Sprite Billy_Idle;
     public Sprite Dandara_Idle;
-    public Sprite Sniper_Idle;
+    public Sprite Morya_Idle;
     public Sprite BasicSoldier_Idle;
 
     private void Awake()
@@ -56,8 +56,8 @@ public class CharacterCombatSpriteManager : MonoBehaviour
                 return Billy_Portrait;
             case "Dandara":
                 return Dandara_Portrait;
-            case "Sniper":
-                return Sniper_Portrait;
+            case "Morya":
+                return Morya_Portrait;
             case "Basic Soldier":
                 return BasicSoldier_Portrait;
             case "Basic Lieutenant":
@@ -83,8 +83,8 @@ public class CharacterCombatSpriteManager : MonoBehaviour
                 return Billy_Idle;
             case "Dandara":
                 return Dandara_Idle;
-            case "Sniper":
-                return Sniper_Idle;
+            case "Morya":
+                return Morya_Idle;
             case "Basic Soldier":
                 return BasicSoldier_Idle;
             case "Basic Lieutenant":

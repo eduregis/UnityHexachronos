@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b7099fbbadd263d4fadfb8505641244a, type: 3}
-  m_Name: Sniper_BasicStats
+  m_Name: Morya_BasicStats
   m_EditorClassIdentifier: 
   char_name: Morya
   strength: 18
@@ -21,7 +21,7 @@ MonoBehaviour:
   luck: 27
   level: 1
   skills:
-  - {fileID: 11400000, guid: 791869e728f38f341b5929deaf0cdb1f, type: 2}
-  - {fileID: 11400000, guid: c08451eed8c683e48bed37783856bcc0, type: 2}
-  - {fileID: 11400000, guid: 5453e6cee512b2d40b69bbbf457df719, type: 2}
-  - {fileID: 11400000, guid: 33b444af2dd30314baa938ea4491c0b6, type: 2}
+  - {fileID: 11400000, guid: 5b1679dcada791341b4e37f1e518d582, type: 2}
+  - {fileID: 11400000, guid: 800c3d9c3f19b5341a66f91022a0023b, type: 2}
+  - {fileID: 11400000, guid: 597bcc32022ce5b49ae2d1500e19cb50, type: 2}
+  - {fileID: 11400000, guid: 00720a31330b6fa4ea7642e1958d1a25, type: 2}

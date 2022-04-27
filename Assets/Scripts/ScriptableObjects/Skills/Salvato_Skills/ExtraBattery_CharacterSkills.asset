@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skill_id: 17
   skill_name: Bateria Extra
-  description: Recupera 50 pontos de energia
-  cost: 30
+  description: Recupera 50 pontos de energia.
+  cost: 10
   affectType: 2

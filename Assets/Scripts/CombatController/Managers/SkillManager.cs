@@ -96,6 +96,18 @@ public class SkillManager : MonoBehaviour
             case Skill.SpinAttack:
                 SpinAttack(charInfo, targetIndex, isEnemy);
                 break;
+            case Skill.MarkEnemy:
+                MarkEnemy(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.KeepCalm:
+                KeepCalm(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.SoundBomb:
+                SoundBomb(charInfo, targetIndex, isEnemy);
+                break;
+            case Skill.Bullseye:
+                Bullseye(charInfo, targetIndex, isEnemy);
+                break;
         }
     }
 
@@ -337,12 +349,47 @@ public class SkillManager : MonoBehaviour
             int damage = (int)((float)charInfo.damage * 1.3);
             CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, i, isEnemy);
         }
-
-    
-}
+    }
 
     // Sniper Skills
+    private void MarkEnemy(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        Buff buff1 = CreateBuff(10, BuffType.Taunt, BuffModifier.Status, 2);
+        CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
 
+        Buff buff2 = CreateBuff(1.5f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
+        CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+    }
+
+    private void KeepCalm(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        CombatCharManager.GetInstance().GainEnergy(50, targetIndex, isEnemy);
+    }
+
+    private void SoundBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
+        for (int i = 0; i < numberOfEnemies; i++)
+        {
+            Buff buff1 = CreateBuff(25f, BuffType.HitRateDown, BuffModifier.Status, 2);
+            CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+
+            System.Random rnd = new System.Random();
+
+            int stunRate = rnd.Next(1, 101);
+            if (stunRate > 30)
+            {
+                Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
+                CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+            }
+        }
+    }
+
+    private void Bullseye(CharacterInfo charInfo, int targetIndex, bool isEnemy)
+    {
+        int damage = (int)((float)charInfo.damage * 3.0);
+        CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
+    }
 
 
 }
