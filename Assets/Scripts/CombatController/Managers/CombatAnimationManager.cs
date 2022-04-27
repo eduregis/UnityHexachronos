@@ -58,11 +58,11 @@ public class CombatAnimationManager : MonoBehaviour
                     damageTexts[i].text = effects[i].ToString();
                     if (isEnemy)
                     {
-                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x, enemiesSprites[0].transform.position.y + random_y + 450.0f, 1);
+                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x, enemiesSprites[0].transform.position.y + random_y + 400.0f, 1);
                     }
                     else
                     {
-                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x, heroesSprites[0].transform.position.y + random_y + 450.0f, 1);
+                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x, heroesSprites[0].transform.position.y + random_y + 400.0f, 1);
                     }
 
                     
@@ -116,7 +116,6 @@ public class CombatAnimationManager : MonoBehaviour
                     }
                     break;
                 case AffectType.EnemyTarget:
-                    Debug.Log(enemiesSprites[0].transform.position);
                     heroesSprites[0].SetActive(true);
                     heroesSprites[1].SetActive(false);
                     heroesSprites[2].SetActive(false);
@@ -156,7 +155,14 @@ public class CombatAnimationManager : MonoBehaviour
                     }
                     break;
             }
-            
+
+            foreach (TextMeshProUGUI text in damageTexts)
+            {
+                text.transform.position = Vector3.Lerp(text.transform.position, text.transform.position + new Vector3(0, 200, 0), 0.3f * Time.deltaTime);
+
+                text.alpha = Mathf.Lerp(text.alpha, 0, 5f * Time.deltaTime);
+            }
+
         } else
         {
             overlay.SetActive(false);
@@ -171,6 +177,7 @@ public class CombatAnimationManager : MonoBehaviour
             }
             foreach(TextMeshProUGUI text in damageTexts)
             {
+                text.alpha = 1;
                 text.text = "";
             }
         }
