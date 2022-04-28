@@ -57,6 +57,9 @@ public class CombatUIManager : MonoBehaviour
     private static CombatUIManager instance;
     private ActualTBSStatus actualStatus;
 
+    private float IN_DURATION = 0.5F;
+    private float OUT_DURATION = 1.5F;
+
     private void Awake()
     {
         if (instance != null)
@@ -112,7 +115,7 @@ public class CombatUIManager : MonoBehaviour
             CombatCharManager.GetInstance().RotateCharacters();
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
 
         StartCoroutine(GetCurrentCharacter());
 
@@ -186,7 +189,7 @@ public class CombatUIManager : MonoBehaviour
 
             turnIndicator.text = "Menu Principal";
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(IN_DURATION);
 
             if (IsTheHeroAbleToFight())
             {
@@ -201,7 +204,7 @@ public class CombatUIManager : MonoBehaviour
         else
         {
             actualStatus = ActualTBSStatus.EnemiesTurn;
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(IN_DURATION);
             turnIndicator.text = "Turno dos inimigos";
 
             StartCoroutine(EnemyTurnActions());
@@ -254,7 +257,7 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "Menu de Skills";
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(IN_DURATION);
 
         for (int i = 0; i < skillMenuButtons.Length; i++)
         {
@@ -335,7 +338,7 @@ public class CombatUIManager : MonoBehaviour
     {
         HidingSkillMenu();
         actualStatus = ActualTBSStatus.Skill;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         selectedSkill = skillIndex - 1;
         // checar antes qual o input da skill
         switch (actualCharacter.skillList[selectedSkill].affectType)
@@ -369,7 +372,7 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator CallAllyTargetMenu()
     {
         turnIndicator.text = "Selecione um alvo da skill";
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(IN_DURATION);
         for (int i = 0; i < numberOfAllies; i++)
         {
             heroesSpotted[i].gameObject.SetActive(true);
@@ -408,11 +411,11 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator ApllyingAllySingleTargetSkill(int allyTargetMenuButtonIndex)
     {
         CombatCharManager.GetInstance().ShowAllyTarget(-1);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, allyTargetMenuButtonIndex, false);
         CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(OUT_DURATION);
         HidingAllyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -450,7 +453,7 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "A skill marca todos os alvos";
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(IN_DURATION);
         for (int i = 0; i < enemiesSpotted.Length; i++)
         {
             enemiesSpotted[i].gameObject.SetActive(true);
@@ -469,11 +472,11 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator ApllyingEnemyMultiTargetSkill()
     {
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, 0, true);
         CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(OUT_DURATION);
         HidingEnemyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -486,7 +489,7 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "A skill marca a si mesmo";
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(IN_DURATION);
 
         int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
 
@@ -515,12 +518,12 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator ApllyingSelfTargetSkill()
     {
         CombatCharManager.GetInstance().ShowAllyTarget(-1);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         int targetIndex = CombatCharManager.GetInstance().GetHeroesIndex();
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, targetIndex, false);
         CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(OUT_DURATION);
         HidingAllyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -533,7 +536,7 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "A skill marca todos os alvos";
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(IN_DURATION);
         for (int i = 0; i < heroesSpotted.Length; i++)
         {
             heroesSpotted[i].gameObject.SetActive(true);
@@ -552,11 +555,11 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator ApllyingAlliesMultiTargetSkill()
     {
         CombatCharManager.GetInstance().ShowAllyTarget(-1);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, 0, false);
         CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(OUT_DURATION);
         HidingAllyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -575,7 +578,7 @@ public class CombatUIManager : MonoBehaviour
             turnIndicator.text = "Selecione um alvo da skill";
         }
             
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(IN_DURATION);
         for (int i = 0; i < numberOfEnemies; i++)
         {
             enemiesSpotted[i].gameObject.SetActive(true);
@@ -614,7 +617,7 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "Atacando";
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         // Calling the animation canvas
         int damage = CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
         List<string> damages = new List<string>();
@@ -622,7 +625,7 @@ public class CombatUIManager : MonoBehaviour
         CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetHeroesIndex(), attackTargetMenuButtonIndex, AffectType.EnemyTarget, true);
 
         turnIndicator.text = "";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(OUT_DURATION);
         HidingEnemyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -632,11 +635,11 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator ApllyingEnemySingleTargetSkill(int attackTargetMenuButtonIndex)
     {
         CombatCharManager.GetInstance().ShowEnemyTarget(-1);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(IN_DURATION);
         SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
         CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
         turnIndicator.text = "";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(OUT_DURATION);
         HidingEnemyTargetMenu();
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -673,7 +676,7 @@ public class CombatUIManager : MonoBehaviour
     {
         turnIndicator.text = "Bloqueando";
         CombatCharManager.GetInstance().Blocking();
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(OUT_DURATION);
         turnIndicator.text = "";
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -682,7 +685,7 @@ public class CombatUIManager : MonoBehaviour
 
     private IEnumerator PassTurn()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(OUT_DURATION);
         turnIndicator.text = "";
         StartCoroutine(UpdateCurrentCharacter());
         yield return new WaitForSeconds(0.2f);
@@ -714,7 +717,7 @@ public class CombatUIManager : MonoBehaviour
 
             bool isAbleTo = true;
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(OUT_DURATION);
 
             CombatCharManager.GetInstance().BuffListEnemyIterator();
 
@@ -759,10 +762,10 @@ public class CombatUIManager : MonoBehaviour
                 CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetEnemiesIndex(), targetIndex, AffectType.EnemyTarget, false);
             }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(IN_DURATION);
             CombatCharManager.GetInstance().GoToNextEnemy();
             turnIndicator.text = "";
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(IN_DURATION);
         }
 
         CombatCharManager.GetInstance().RotateEnemies();
