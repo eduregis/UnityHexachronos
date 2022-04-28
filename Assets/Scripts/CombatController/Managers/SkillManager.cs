@@ -135,7 +135,7 @@ public class SkillManager : MonoBehaviour
         CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
         texts.Add("Aumenta taxa crítica");
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, false);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
     }
 
     private void DesencanaComIsso (CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -220,12 +220,17 @@ public class SkillManager : MonoBehaviour
 
     private void SmokeBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int numberOfHeroes = CombatCharManager.GetInstance().heroes.Count;
         for (int i = 0; i < numberOfHeroes; i++)
         {
             Buff buff = CreateBuff(1.5f, BuffType.EvasionUp, BuffModifier.Multiplier, 3);
             CombatCharManager.GetInstance().SettingBuff(buff, i, isEnemy);
+            texts.Add("Aumenta esquiva");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllEnemies, isEnemy);
     }
 
     private void HealingPulse(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -378,22 +383,38 @@ public class SkillManager : MonoBehaviour
 
     private void HealingInjection(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         CombatCharManager.GetInstance().GainHP(30, targetIndex, isEnemy);
+        texts.Add("Curou " + 30);
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllyTarget, isEnemy);
     }
 
     private void ExtraBattery(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         CombatCharManager.GetInstance().GainEnergy(50, targetIndex, isEnemy);
+        texts.Add("Recupera energia");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllyTarget, isEnemy);
     }
 
     private void StayFocused(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int numberOfHeroes = CombatCharManager.GetInstance().heroes.Count;
         for (int i = 0; i < numberOfHeroes; i++)
         {
             Buff buff = CreateBuff(25f, BuffType.HitRateUp, BuffModifier.Constant, 3);
             CombatCharManager.GetInstance().SettingBuff(buff, i, isEnemy);
+            texts.Add("Aumenta precisão");
         }
+        
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
     }
 
     private void WordOfCommand(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -411,12 +432,17 @@ public class SkillManager : MonoBehaviour
 
     private void LetsGoGuys(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int numberOfHeroes = CombatCharManager.GetInstance().heroes.Count;
         for (int i = 0; i < numberOfHeroes; i++)
         {
             Buff buff = CreateBuff(1.3f, BuffType.DamageUp, BuffModifier.Multiplier, 3);
             CombatCharManager.GetInstance().SettingBuff(buff, i, isEnemy);
+            texts.Add("Aumenta dano");
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
     }
 
     private void EnergizedHammer(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -442,12 +468,17 @@ public class SkillManager : MonoBehaviour
 
     private void SpinAttack(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
         for (int i = 0; i < numberOfEnemies; i++)
         {
             int damage = (int)((float)charInfo.damage * 1.3);
-            CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, i, isEnemy);
+            int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, i, isEnemy);
+            texts.Add(finalDamage.ToString());
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
     }
 
     // Sniper Skills
@@ -478,21 +509,30 @@ public class SkillManager : MonoBehaviour
 
     private void SoundBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int numberOfEnemies = CombatCharManager.GetInstance().enemies.Count;
         for (int i = 0; i < numberOfEnemies; i++)
         {
             Buff buff1 = CreateBuff(25f, BuffType.HitRateDown, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+            texts.Add("Diminui precisão");
 
             System.Random rnd = new System.Random();
 
             int stunRate = rnd.Next(1, 101);
             if (stunRate > 30)
             {
-                Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
-                CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+                Buff buff2 = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
+                CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+                texts.Add("Atordoado");
+            } else
+            {
+                texts.Add(" ");
             }
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
     }
 
     private void Bullseye(CharacterInfo charInfo, int targetIndex, bool isEnemy)
