@@ -19,6 +19,7 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private Image[] heroesFullLifebars;
     [SerializeField] private Image[] heroesDamageLifebars;
     [SerializeField] private Image[] heroesEnergybars;
+    [SerializeField] private Image[] heroesDamageEnergybars;
 
     [Header("Enemies HUD")]
     [SerializeField] private GameObject[] enemiesHUD;
@@ -39,7 +40,8 @@ public class CombatCharManager : MonoBehaviour
     // Animation control variables
     private float damageLifeShrinkTimer = 0;
     private float gainLifeShrinkTimer = 0;
-    private float energyShrinkTimer = 0;
+    private float energyLoseShrinkTimer = 0;
+    private float energyGainShrinkTimer = 0;
     private float rotateHeroesCharTimer = 0;
     private float rotateEnemiesCharTimer = 0;
     private float hudHeroesAnimateTimer = 0;
@@ -142,6 +144,7 @@ public class CombatCharManager : MonoBehaviour
             heroesDamageLifebars[i].enabled = false;
             heroesFullLifebars[i].enabled = false;
             heroesEnergybars[i].enabled = false;
+            heroesDamageEnergybars[i].enabled = false;
             heroesPortraits[i].enabled = false;
         }
 
@@ -215,8 +218,6 @@ public class CombatCharManager : MonoBehaviour
 
     public void BuffListHeroIterator() 
     {
-        Debug.Log("AAAAAAAAAAAAAAA");
-
         FinishBlock();
 
         List<int> removedIndexes = new List<int>();
@@ -316,6 +317,8 @@ public class CombatCharManager : MonoBehaviour
         AnimatingEnemiesHUDIfNeeded();
         CheckingDamageBars();
         CheckingGainBars();
+        CheckingLoseEnergy();
+        CheckingGainEnergy();
         if (isUpdatingBuffs)
         {
             UpdatingBuffsUI();
@@ -367,24 +370,6 @@ public class CombatCharManager : MonoBehaviour
     public int BasicAttack(CharacterInfo attackChar, int index, bool isEnemy)
     {
         return InflictingDamage(attackChar, attackChar.damage, index, isEnemy);
-    }
-
-    public void GainHP(int hpGain, int index, bool isEnemy)
-    {
-        if (isEnemy)
-        {
-            if (enemies[index].life + hpGain > enemies[index].maxLife) { enemies[index].life = enemies[index].maxLife; }
-            else { enemies[index].life += hpGain; }
-            enemiesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
-            gainLifeShrinkTimer = 1.5f;
-        }
-        else
-        {
-            if (heroes[index].life + hpGain > heroes[index].maxLife) { heroes[index].life = heroes[index].maxLife; }
-            else { heroes[index].life += hpGain; }
-            heroesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)heroes[index].maxLife), 0, 1f);
-            gainLifeShrinkTimer = 1.5f;
-        }
     }
 
     public int InflictingDamage(CharacterInfo attackChar, int basicDamage, int index, bool isEnemy)
@@ -460,6 +445,24 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
+    public void GainHP(int hpGain, int index, bool isEnemy)
+    {
+        if (isEnemy)
+        {
+            if (enemies[index].life + hpGain > enemies[index].maxLife) { enemies[index].life = enemies[index].maxLife; }
+            else { enemies[index].life += hpGain; }
+            enemiesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)enemies[index].life / (float)enemies[index].maxLife), 0, 1f);
+            gainLifeShrinkTimer = 1.5f;
+        }
+        else
+        {
+            if (heroes[index].life + hpGain > heroes[index].maxLife) { heroes[index].life = heroes[index].maxLife; }
+            else { heroes[index].life += hpGain; }
+            heroesDamageLifebars[index].fillAmount = Mathf.Clamp(((float)heroes[index].life / (float)heroes[index].maxLife), 0, 1f);
+            gainLifeShrinkTimer = 1.5f;
+        }
+    }
+
     public void LoseHP(int damage, int index, bool isEnemy)
     {
         if (isEnemy)
@@ -492,8 +495,8 @@ public class CombatCharManager : MonoBehaviour
         {
             if (heroes[index].energy + energyGain > heroes[index].maxEnergy) { heroes[index].energy = heroes[index].maxEnergy; }
             else { heroes[index].energy += energyGain; }
-            heroesEnergybars[index].fillAmount = Mathf.Clamp(((float)heroes[index].energy / (float)heroes[index].maxEnergy), 0, 1f);
-            energyShrinkTimer = 1.5f;
+            heroesDamageEnergybars[index].fillAmount = Mathf.Clamp(((float)heroes[index].energy / (float)heroes[index].maxEnergy), 0, 1f);
+            energyGainShrinkTimer = 1.5f;
         }
     }
 
@@ -509,7 +512,7 @@ public class CombatCharManager : MonoBehaviour
             if (heroes[index].energy - cost < 0) { heroes[index].energy = 0; }
             else { heroes[index].energy -= cost; }
             heroesEnergybars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)heroes[index].energy, (float)heroes[index].maxEnergy), 0, 1f);
-            energyShrinkTimer = 1.5f;
+            energyLoseShrinkTimer = 1.5f;
         }
     }
 
@@ -756,21 +759,38 @@ public class CombatCharManager : MonoBehaviour
         }
     }
 
-    public void CheckingEnergyBars()
+    public void CheckingLoseEnergy()
     {
-        if (energyShrinkTimer > 0)
+        if (energyLoseShrinkTimer > 0)
         {
-            energyShrinkTimer -= Time.deltaTime;
+            energyLoseShrinkTimer -= Time.deltaTime;
       
-            /*for (var i = 0; i < heroes.Count; i++)
+            for (var i = 0; i < heroes.Count; i++)
             {
-                if (heroesEnergybars[i].fillAmount < heroesDamageLifebars[i].fillAmount)
+                if (heroesEnergybars[i].fillAmount < heroesDamageEnergybars[i].fillAmount)
                 {
-                    heroesDamageLifebars[i].fillAmount -= 0.5f * Time.deltaTime;
+                    heroesDamageEnergybars[i].fillAmount -= 0.5f * Time.deltaTime;
                 }
-            }*/
+            }
         }
     }
+
+    public void CheckingGainEnergy()
+    {
+        if (energyGainShrinkTimer > 0)
+        {
+            energyGainShrinkTimer -= Time.deltaTime;
+
+            for (var i = 0; i < heroes.Count; i++)
+            {
+                if (heroesDamageEnergybars[i].fillAmount > heroesEnergybars[i].fillAmount)
+                {
+                    heroesEnergybars[i].fillAmount += 0.5f * Time.deltaTime;
+                }
+            }
+        }
+    }
+
     public void UpdatingBuffsUI()
     {
         for(int i = 0; i < heroes.Count; i++)
