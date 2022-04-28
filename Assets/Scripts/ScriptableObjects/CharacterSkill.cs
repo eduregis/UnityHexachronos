@@ -44,6 +44,7 @@ public class CharacterSkill : ScriptableObject
     public string description;
     public int cost;
     public AffectType affectType;
+    public bool isAffectFaint = false;
 };
 
 public enum AffectType
