@@ -16,6 +16,7 @@ public class CombatAnimationManager : MonoBehaviour
     private float screenTimer = 0;
     private AffectType affectType = AffectType.Self;
     private List<string> listEffects = new List<string>();
+    private bool isEnemyAux = false;
 
     private static CombatAnimationManager instance;
 
@@ -41,13 +42,29 @@ public class CombatAnimationManager : MonoBehaviour
     public void ActiveScreen(List<string> effects, int characterIndex, int targetIndex, AffectType type, bool isEnemy)
     {
         affectType = type;
+        isEnemyAux = isEnemy;
+
         switch (affectType)
         {
             case AffectType.Self:
+                for (int i = 0; i < effects.Count; i++)
+                {
+                    damageTexts[i].text = effects[i].ToString();
+                    if (isEnemy)
+                    {
+                        string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
+                        enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + 100f, enemiesSprites[0].transform.position.y  + 350.0f + (i * 50.0f), 1);
+                    }
+                    else
+                    {
+                        string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, false);
+                        heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x + 100f, heroesSprites[0].transform.position.y + 350.0f + (i * 50.0f), 1);
+                    }
+                }
                 break;
             case AffectType.EnemyTarget:
-                
-                
                 for (int i = 0; i < effects.Count; i++)
                 {
                     int random_x = Random.Range(0, 200);
@@ -59,7 +76,7 @@ public class CombatAnimationManager : MonoBehaviour
                         heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
                         string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
                         enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
-                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x + 200f, enemiesSprites[0].transform.position.y + random_y + 350.0f + (i* 30.0f), 1);
+                        damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x + 200f, enemiesSprites[0].transform.position.y + random_y + 350.0f + (i* 50.0f), 1);
                     }
                     else
                     {
@@ -67,10 +84,9 @@ public class CombatAnimationManager : MonoBehaviour
                         heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
                         string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, true);
                         enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
-                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x + 200f, heroesSprites[0].transform.position.y + random_y + 350.0f + (i * 30.0f), 1);
+                        damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x - random_x + 200f, heroesSprites[0].transform.position.y + random_y + 350.0f + (i * 50.0f), 1);
                     }
                 }
-                
                 break;
             case AffectType.AllyTarget:
                 break;
@@ -80,7 +96,7 @@ public class CombatAnimationManager : MonoBehaviour
                 break;
         }
 
-        screenTimer = 1f;
+        screenTimer = 1.5f;
     }
 
     // Update is called once per frame
@@ -109,13 +125,24 @@ public class CombatAnimationManager : MonoBehaviour
             switch(affectType)
             {
                 case AffectType.Self:
-                    
-                    heroesSprites[0].SetActive(true);
-                    heroesSprites[1].SetActive(false);
-                    heroesSprites[2].SetActive(false);
-                    foreach (GameObject enemies in enemiesSprites)
+                    if (isEnemyAux)
                     {
-                        enemies.SetActive(false);
+                        foreach (GameObject hero in heroesSprites)
+                        {
+                            hero.SetActive(false);
+                        }
+                        enemiesSprites[0].SetActive(true);
+                        enemiesSprites[1].SetActive(false);
+                        enemiesSprites[2].SetActive(false);
+                    } else
+                    {
+                        heroesSprites[0].SetActive(true);
+                        heroesSprites[1].SetActive(false);
+                        heroesSprites[2].SetActive(false);
+                        foreach (GameObject enemies in enemiesSprites)
+                        {
+                            enemies.SetActive(false);
+                        }
                     }
                     break;
                 case AffectType.EnemyTarget:
@@ -163,7 +190,7 @@ public class CombatAnimationManager : MonoBehaviour
             {
                 text.transform.position = Vector3.Lerp(text.transform.position, text.transform.position + new Vector3(0, 200, 0), 0.3f * Time.deltaTime);
 
-                text.alpha = Mathf.Lerp(text.alpha, 0, 5f * Time.deltaTime);
+                text.alpha = Mathf.Lerp(text.alpha, 0, 3.5f * Time.deltaTime);
             }
 
         } else

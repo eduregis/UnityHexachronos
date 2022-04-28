@@ -125,11 +125,17 @@ public class SkillManager : MonoBehaviour
 
     private void TryToCatchMe (CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff1 = CreateBuff(1.5f, BuffType.EvasionUp, BuffModifier.Multiplier, 3);
         CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+        texts.Add("Aumenta esquiva");
 
         Buff buff2 = CreateBuff(10, BuffType.CritRateUp, BuffModifier.Constant, 3);
         CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+        texts.Add("Aumenta taxa crítica");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, false);
     }
 
     private void DesencanaComIsso (CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -150,7 +156,7 @@ public class SkillManager : MonoBehaviour
             texts.Add("Atordoado");
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void BehindYou (CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -171,7 +177,7 @@ public class SkillManager : MonoBehaviour
             texts.Add("Sangrando");
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private IEnumerator LetsGetThisOverWith (CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -186,7 +192,7 @@ public class SkillManager : MonoBehaviour
             texts.Add(finalDamage.ToString());
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     // Sam Skills
@@ -209,7 +215,7 @@ public class SkillManager : MonoBehaviour
             texts.Add("Atordoado");
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void SmokeBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -244,19 +250,35 @@ public class SkillManager : MonoBehaviour
 
     private void HandShield(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff = CreateBuff(1.5f, BuffType.DefenseUp, BuffModifier.Multiplier, 3);
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        texts.Add("Aumenta Defesa");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
+
     }
 
     private void LongLiveTheRevolution(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff = CreateBuff(1.5f, BuffType.Taunt, BuffModifier.Multiplier, 3);
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
+        texts.Add("Provocar");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
     }
 
     private void JustAScratch(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         CombatCharManager.GetInstance().GainHP(50, targetIndex, isEnemy);
+        texts.Add("Recupera HP");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
     }
 
     private void PowerJab(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -267,7 +289,7 @@ public class SkillManager : MonoBehaviour
         int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
         texts.Add(finalDamage.ToString());
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     // Billy Skills
@@ -286,7 +308,7 @@ public class SkillManager : MonoBehaviour
         int finalDamage2 = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage2, targetIndex, isEnemy);
         texts.Add(finalDamage2.ToString());
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void BlankStare(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -302,7 +324,7 @@ public class SkillManager : MonoBehaviour
             texts.Add("Atordoado");
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void OpenWounds(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -323,16 +345,22 @@ public class SkillManager : MonoBehaviour
             texts.Add("Sangrando");
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void BerserkMode(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff1 = CreateBuff(2.5f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
         CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+        texts.Add("Diminui Defesa");
 
         Buff buff2 = CreateBuff(2.5f, BuffType.DamageUp, BuffModifier.Multiplier, 2);
         CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+        texts.Add("Aumenta Dano");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
     }
 
     // Salvato Skills
@@ -365,7 +393,7 @@ public class SkillManager : MonoBehaviour
         CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
         texts.Add("Diminuiu defesa");
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     // Dandara Skills
@@ -388,12 +416,17 @@ public class SkillManager : MonoBehaviour
         int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
         texts.Add(finalDamage.ToString());
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void Charge(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         CombatCharManager.GetInstance().GainEnergy(50, targetIndex, isEnemy);
+        texts.Add("Recupera Energia");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
     }
 
     private void SpinAttack(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -419,12 +452,17 @@ public class SkillManager : MonoBehaviour
         CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
         texts.Add("Diminuiu defesa");
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
     private void KeepCalm(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         CombatCharManager.GetInstance().GainEnergy(50, targetIndex, isEnemy);
+        texts.Add("Recupera Energia");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.Self, isEnemy);
     }
 
     private void SoundBomb(CharacterInfo charInfo, int targetIndex, bool isEnemy)
@@ -454,7 +492,7 @@ public class SkillManager : MonoBehaviour
         int finalDamage = CombatCharManager.GetInstance().InflictingDamage(charInfo, damage, targetIndex, isEnemy);
         texts.Add(finalDamage.ToString());
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, true);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.EnemyTarget, isEnemy);
     }
 
 
