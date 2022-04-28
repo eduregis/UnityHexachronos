@@ -230,7 +230,7 @@ public class SkillManager : MonoBehaviour
             texts.Add("Aumenta esquiva");
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllEnemies, isEnemy);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
     }
 
     private void HealingPulse(CharacterInfo charInfo, int targetIndex, bool isEnemy)
