@@ -478,7 +478,7 @@ public class SkillManager : MonoBehaviour
             texts.Add(finalDamage.ToString());
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllEnemies, isEnemy);
     }
 
     // Sniper Skills
@@ -515,7 +515,7 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < numberOfEnemies; i++)
         {
             Buff buff1 = CreateBuff(25f, BuffType.HitRateDown, BuffModifier.Status, 2);
-            CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+            CombatCharManager.GetInstance().SettingBuff(buff1, i, isEnemy);
             texts.Add("Diminui precisão");
 
             System.Random rnd = new System.Random();
@@ -524,7 +524,7 @@ public class SkillManager : MonoBehaviour
             if (stunRate > 30)
             {
                 Buff buff2 = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
-                CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+                CombatCharManager.GetInstance().SettingBuff(buff2, i, isEnemy);
                 texts.Add("Atordoado");
             } else
             {
@@ -532,7 +532,9 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
+        Debug.Log(texts.Count);
+
+       // CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllEnemies, isEnemy);
     }
 
     private void Bullseye(CharacterInfo charInfo, int targetIndex, bool isEnemy)
