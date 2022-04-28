@@ -18,6 +18,9 @@ public class CombatAnimationManager : MonoBehaviour
     private List<string> listEffects = new List<string>();
     private bool isEnemyAux = false;
 
+    private int characterIndexAux = 0;
+    private int targetIndexAux = 0;
+
     private static CombatAnimationManager instance;
 
     private void Awake()
@@ -43,6 +46,8 @@ public class CombatAnimationManager : MonoBehaviour
     {
         affectType = type;
         isEnemyAux = isEnemy;
+        characterIndexAux = characterIndex;
+        targetIndexAux = targetIndex;
 
         switch (affectType)
         {
@@ -89,6 +94,47 @@ public class CombatAnimationManager : MonoBehaviour
                 }
                 break;
             case AffectType.AllyTarget:
+                for (int i = 0; i < effects.Count; i++)
+                {
+                    int random_x = Random.Range(0, 200);
+                    int random_y = Random.Range(0, 20);
+                    damageTexts[i].text = effects[i].ToString();
+                    if (isEnemy)
+                    {
+                        if (characterIndex == targetIndex)
+                        {
+                            string enemyName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, true);
+                            enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemyName);
+                            damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x + random_x + 200f, enemiesSprites[0].transform.position.y + random_y + 350.0f + (i * 50.0f), 1);
+                        } else
+                        {
+                            string hero1Name = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, true);
+                            enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero1Name);
+                            string hero2Name = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
+                            enemiesSprites[1].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero2Name);
+                            damageTexts[i].transform.position = new Vector3(enemiesSprites[1].transform.position.x + random_x + 200f, enemiesSprites[1].transform.position.y + random_y + 350.0f + (i * 50.0f), 1);
+                        }
+                    }
+                    else
+                    {
+                        if (characterIndex == targetIndex)
+                        {
+                            Debug.Log("aaaaaa");
+                            heroesSprites[1].SetActive(false);
+                            string heroName = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, false);
+                            heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(heroName);
+                            damageTexts[i].transform.position = new Vector3(heroesSprites[0].transform.position.x + random_x + 200f, heroesSprites[0].transform.position.y + random_y + 350.0f + (i * 50.0f), 1);
+                        }
+                        else
+                        {
+                            string hero1Name = CombatCharManager.GetInstance().GetCharNameByIndex(characterIndex, false);
+                            heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero1Name);
+                            string hero2Name = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, false);
+                            heroesSprites[1].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero2Name);
+                            damageTexts[i].transform.position = new Vector3(heroesSprites[1].transform.position.x + random_x + 200f, heroesSprites[1].transform.position.y + random_y + 350.0f + (i * 50.0f), 1);
+                        }
+                    }
+                }
                 break;
             case AffectType.AllEnemies:
                 break;
@@ -154,6 +200,29 @@ public class CombatAnimationManager : MonoBehaviour
                     enemiesSprites[1].SetActive(false);
                     enemiesSprites[2].SetActive(false);
                     break;
+                case AffectType.AllyTarget:
+                    if (isEnemyAux)
+                    {
+                        foreach (GameObject hero in heroesSprites)
+                        {
+                            hero.SetActive(false);
+                        }
+                        enemiesSprites[0].SetActive(true);
+                        enemiesSprites[1].SetActive(characterIndexAux != targetIndexAux);
+                        enemiesSprites[2].SetActive(false);
+                    }
+                    else
+                    {
+                        heroesSprites[0].SetActive(true);
+                        heroesSprites[1].SetActive(characterIndexAux != targetIndexAux);
+                        heroesSprites[2].SetActive(false);
+
+                        foreach (GameObject enemies in enemiesSprites)
+                        {
+                            enemies.SetActive(false);
+                        }
+                    }
+                    break;
                 case AffectType.AllEnemies:
                     heroesSprites[0].SetActive(true);
                     heroesSprites[1].SetActive(false);
@@ -162,16 +231,6 @@ public class CombatAnimationManager : MonoBehaviour
                     enemiesSprites[0].SetActive(true);
                     enemiesSprites[1].SetActive(true);
                     enemiesSprites[2].SetActive(true);
-                    break;
-                case AffectType.AllyTarget:
-                    heroesSprites[0].SetActive(true);
-                    heroesSprites[1].SetActive(true);
-                    heroesSprites[2].SetActive(false);
-
-                    foreach (GameObject enemies in enemiesSprites)
-                    {
-                        enemies.SetActive(false);
-                    }
                     break;
                 case AffectType.AllAllies:
                     foreach (GameObject hero in heroesSprites)

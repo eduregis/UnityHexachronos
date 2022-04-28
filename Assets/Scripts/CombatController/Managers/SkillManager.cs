@@ -230,20 +230,31 @@ public class SkillManager : MonoBehaviour
 
     private void HealingPulse(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         int numberOfHeroes = CombatCharManager.GetInstance().heroes.Count;
         for (int i = 0; i < numberOfHeroes; i++)
         {
             CombatCharManager.GetInstance().GainHP(30, i, isEnemy);
+            texts.Add("Curou " + 30);
         }
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllAllies, isEnemy);
     }
 
     private void FinishIt(CharacterInfo charInfo, int targetIndex, bool isEnemy)
     {
+        List<string> texts = new List<string>();
+
         Buff buff1 = CreateBuff(50f, BuffType.CritRateUp, BuffModifier.Constant, 1);
         CombatCharManager.GetInstance().SettingBuff(buff1, targetIndex, isEnemy);
+        texts.Add("Aumentou taxa crítica");
 
         Buff buff2 = CreateBuff(2f, BuffType.CritDamageUp, BuffModifier.Multiplier, 1);
         CombatCharManager.GetInstance().SettingBuff(buff2, targetIndex, isEnemy);
+        texts.Add("Aumentou dano crítico");
+
+        CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllyTarget, isEnemy);
     }
 
     // Borell Skills
