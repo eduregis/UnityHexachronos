@@ -121,9 +121,11 @@ public class CombatUIManager : MonoBehaviour
 
         TranslateAllySpotted();
 
-        if (CombatCharManager.GetInstance().IsItLastHero())
+        if (CombatCharManager.GetInstance().GetHeroesIndex() != 0)
+        //if (CombatCharManager.GetInstance().IsItLastHero())
         {
             CombatCharManager.GetInstance().BuffListHeroIterator();
+            CombatCharManager.GetInstance().GainEnergy(20, CombatCharManager.GetInstance().GetHeroesIndex(), false);
             TestingHeroesNegativeStatus();
         }
     }
@@ -773,6 +775,8 @@ public class CombatUIManager : MonoBehaviour
         CombatCharManager.GetInstance().SetPlayerTurn();
 
         CombatCharManager.GetInstance().BuffListHeroIterator();
+        CombatCharManager.GetInstance().GainEnergy(20, 0, false);
+
         TestingHeroesNegativeStatus();
 
         if (!IsTheHeroAbleToFight())

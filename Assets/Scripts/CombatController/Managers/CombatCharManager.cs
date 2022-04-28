@@ -215,6 +215,8 @@ public class CombatCharManager : MonoBehaviour
 
     public void BuffListHeroIterator() 
     {
+        Debug.Log("AAAAAAAAAAAAAAA");
+
         FinishBlock();
 
         List<int> removedIndexes = new List<int>();
