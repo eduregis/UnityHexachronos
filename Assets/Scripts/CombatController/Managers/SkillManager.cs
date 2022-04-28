@@ -532,9 +532,7 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-        Debug.Log(texts.Count);
-
-       // CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllEnemies, isEnemy);
+       CombatAnimationManager.GetInstance().ActiveScreen(texts, CombatCharManager.GetInstance().GetHeroesIndex(), targetIndex, AffectType.AllEnemies, isEnemy);
     }
 
     private void Bullseye(CharacterInfo charInfo, int targetIndex, bool isEnemy)
