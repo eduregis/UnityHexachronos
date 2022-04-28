@@ -184,32 +184,37 @@ public class CombatUIManager : MonoBehaviour
 
     // Main Menu Methods
     private IEnumerator CallMainMenu()
-    {   
-        if (CombatCharManager.GetInstance().IsPlayerTurn())
-        {
-            actualStatus = ActualTBSStatus.MainMenu;
-
-            turnIndicator.text = "Menu Principal";
-
-            yield return new WaitForSeconds(IN_DURATION);
-
-            if (IsTheHeroAbleToFight())
+    {
+        if (!TestIfWinMatch()) {
+            if (CombatCharManager.GetInstance().IsPlayerTurn())
             {
-                for (int i = 0; i < mainMenuButtons.Length; i++)
-                {
-                    mainMenuButtons[i].gameObject.SetActive(true);
-                }
-                StartCoroutine(SelectMainMenuFirstOption());
-            }
-            turnIndicator.text = "";
-        }
-        else
-        {
-            actualStatus = ActualTBSStatus.EnemiesTurn;
-            yield return new WaitForSeconds(IN_DURATION);
-            turnIndicator.text = "Turno dos inimigos";
+                actualStatus = ActualTBSStatus.MainMenu;
 
-            StartCoroutine(EnemyTurnActions());
+                turnIndicator.text = "Menu Principal";
+
+                yield return new WaitForSeconds(IN_DURATION);
+
+                if (IsTheHeroAbleToFight())
+                {
+                    for (int i = 0; i < mainMenuButtons.Length; i++)
+                    {
+                        mainMenuButtons[i].gameObject.SetActive(true);
+                    }
+                    StartCoroutine(SelectMainMenuFirstOption());
+                }
+                turnIndicator.text = "";
+            }
+            else
+            {
+                actualStatus = ActualTBSStatus.EnemiesTurn;
+                yield return new WaitForSeconds(IN_DURATION);
+                turnIndicator.text = "Turno dos inimigos";
+
+                StartCoroutine(EnemyTurnActions());
+            }
+        } else
+        {
+            Debug.Log("Venceu!");
         }
     }
 
@@ -301,12 +306,12 @@ public class CombatUIManager : MonoBehaviour
         if (skillMenuButtonIndex == 0)
         {
             HidingSkillMenu();
-            actualStatus = ActualTBSStatus.Attack;
+            actualStatus = ActualTBSStatus.MainMenu;
             StartCoroutine(CallMainMenu());
         } else
         {
             actualStatus = ActualTBSStatus.Skill;
-            if(actualCharacter.skillList[skillMenuButtonIndex - 1].cost <= actualCharacter.energy)
+            if (actualCharacter.skillList[skillMenuButtonIndex - 1].cost <= actualCharacter.energy)
             {
                 StartCoroutine(ExecutingSkill(skillMenuButtonIndex));
             }
@@ -329,7 +334,7 @@ public class CombatUIManager : MonoBehaviour
                     skillButtonIndex = i;
                     if (i != 0) {
                         textSkillName.text = actualCharacter.skillList[i - 1].skill_name;
-                        textSkillDescription.text = actualCharacter.skillList[i - 1].description; 
+                        textSkillDescription.text = actualCharacter.skillList[i - 1].description;
                     }
                 }
             }
@@ -412,16 +417,19 @@ public class CombatUIManager : MonoBehaviour
 
     private IEnumerator ApllyingAllySingleTargetSkill(int allyTargetMenuButtonIndex)
     {
-        CombatCharManager.GetInstance().ShowAllyTarget(-1);
-        yield return new WaitForSeconds(IN_DURATION);
-        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, allyTargetMenuButtonIndex, false);
-        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
-        turnIndicator.text = "";
-        yield return new WaitForSeconds(OUT_DURATION);
-        HidingAllyTargetMenu();
-        StartCoroutine(UpdateCurrentCharacter());
-        yield return new WaitForSeconds(0.2f);
-        StartCoroutine(CallMainMenu());
+        if (((CombatCharManager.GetInstance().heroes[allyTargetMenuButtonIndex].life == 0) && (actualCharacter.skillList[selectedSkill].isAffectFaint)) || ((CombatCharManager.GetInstance().heroes[allyTargetMenuButtonIndex].life > 0) && (!actualCharacter.skillList[selectedSkill].isAffectFaint)))
+        {
+            CombatCharManager.GetInstance().ShowAllyTarget(-1);
+            yield return new WaitForSeconds(IN_DURATION);
+            SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, allyTargetMenuButtonIndex, false);
+            CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
+            turnIndicator.text = "";
+            yield return new WaitForSeconds(OUT_DURATION);
+            HidingAllyTargetMenu();
+            StartCoroutine(UpdateCurrentCharacter());
+            yield return new WaitForSeconds(0.2f);
+            StartCoroutine(CallMainMenu());
+        }
     }
 
     private void CheckingAllyTarget()
@@ -504,7 +512,7 @@ public class CombatUIManager : MonoBehaviour
             {
                 heroesSpotted[i].gameObject.SetActive(false);
             }
-            
+
         }
         StartCoroutine(SelectSelfTargetMenu(targetIndex));
     }
@@ -579,7 +587,7 @@ public class CombatUIManager : MonoBehaviour
         {
             turnIndicator.text = "Selecione um alvo da skill";
         }
-            
+
         yield return new WaitForSeconds(IN_DURATION);
         for (int i = 0; i < numberOfEnemies; i++)
         {
@@ -618,34 +626,41 @@ public class CombatUIManager : MonoBehaviour
     private IEnumerator Attacking(int attackTargetMenuButtonIndex)
     {
         turnIndicator.text = "Atacando";
-        CombatCharManager.GetInstance().ShowEnemyTarget(-1);
-        yield return new WaitForSeconds(IN_DURATION);
-        // Calling the animation canvas
-        int damage = CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
-        List<string> damages = new List<string>();
-        damages.Add(damage.ToString());
-        CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetHeroesIndex(), attackTargetMenuButtonIndex, AffectType.EnemyTarget, true);
 
-        turnIndicator.text = "";
-        yield return new WaitForSeconds(OUT_DURATION);
-        HidingEnemyTargetMenu();
-        StartCoroutine(UpdateCurrentCharacter());
-        yield return new WaitForSeconds(0.2f);
-        StartCoroutine(CallMainMenu());
+        if ((CombatCharManager.GetInstance().enemies[attackTargetMenuButtonIndex].life > 0))
+        {
+            CombatCharManager.GetInstance().ShowEnemyTarget(-1);
+            yield return new WaitForSeconds(IN_DURATION);
+            // Calling the animation canvas
+            int damage = CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
+            List<string> damages = new List<string>();
+            damages.Add(damage.ToString());
+            CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetHeroesIndex(), attackTargetMenuButtonIndex, AffectType.EnemyTarget, true);
+
+            turnIndicator.text = "";
+            yield return new WaitForSeconds(OUT_DURATION);
+            HidingEnemyTargetMenu();
+            StartCoroutine(UpdateCurrentCharacter());
+            yield return new WaitForSeconds(0.2f);
+            StartCoroutine(CallMainMenu());
+        }
     }
 
     private IEnumerator ApllyingEnemySingleTargetSkill(int attackTargetMenuButtonIndex)
     {
-        CombatCharManager.GetInstance().ShowEnemyTarget(-1);
-        yield return new WaitForSeconds(IN_DURATION);
-        SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
-        CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
-        turnIndicator.text = "";
-        yield return new WaitForSeconds(OUT_DURATION);
-        HidingEnemyTargetMenu();
-        StartCoroutine(UpdateCurrentCharacter());
-        yield return new WaitForSeconds(0.2f);
-        StartCoroutine(CallMainMenu());
+        if (((CombatCharManager.GetInstance().enemies[attackTargetMenuButtonIndex].life == 0) && (actualCharacter.skillList[selectedSkill].isAffectFaint)) || ((CombatCharManager.GetInstance().enemies[attackTargetMenuButtonIndex].life > 0) && (!actualCharacter.skillList[selectedSkill].isAffectFaint)))
+        {
+            CombatCharManager.GetInstance().ShowEnemyTarget(-1);
+            yield return new WaitForSeconds(IN_DURATION);
+            SkillManager.GetInstance().TriggeringSkill(actualCharacter.skillList[selectedSkill].skill_id, actualCharacter, attackTargetMenuButtonIndex, true);
+            CombatCharManager.GetInstance().LoseEnergy(actualCharacter.skillList[selectedSkill].cost, CombatCharManager.GetInstance().GetHeroesIndex(), false);
+            turnIndicator.text = "";
+            yield return new WaitForSeconds(OUT_DURATION);
+            HidingEnemyTargetMenu();
+            StartCoroutine(UpdateCurrentCharacter());
+            yield return new WaitForSeconds(0.2f);
+            StartCoroutine(CallMainMenu());
+        }
     }
 
     private void CheckingEnemyTarget()
@@ -727,7 +742,7 @@ public class CombatUIManager : MonoBehaviour
             {
                 isAbleTo = false;
             }
-            else 
+            else
             {
                 foreach (Buff buff in enemy.buffList)
                 {
@@ -758,10 +773,18 @@ public class CombatUIManager : MonoBehaviour
                     }
                 }
 
-                int damage = CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
-                List<string> damages = new List<string>();
-                damages.Add(damage.ToString());
-                CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetEnemiesIndex(), targetIndex, AffectType.EnemyTarget, false);
+                while (CombatCharManager.GetInstance().heroes[targetIndex].life == 0)
+                {
+                    targetIndex = Random.Range(0, heroes.Count);
+                }
+
+                if (!TestIfLostMatch())
+                {
+                    int damage = CombatCharManager.GetInstance().BasicAttack(enemy, targetIndex, false);
+                    List<string> damages = new List<string>();
+                    damages.Add(damage.ToString());
+                    CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetEnemiesIndex(), targetIndex, AffectType.EnemyTarget, false);
+                }
             }
 
             yield return new WaitForSeconds(IN_DURATION);
@@ -800,7 +823,7 @@ public class CombatUIManager : MonoBehaviour
                     if (buff.buffType == BuffType.Stunned)
                     {
                         return false;
-                    } 
+                    }
                 }
             }
         }
@@ -808,7 +831,7 @@ public class CombatUIManager : MonoBehaviour
     }
 
 
-    public void TestingHeroesNegativeStatus ()
+    public void TestingHeroesNegativeStatus()
     {
         foreach (Buff buff in actualCharacter.buffList)
         {
@@ -822,4 +845,22 @@ public class CombatUIManager : MonoBehaviour
         }
     }
 
+    private bool TestIfWinMatch()
+    {
+        int faintedEnemies = 0;
+        foreach (CharacterInfo enemy in CombatCharManager.GetInstance().enemies)
+        {
+            if (enemy.life == 0) { faintedEnemies++; }
+        }
+        return faintedEnemies == CombatCharManager.GetInstance().GetNumberOfEnemies();
+    }
+
+    private bool TestIfLostMatch () {
+        int faintedHeroes = 0;
+        foreach(CharacterInfo hero in CombatCharManager.GetInstance().heroes)
+        {
+            if (hero.life == 0) { faintedHeroes++; } 
+        }
+        return faintedHeroes == CombatCharManager.GetInstance().GetNumberOfAllies();
+    }
 }
