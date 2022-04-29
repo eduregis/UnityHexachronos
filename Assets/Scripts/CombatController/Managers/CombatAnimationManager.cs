@@ -22,6 +22,7 @@ public class CombatAnimationManager : MonoBehaviour
 
     private int characterIndexAux = 0;
     private int targetIndexAux = 0;
+    public bool salvatoCommand = false;
 
     private static CombatAnimationManager instance;
 
@@ -85,6 +86,10 @@ public class CombatAnimationManager : MonoBehaviour
                         heroesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(pivotName);
                         string targetName = CombatCharManager.GetInstance().GetCharNameByIndex(targetIndex, true);
                         enemiesSprites[0].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(targetName);
+                        if (salvatoCommand)
+                        {
+                            heroesSprites[1].GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage("Salvato");
+                        }
                         damageTexts[i].transform.position = new Vector3(enemiesSprites[0].transform.position.x - 100f, enemiesSprites[0].transform.position.y + 450.0f + (i* 50.0f), 1);
                     }
                     else
@@ -276,7 +281,7 @@ public class CombatAnimationManager : MonoBehaviour
                     break;
                 case AffectType.EnemyTarget:
                     heroesSprites[0].SetActive(true);
-                    heroesSprites[1].SetActive(false);
+                    heroesSprites[1].SetActive(salvatoCommand);
                     heroesSprites[2].SetActive(false);
 
                     enemiesSprites[0].SetActive(true);
@@ -379,6 +384,7 @@ public class CombatAnimationManager : MonoBehaviour
                 text.alpha = 1;
                 text.text = "";
             }
+            salvatoCommand = false;
         }
     }
 }
