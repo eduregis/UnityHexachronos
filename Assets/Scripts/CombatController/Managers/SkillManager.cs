@@ -149,7 +149,7 @@ public class SkillManager : MonoBehaviour
         System.Random rnd = new System.Random();
 
         int stunRate = rnd.Next(1, 101);
-        if (stunRate > 30)
+        if (stunRate < (10 + charInfo.intelligence))
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -170,7 +170,7 @@ public class SkillManager : MonoBehaviour
         System.Random rnd = new System.Random();
 
         int bleedingRate = rnd.Next(1, 101);
-        if (bleedingRate > 40)
+        if (bleedingRate < (20 + charInfo.intelligence))
         {
             Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -208,7 +208,7 @@ public class SkillManager : MonoBehaviour
         System.Random rnd = new System.Random();
 
         int stunRate = rnd.Next(1, 101);
-        if (stunRate > 50)
+        if (stunRate < (20 + charInfo.intelligence))
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -333,7 +333,7 @@ public class SkillManager : MonoBehaviour
 
         System.Random rnd = new System.Random();
         int stunRate = rnd.Next(1, 101);
-        if (stunRate > 50)
+        if (stunRate < (15 + charInfo.intelligence))
         {
             Buff buff = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -354,7 +354,7 @@ public class SkillManager : MonoBehaviour
         System.Random rnd = new System.Random();
 
         int bleedingRate = rnd.Next(1, 101);
-        if (bleedingRate > 70)
+        if (bleedingRate < (40 + charInfo.intelligence))
         {
             Buff buff = CreateBuff(10, BuffType.Bleeding, BuffModifier.Status, 2);
             CombatCharManager.GetInstance().SettingBuff(buff, targetIndex, isEnemy);
@@ -521,7 +521,7 @@ public class SkillManager : MonoBehaviour
             System.Random rnd = new System.Random();
 
             int stunRate = rnd.Next(1, 101);
-            if (stunRate > 30)
+            if (stunRate < (10 + charInfo.intelligence))
             {
                 Buff buff2 = CreateBuff(10, BuffType.Stunned, BuffModifier.Status, 2);
                 CombatCharManager.GetInstance().SettingBuff(buff2, i, isEnemy);
