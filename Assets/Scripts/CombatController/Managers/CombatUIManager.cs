@@ -9,6 +9,7 @@ public enum ActualTBSStatus
 {
     MainMenu,
     Attack,
+    SalvatoCommandAttack,
     SkillMenu,
     Skill,
     AllySingleTargetSkill,
@@ -59,6 +60,9 @@ public class CombatUIManager : MonoBehaviour
 
     private float IN_DURATION = 0.5F;
     private float OUT_DURATION = 1.5F;
+
+    private bool salvatoCommand = false;
+    private int salvatoOrderIndex = 0;
 
     private void Awake()
     {
@@ -163,6 +167,15 @@ public class CombatUIManager : MonoBehaviour
                 CheckingSkillDescription();
                 break;
             case ActualTBSStatus.Attack:
+                if (salvatoCommand)
+                {
+                    CheckingAllyTarget();
+                } else
+                {
+                    CheckingEnemyTarget();
+                }
+                break;
+            case ActualTBSStatus.SalvatoCommandAttack:
                 CheckingEnemyTarget();
                 break;
             case ActualTBSStatus.EnemySingleTargetSkill:
@@ -242,7 +255,14 @@ public class CombatUIManager : MonoBehaviour
             case 0:
                 HidingMainMenu();
                 actualStatus = ActualTBSStatus.Attack;
-                StartCoroutine(CallEnemyTargetMenu());
+                if (SalvatoAttackConditions())
+                {
+                    StartCoroutine(CallAllyTargetMenu());
+                    salvatoCommand = true;
+                } else
+                {
+                    StartCoroutine(CallEnemyTargetMenu());
+                }
                 break;
             case 1:
                 HidingMainMenu();
@@ -378,6 +398,7 @@ public class CombatUIManager : MonoBehaviour
     // Skill With Ally Targets
     private IEnumerator CallAllyTargetMenu()
     {
+       
         turnIndicator.text = "Selecione um alvo da skill";
         yield return new WaitForSeconds(IN_DURATION);
         for (int i = 0; i < numberOfAllies; i++)
@@ -401,17 +422,32 @@ public class CombatUIManager : MonoBehaviour
 
     public void ChooseAllyTargetMenuButton(int allyTargetMenuButtonIndex)
     {
-        if (actualStatus == ActualTBSStatus.AllySingleTargetSkill)
+        if (salvatoCommand)
         {
-            StartCoroutine(ApllyingAllySingleTargetSkill(allyTargetMenuButtonIndex));
+            if (CombatCharManager.GetInstance().heroes[allyTargetMenuButtonIndex].char_name != "Salvato")
+            {
+                Debug.Log("Escolha um alvo para o personagem escolhido atacar");
+                CombatCharManager.GetInstance().ShowAllyTarget(-1);
+                HidingAllyTargetMenu();
+                salvatoOrderIndex = allyTargetMenuButtonIndex;
+                actualStatus = ActualTBSStatus.SalvatoCommandAttack;
+                StartCoroutine(CallEnemyTargetMenu());
+            }
         }
-        else if (actualStatus == ActualTBSStatus.AllyMultiTargetSkill)
+        else
         {
-            StartCoroutine(ApllyingAlliesMultiTargetSkill());
-        }
-        else if (actualStatus == ActualTBSStatus.SelfTargetSkill)
-        {
-            StartCoroutine(ApllyingSelfTargetSkill());
+            if (actualStatus == ActualTBSStatus.AllySingleTargetSkill)
+            {
+                StartCoroutine(ApllyingAllySingleTargetSkill(allyTargetMenuButtonIndex));
+            }
+            else if (actualStatus == ActualTBSStatus.AllyMultiTargetSkill)
+            {
+                StartCoroutine(ApllyingAlliesMultiTargetSkill());
+            }
+            else if (actualStatus == ActualTBSStatus.SelfTargetSkill)
+            {
+                StartCoroutine(ApllyingSelfTargetSkill());
+            }
         }
     }
 
@@ -620,6 +656,9 @@ public class CombatUIManager : MonoBehaviour
         else if (actualStatus == ActualTBSStatus.EnemyMultiTargetSkill)
         {
             StartCoroutine(ApllyingEnemyMultiTargetSkill());
+        } else if (actualStatus == ActualTBSStatus.SalvatoCommandAttack)
+        {
+            StartCoroutine(SalvatoCommandAttacking(attackTargetMenuButtonIndex));
         }
     }
 
@@ -636,6 +675,31 @@ public class CombatUIManager : MonoBehaviour
             List<string> damages = new List<string>();
             damages.Add(damage.ToString());
             CombatAnimationManager.GetInstance().ActiveScreen(damages, CombatCharManager.GetInstance().GetHeroesIndex(), attackTargetMenuButtonIndex, AffectType.EnemyTarget, true);
+
+            turnIndicator.text = "";
+            yield return new WaitForSeconds(OUT_DURATION);
+            HidingEnemyTargetMenu();
+            StartCoroutine(UpdateCurrentCharacter());
+            yield return new WaitForSeconds(0.2f);
+            StartCoroutine(CallMainMenu());
+        }
+    }
+
+    private IEnumerator SalvatoCommandAttacking(int attackTargetMenuButtonIndex)
+    {
+        turnIndicator.text = "Atacando";
+
+        if ((CombatCharManager.GetInstance().enemies[attackTargetMenuButtonIndex].life > 0))
+        {
+            CombatCharManager.GetInstance().ShowEnemyTarget(-1);
+            yield return new WaitForSeconds(IN_DURATION);
+            // Calling the animation canvas
+            int damage = CombatCharManager.GetInstance().BasicAttack(actualCharacter, attackTargetMenuButtonIndex, true);
+            List<string> damages = new List<string>();
+            damages.Add(damage.ToString());
+            CombatAnimationManager.GetInstance().salvatoCommand = true;
+            CombatAnimationManager.GetInstance().ActiveScreen(damages, salvatoOrderIndex, attackTargetMenuButtonIndex, AffectType.EnemyTarget, true);
+            salvatoCommand = false;
 
             turnIndicator.text = "";
             yield return new WaitForSeconds(OUT_DURATION);
@@ -862,5 +926,20 @@ public class CombatUIManager : MonoBehaviour
             if (hero.life == 0) { faintedHeroes++; } 
         }
         return faintedHeroes == CombatCharManager.GetInstance().GetNumberOfAllies();
+    }
+
+    private bool SalvatoAttackConditions()
+    {
+        if (actualCharacter.char_name != "Salvato")
+        {
+            return false;
+        }
+
+        int faintedHeroes = 0;
+        foreach (CharacterInfo hero in CombatCharManager.GetInstance().heroes)
+        {
+            if (hero.life == 0) { faintedHeroes++; }
+        }
+        return faintedHeroes != CombatCharManager.GetInstance().GetNumberOfAllies() - 1;
     }
 }
