@@ -6,6 +6,9 @@ using System;
 
 public class CombatCharManager : MonoBehaviour
 {
+    [Header("CharacterSprites")]
+    [SerializeField] private CharacterIdentifier[] heroesInputs;
+    [SerializeField] private CharacterIdentifier[] enemiesInputs;
 
     [Header("CharacterSprites")]
     [SerializeField] private GameObject[] heroesSprites;
@@ -51,8 +54,8 @@ public class CombatCharManager : MonoBehaviour
     Vector3 pos1;
     Vector3 pos2;
     Vector3 pos3;
-    Vector3 scaleMain = new Vector3(120,120,1);
-    Vector3 scaleNormal = new Vector3(100,100,1);
+    Vector3 scaleMain = new Vector3(120, 120, 1);
+    Vector3 scaleNormal = new Vector3(100, 100, 1);
 
     Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
     Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);
@@ -73,31 +76,32 @@ public class CombatCharManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
         heroes = new List<CharacterInfo>();
         enemies = new List<CharacterInfo>();
 
         SetupCharacters();
-
-        UpdateUI();
-        
     }
 
     public void SetupCharacters()
     {
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Luca), true);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Salvato), true);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.Borell), true);
+        foreach(CharacterIdentifier character in heroesInputs)
+        {
+            CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(character), true);
+        }
 
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
-        CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
-        //CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(CharacterIdentifier.BasicSoldier), false);
+        foreach (CharacterIdentifier character in enemiesInputs)
+        {
+            CreateCharacter(CharStatsManager.GetInstance().GetBasicStats(character), false);
+        }
+
+        UpdateUI();
     }
     private void CreateCharacter(BasicCharacterStats basicStats, bool isHero)
     {
         CharacterInfo characterInfo = new CharacterInfo();
-        
+
         characterInfo.char_name = basicStats.char_name;
 
         characterInfo.strength = basicStats.strength;
@@ -110,7 +114,7 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.skillList = basicStats.skills;
         characterInfo.buffList = new List<Buff>();
 
-        characterInfo.maxLife = ((basicStats.vitality + basicStats.level ) * 5);
+        characterInfo.maxLife = ((basicStats.vitality + basicStats.level) * 5);
         characterInfo.life = characterInfo.maxLife;
         characterInfo.maxEnergy = 100;
         characterInfo.energy = characterInfo.maxEnergy;
@@ -122,9 +126,11 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.critDamage = 50;
         characterInfo.isBlocking = false;
 
-        if (isHero) {
+        if (isHero)
+        {
             heroes.Add(characterInfo);
-        } else
+        }
+        else
         {
             enemies.Add(characterInfo);
         }
@@ -185,11 +191,12 @@ public class CombatCharManager : MonoBehaviour
         if (isEnemy)
         {
             return enemies[index].char_name;
-        } else
+        }
+        else
         {
             return heroes[index].char_name;
         }
-        
+
     }
 
     public void RotateEnemies()
@@ -209,14 +216,15 @@ public class CombatCharManager : MonoBehaviour
         {
             playerTurn = false;
             heroesIndex = 0;
-        } else
+        }
+        else
         {
             playerTurn = true;
             heroesIndex++;
         }
     }
 
-    public void BuffListHeroIterator() 
+    public void BuffListHeroIterator()
     {
         FinishBlock();
 
@@ -281,7 +289,7 @@ public class CombatCharManager : MonoBehaviour
 
     public bool IsTauntActive(int index)
     {
-        foreach( Buff buff in heroes[index].buffList)
+        foreach (Buff buff in heroes[index].buffList)
         {
             if (buff.buffType == BuffType.Taunt)
             {
@@ -310,7 +318,7 @@ public class CombatCharManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         MovingSpriteCharsIfNeeded();
         AnimatingHeroesHUDIfNeeded();
@@ -338,7 +346,7 @@ public class CombatCharManager : MonoBehaviour
     {
         for (int i = 0; i < enemiesTargets.Length; i++)
         {
-             enemiesTargets[i].SetActive(true); 
+            enemiesTargets[i].SetActive(true);
         }
     }
 
@@ -398,11 +406,13 @@ public class CombatCharManager : MonoBehaviour
 
             damage = (int)((float)damage / defenderDefense);
 
-            if (enemies[index].isBlocking) {
+            if (enemies[index].isBlocking)
+            {
                 damage = (int)((float)damage / 1.5f);
             }
 
-            if ((hitRate < attackHitRate) || (evasionRate > defenderEvasionRate)) {
+            if ((hitRate < attackHitRate) || (evasionRate > defenderEvasionRate))
+            {
                 if (enemies[index].life - damage < 0) { enemies[index].life = 0; }
                 else { enemies[index].life -= damage; }
                 enemiesFullLifebars[index].fillAmount = Mathf.Clamp(adjustHexagonBarPercentage((float)enemies[index].life, (float)enemies[index].maxLife), 0, 1f);
@@ -410,12 +420,14 @@ public class CombatCharManager : MonoBehaviour
                 // CombatAnimationManager.GetInstance().ActiveScreen();
                 Debug.Log(attackChar.char_name + " causou " + damage + " (" + basicDamage + ") pontos de dano em " + enemies[index].char_name);
                 return damage;
-            } else
+            }
+            else
             {
                 Debug.Log("Errou");
                 return 0;
             }
-        } else
+        }
+        else
         {
             int defenderEvasionRate = GenericBuffApplier(heroes[index], heroes[index].evasionRate, BuffType.EvasionUp, BuffType.EvasionDown);
             float defenderDefense = GenericBuffApplierFloat(heroes[index], heroes[index].defense, BuffType.DefenseUp, BuffType.DefenseDown);
@@ -521,14 +533,15 @@ public class CombatCharManager : MonoBehaviour
     {
         float finalValue = (float)initialValue;
 
-        foreach(Buff buff in attackChar.buffList)
+        foreach (Buff buff in attackChar.buffList)
         {
             if (buff.buffType == buffTypeUp)
             {
                 if (buff.modifier == BuffModifier.Multiplier)
                 {
                     finalValue *= buff.value;
-                } else if (buff.modifier == BuffModifier.Constant)
+                }
+                else if (buff.modifier == BuffModifier.Constant)
                 {
                     finalValue += buff.value;
                 }
@@ -592,7 +605,7 @@ public class CombatCharManager : MonoBehaviour
     {
         if (isEnemy)
         {
-            if(enemies[index].buffList.Count < 4)
+            if (enemies[index].buffList.Count < 4)
             {
                 enemies[index].buffList.Add(buff);
             }
@@ -602,7 +615,7 @@ public class CombatCharManager : MonoBehaviour
             if (heroes[index].buffList.Count < 4)
             {
                 heroes[index].buffList.Add(buff);
-            }   
+            }
         }
         isUpdatingBuffs = true;
     }
@@ -651,7 +664,7 @@ public class CombatCharManager : MonoBehaviour
         if (rotateEnemiesCharTimer > 0)
         {
             rotateEnemiesCharTimer -= Time.deltaTime;
-            
+
             for (int i = 0; i < enemies.Count; i++)
             {
                 if (i == enemiesIndex && !playerTurn)
@@ -675,7 +688,7 @@ public class CombatCharManager : MonoBehaviour
         if (hudHeroesAnimateTimer > 0)
         {
             hudHeroesAnimateTimer -= Time.deltaTime;
-            
+
             for (int i = 0; i < heroesHUD.Length; i++)
             {
                 if (i == heroesIndex && playerTurn)
@@ -733,7 +746,7 @@ public class CombatCharManager : MonoBehaviour
                     }
                 }
             }
-        } 
+        }
     }
 
     public void CheckingGainBars()
@@ -764,7 +777,7 @@ public class CombatCharManager : MonoBehaviour
         if (energyLoseShrinkTimer > 0)
         {
             energyLoseShrinkTimer -= Time.deltaTime;
-      
+
             for (var i = 0; i < heroes.Count; i++)
             {
                 if (heroesEnergybars[i].fillAmount < heroesDamageEnergybars[i].fillAmount)
@@ -793,7 +806,7 @@ public class CombatCharManager : MonoBehaviour
 
     public void UpdatingBuffsUI()
     {
-        for(int i = 0; i < heroes.Count; i++)
+        for (int i = 0; i < heroes.Count; i++)
         {
             BuffIconManager.GetInstance().UpdateUI(heroes[i], i, false);
         }

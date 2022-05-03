@@ -9854,6 +9854,7 @@ MonoBehaviour:
   - {fileID: 2089719559}
   - {fileID: 1645578270}
   - {fileID: 1501610135}
+  salvatoCommand: 0
 --- !u!1 &1587875974
 GameObject:
   m_ObjectHideFlags: 0
