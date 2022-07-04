@@ -54,8 +54,8 @@ public class CombatCharManager : MonoBehaviour
     Vector3 pos1;
     Vector3 pos2;
     Vector3 pos3;
-    Vector3 scaleMain = new Vector3(120, 120, 1);
-    Vector3 scaleNormal = new Vector3(100, 100, 1);
+    Vector3 scaleMain = new Vector3(60, 60, 1);
+    Vector3 scaleNormal = new Vector3(50, 50, 1);
 
     Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
     Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);

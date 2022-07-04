@@ -4432,6 +4432,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57ceb257e59360478d288d3444d9149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroesInputs: 000000000200000001000000
+  enemiesInputs: 0700000007000000
   heroesSprites:
   - {fileID: 145892084}
   - {fileID: 1390603171}
