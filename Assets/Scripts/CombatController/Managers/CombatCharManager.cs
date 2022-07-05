@@ -29,7 +29,6 @@ public class CombatCharManager : MonoBehaviour
     [SerializeField] private Image[] enemiesPortraits;
     [SerializeField] private Image[] enemiesFullLifebars;
     [SerializeField] private Image[] enemiesDamageLifebars;
-    [SerializeField] private Image[] enemiesEmptyLifebars;
 
     public List<CharacterInfo> heroes;
     public List<CharacterInfo> enemies;
@@ -60,8 +59,8 @@ public class CombatCharManager : MonoBehaviour
     Vector3 HUDMain = new Vector3(1.7f, 1.7f, 1);
     Vector3 HUDNormal = new Vector3(1.5f, 1.5f, 1);
 
-    Vector3 HUDOldMain = new Vector3(1.1f, 1.1f, 1);
-    Vector3 HUDOldNormal = new Vector3(1.0f, 1.0f, 1);
+    Vector3 HUDOldMain = new Vector3(1.7f, 1.7f, 1);
+    Vector3 HUDOldNormal = new Vector3(1.5f, 1.5f, 1);
     private void Awake()
     {
         if (instance != null)
@@ -166,7 +165,6 @@ public class CombatCharManager : MonoBehaviour
             enemiesTargets[i].SetActive(false);
             enemiesDamageLifebars[i].enabled = false;
             enemiesFullLifebars[i].enabled = false;
-            enemiesEmptyLifebars[i].enabled = false;
             enemiesPortraits[i].enabled = false;
         }
     }
