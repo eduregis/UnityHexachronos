@@ -779,8 +779,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46bdc028ab37b31468c05ba662a3bcc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cap_Sad: {fileID: 21300000, guid: 416daabc95665234e91facdf6a544d49, type: 3}
-  Thunder_Sigh: {fileID: 21300000, guid: bbab64007c3a6c0438830f4422b771f0, type: 3}
+  Billy_Broke: {fileID: 21300000, guid: 9103a83dc23707442b56aa6c6d3aff82, type: 3}
+  Billy_Confused: {fileID: 21300000, guid: e74b80ff79190404b90afae8c76c8c74, type: 3}
+  Billy_Happy: {fileID: 21300000, guid: 9146e4ffcac3559439645a970f0181a3, type: 3}
+  Billy_Sad: {fileID: 21300000, guid: e214dca549a42854f8863cd72c5c9ebe, type: 3}
+  Billy_Serious: {fileID: 21300000, guid: 5a822490c85115d47adab0c64bbf8bad, type: 3}
+  Billy_Speechless: {fileID: 21300000, guid: 86f18258923840a4cb5b571451ed5249, type: 3}
+  Billy_Struggle: {fileID: 21300000, guid: c0f16f7497e6d6c48af98fab0fec6fbb, type: 3}
+  Billy_Surprised: {fileID: 21300000, guid: a61a61413b7cc5745a7233040488949a, type: 3}
+  Billy_Tired: {fileID: 21300000, guid: 1fedd79b223414044a00817564f39e29, type: 3}
+  Hammer_Angry: {fileID: 21300000, guid: bde5dc97041c6d144991d8514f26b596, type: 3}
+  Hammer_Happy: {fileID: 21300000, guid: 9817fe40dc5b19e428630f0d658a5f13, type: 3}
+  Hammer_Serious: {fileID: 21300000, guid: d17b9fae4a69a3448a09d8b9643b59e3, type: 3}
+  Hammer_Smile: {fileID: 21300000, guid: bb805bdc0d14f3e4f8463e804dde69c5, type: 3}
+  Hammer_Surprised: {fileID: 21300000, guid: 7bc0199500d675f479ac79d0fe5779e8, type: 3}
+  Hammer_Sweet: {fileID: 21300000, guid: 0d9e0eebf3943b64d8bf717ebfd84a6a, type: 3}
+  Morya_Sad: {fileID: 21300000, guid: 20f7751e4bd3de243b3384267943fb69, type: 3}
+  Morya_Sigh: {fileID: 21300000, guid: f4abc71efc6ed4441af41dbc62da468f, type: 3}
+  Morya_Struggle: {fileID: 21300000, guid: 9477d1907924b884da8cda35b8b99470, type: 3}
+  Morya_Surprised: {fileID: 21300000, guid: 6c1666c5088b8f64c89dfd1013a633cb, type: 3}
+  Cap_Angry: {fileID: 21300000, guid: 4cf26977b4b6a6549aeee7f12bc1fb29, type: 3}
+  Cap_Happy: {fileID: 21300000, guid: beddf826892f15141821a06563272db3, type: 3}
+  Cap_Neutral: {fileID: 21300000, guid: 815052b0392b9c9468469102353ff0ed, type: 3}
+  Cap_Sad: {fileID: 21300000, guid: 98830ff9182d3f94f96618bdeb5e085e, type: 3}
+  Cap_Serious: {fileID: 21300000, guid: d4c20bf20219dfa43a62ac539c89a997, type: 3}
+  Cap_Shy: {fileID: 21300000, guid: 89184b62aa71e014c97bf8fc38a22e42, type: 3}
+  Cap_Surprised: {fileID: 21300000, guid: f9339476ae33e5c40925418f768bcaea, type: 3}
+  Cap_Sweet: {fileID: 21300000, guid: f4896a6d38438f746916d6df781291a1, type: 3}
+  Sam_Angry: {fileID: 21300000, guid: bdb7279ef4a21ef49a07e0fd9d73a7b6, type: 3}
+  Sam_Cheeky: {fileID: 21300000, guid: fb8d2f385695d5540ab188eac77a527f, type: 3}
+  Sam_Defy: {fileID: 21300000, guid: 7cc4efa4a1f45ac40935c56000a927ee, type: 3}
+  Sam_Focused: {fileID: 21300000, guid: 61de1bbc7904ae24cb0d97a5651646e3, type: 3}
+  Sam_Happy: {fileID: 21300000, guid: 20cc8b2de676e2e48ab7d829a7de793e, type: 3}
+  Sam_Sad: {fileID: 21300000, guid: d49aaea95db1f2344ba6a585641bb37e, type: 3}
+  Sam_Serious: {fileID: 21300000, guid: 5de0680ef9acf974e8e4778e9c0e381f, type: 3}
+  Sam_Shy: {fileID: 21300000, guid: 7a9500606644d65488ff53a285576e06, type: 3}
+  Sam_Surprised: {fileID: 21300000, guid: 1281ae06ae1143f4683050755e853db5, type: 3}
+  Thunder_Angry: {fileID: 21300000, guid: dd942b05a04b10241a2dc0ad596d5b6c, type: 3}
+  Thunder_Broke: {fileID: 21300000, guid: 5096405b35d4d9a4b91d06ae2c62970a, type: 3}
+  Thunder_Happy: {fileID: 21300000, guid: 606b2276db24e674c926512eed903351, type: 3}
+  Thunder_Sad: {fileID: 21300000, guid: ffe352d94a6de0547a22c83273d719e9, type: 3}
+  Thunder_Serious: {fileID: 21300000, guid: 50a630dcfd4b7b34ba279af030dcb6cd, type: 3}
+  Thunder_Sigh: {fileID: 21300000, guid: 3b6409b4d620fd248937acf09c4a3bb8, type: 3}
+  Thunder_Sweet: {fileID: 21300000, guid: 78ecc4586e22af54898b5f8ba8d19d26, type: 3}
 --- !u!1 &848639859
 GameObject:
   m_ObjectHideFlags: 0
@@ -991,7 +1032,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 400}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1045319906
 MonoBehaviour:
@@ -1013,7 +1054,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bbab64007c3a6c0438830f4422b771f0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 50a630dcfd4b7b34ba279af030dcb6cd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1737,14 +1778,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4275b64c969322b438552cdcb474bb54, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2082,6 +2123,7 @@ MonoBehaviour:
   - {fileID: 1769313586}
   - {fileID: 1832364010}
   - {fileID: 1115635037}
+  choicesIndexes: 
 --- !u!1 &2006891098
 GameObject:
   m_ObjectHideFlags: 0
