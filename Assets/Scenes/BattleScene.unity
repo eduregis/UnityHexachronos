@@ -1390,6 +1390,12 @@ MonoBehaviour:
   enemy1Prefab: {fileID: 2141352171352839188, guid: b57a5b70b745fed4595c3c99f9663ccd, type: 3}
   enemy2Prefab: {fileID: 2141352171352839188, guid: b57a5b70b745fed4595c3c99f9663ccd, type: 3}
   enemy3Prefab: {fileID: 2141352171352839188, guid: b57a5b70b745fed4595c3c99f9663ccd, type: 3}
+  hero1: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
+  hero2: {fileID: 11400000, guid: 07e30a4e3f89fd147a166ae17b29b31e, type: 2}
+  hero3: {fileID: 0}
+  enemy1: {fileID: 11400000, guid: e54be3f3b703bcc4cb0781a41f0e45a4, type: 2}
+  enemy2: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
+  enemy3: {fileID: 0}
   hero1BattleStation: {fileID: 935983391}
   hero2BattleStation: {fileID: 365123057}
   hero3BattleStation: {fileID: 1853560830}

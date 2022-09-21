@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName ="BasicStats", menuName ="BasicStats")]
 
-public class BasicCharacterStats : ScriptableObject
+public class CharacterStats : ScriptableObject
 {
     public string char_name;
 
@@ -30,6 +30,35 @@ public class BasicCharacterStats : ScriptableObject
     public bool isBlocking;
 
     public List<CharacterSkill> skills;
+
+    public void LoadBattleStats()
+    {
+        maxLife = ((vitality) * 5);
+        life = maxLife;
+        maxEnergy = 100;
+        energy = maxEnergy;
+        defense = 1f;
+        damage = (strength + (technique / 2));
+        hitRate = (50 + technique + (agility / 2) + (luck / 4));
+        evasionRate = ((agility / 3) + (luck / 3) + (intelligence / 3));
+        critRate = (5 + (luck / 2));
+        critDamage = 50;
+        isBlocking = false;
+    }
+
+    public bool TakeDamage(int dmg)
+    {
+        if (dmg >= life)
+        {
+            life = 0;
+            return true;
+        }
+        else
+        {
+            life -= dmg;
+            return false;
+        }
+    }
 }
 
 

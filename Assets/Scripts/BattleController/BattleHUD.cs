@@ -9,12 +9,11 @@ public class BattleHUD : MonoBehaviour
     public TextMeshProUGUI nameText;
     public Slider hpSlider;
 
-    public void SetHUD(Unit unit)
+    public void SetHUD(CharacterStats character)
     {
-        print(unit);
-        nameText.text = unit.unitName;
-        hpSlider.maxValue = unit.maxHP;
-        hpSlider.value = unit.currentHP;
+        nameText.text = character.name;
+        hpSlider.maxValue = character.maxLife;
+        hpSlider.value = character.life;
     } 
 
     public void SetHP(int hp)

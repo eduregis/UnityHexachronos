@@ -19,13 +19,13 @@ public enum BattleState {
 
 public class BattleSystem : MonoBehaviour
 {
-    [Header("Characters PreFabs (Will Be Removed)")]
-    public GameObject hero1Prefab;
-    public GameObject hero2Prefab;
-    public GameObject hero3Prefab;
-    public GameObject enemy1Prefab;
-    public GameObject enemy2Prefab;
-    public GameObject enemy3Prefab;
+    [Header("Characters Stats")]
+    public CharacterStats hero1;
+    public CharacterStats hero2;
+    public CharacterStats hero3;
+    public CharacterStats enemy1;
+    public CharacterStats enemy2;
+    public CharacterStats enemy3;
 
     [Header("Battle Stations")]
     public Transform hero1BattleStation;
@@ -63,14 +63,6 @@ public class BattleSystem : MonoBehaviour
     public Button enemy2Arrow;
     public Button enemy3Arrow;
 
-    [Header("Characters Units")]
-    Unit hero1Unit;
-    Unit hero2Unit;
-    Unit hero3Unit;
-    Unit enemy1Unit;
-    Unit enemy2Unit;
-    Unit enemy3Unit;
-
     [Header("HUDs")]
     public BattleHUD hero1HUD;
     public BattleHUD hero2HUD;
@@ -98,6 +90,28 @@ public class BattleSystem : MonoBehaviour
         auxText.text = "Starting battle!";
 
         // setup the UI before start the battle
+
+        if (hero1 != null) {
+            hero1.LoadBattleStats();
+            hero1HUD.SetHUD(hero1);
+        }
+
+        if (hero2 != null) {
+            hero2.LoadBattleStats();
+            hero2HUD.SetHUD(hero2);
+        }
+
+        if (enemy1 != null) {
+            enemy1.LoadBattleStats();
+            enemy1HUD.SetHUD(enemy1);
+        }
+
+        if (enemy2 != null) {
+            enemy2.LoadBattleStats();
+            enemy2HUD.SetHUD(enemy2);
+        }
+
+        /*
         GameObject hero1GO = Instantiate(hero1Prefab, hero1BattleStation);
         hero1Unit = hero1GO.GetComponent<Unit>();
         hero1HUD.SetHUD(hero1Unit);
@@ -112,24 +126,24 @@ public class BattleSystem : MonoBehaviour
 
         GameObject enemy2GO = Instantiate(enemy2Prefab, enemy2BattleStation);
         enemy2Unit = enemy2GO.GetComponent<Unit>();
-        enemy2HUD.SetHUD(enemy2Unit);
+        enemy2HUD.SetHUD(enemy2Unit);*/
 
         StartCoroutine(StartBattle());
     }
 
     IEnumerator StartBattle()
     {
-        if (hero1Unit == null)
+        if (hero1 == null)
             hero1HUD.gameObject.SetActive(false);
-        if (hero2Unit == null)
+        if (hero2 == null)
             hero2HUD.gameObject.SetActive(false);
-        if (hero3Unit == null)
+        if (hero3 == null)
             hero3HUD.gameObject.SetActive(false);
-        if (enemy1Unit == null)
+        if (enemy1 == null)
             enemy1HUD.gameObject.SetActive(false);
-        if (enemy2Unit == null)
+        if (enemy2 == null)
             enemy2HUD.gameObject.SetActive(false);
-        if (enemy3Unit == null)
+        if (enemy3 == null)
             enemy3HUD.gameObject.SetActive(false);
 
         state = BattleState.HERO1TURN;
@@ -189,16 +203,16 @@ public class BattleSystem : MonoBehaviour
 
         switch (TargetId){
             case 1:
-                enemy1Unit.TakeDamage(hero1Unit.damage);
-                enemy1HUD.SetHP(enemy1Unit.currentHP);
+                enemy1.TakeDamage(hero1.damage);
+                enemy1HUD.SetHP(enemy1.life);
                 break;
             case 2:
-                enemy2Unit.TakeDamage(hero2Unit.damage);
-                enemy2HUD.SetHP(enemy2Unit.currentHP);
+                enemy2.TakeDamage(hero2.damage);
+                enemy2HUD.SetHP(enemy2.life);
                 break;
             case 3:
-                enemy3Unit.TakeDamage(hero3Unit.damage);
-                enemy3HUD.SetHP(enemy3Unit.currentHP);
+                enemy3.TakeDamage(hero3.damage);
+                enemy3HUD.SetHP(enemy3.life);
                 break;
             default:
                 break;
@@ -225,9 +239,9 @@ public class BattleSystem : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
 
-            hero1Unit.TakeDamage(enemy1Unit.damage);
+            hero1.TakeDamage(enemy1.damage);
 
-            hero1HUD.SetHP(hero1Unit.currentHP);
+            hero1HUD.SetHP(hero1.life);
 
             yield return new WaitForSeconds(1f);
 
@@ -285,16 +299,16 @@ public class BattleSystem : MonoBehaviour
     bool IsHeroReadyToAct() {
         switch (state) {
             case BattleState.HERO1TURN:
-                if (hero1Unit != null)
-                    return (hero1Unit.currentHP != 0);
+                if (hero1 != null)
+                    return (hero1.life != 0);
                 return false;
             case BattleState.HERO2TURN:
-                if (hero2Unit != null)
-                    return (hero2Unit.currentHP != 0);
+                if (hero2 != null)
+                    return (hero2.life != 0);
                 return false;
             case BattleState.HERO3TURN:
-                if (hero3Unit != null)
-                    return (hero3Unit.currentHP != 0);
+                if (hero3 != null)
+                    return (hero3.life != 0);
                 return false;
         }
         return true;
@@ -303,59 +317,59 @@ public class BattleSystem : MonoBehaviour
     bool IsEnemyReadyToAct() {
         switch (state) {
             case BattleState.ENEMY1TURN:
-                if (enemy1Unit != null)
-                    return (enemy1Unit.currentHP != 0);
+                if (enemy1 != null)
+                    return (enemy1.life != 0);
                 return false;
             case BattleState.ENEMY2TURN:
-                if (enemy2Unit != null)
-                    return (enemy2Unit.currentHP != 0);
+                if (enemy2 != null)
+                    return (enemy2.life != 0);
                 return false;
             case BattleState.ENEMY3TURN:
-                if (enemy3Unit != null)
-                    return (enemy3Unit.currentHP != 0);
+                if (enemy3 != null)
+                    return (enemy3.life != 0);
                 return false;
         }
         return true;
     }
 
     bool IsAllHeroesDead() {
-        if (hero1Unit != null) {
-            if (hero1Unit.currentHP > 0)
+        if (hero1 != null) {
+            if (hero1.life > 0)
                 return false;
         }
-        if (hero2Unit != null) {
-            if (hero2Unit.currentHP > 0)
+        if (hero2 != null) {
+            if (hero2.life > 0)
                 return false;
         }
-        if (hero3Unit != null) {
-            if (hero3Unit.currentHP > 0)
+        if (hero3 != null) {
+            if (hero3.life > 0)
                 return false;
         }
         return true;
     }
 
     bool IsAllEnemiesDead() {
-        if (enemy1Unit != null) {
-            if (enemy1Unit.currentHP > 0)
+        if (enemy1 != null) {
+            if (enemy1.life > 0)
                 return false;
         }
-        if (enemy2Unit != null) {
-            if (enemy2Unit.currentHP > 0)
+        if (enemy2 != null) {
+            if (enemy2.life > 0)
                 return false;
         }
-        if (enemy3Unit != null) {
-            if (enemy3Unit.currentHP > 0)
+        if (enemy3 != null) {
+            if (enemy3.life > 0)
                 return false;
         }
         return true;
     }
 
     void CheckingAvailableEnemyTargets() {
-        if (enemy1Unit == null)
+        if (enemy1 == null)
             enemy1Arrow.gameObject.SetActive(false);
-        if (enemy2Unit == null)
+        if (enemy2 == null)
             enemy2Arrow.gameObject.SetActive(false);
-        if (enemy3Unit == null)
+        if (enemy3 == null)
             enemy3Arrow.gameObject.SetActive(false);
     }
 
@@ -370,15 +384,15 @@ public class BattleSystem : MonoBehaviour
 
         switch (TargetId) {
             case 1:
-                if (enemy1Unit.currentHP == 0)
+                if (enemy1.life == 0)
                     return;
                 break;
             case 2:
-                if (enemy2Unit.currentHP == 0)
+                if (enemy2.life == 0)
                     return;
                 break;
             case 3:
-                if (enemy3Unit.currentHP == 0)
+                if (enemy3.life == 0)
                     return;
                 break;
             default:

@@ -97,7 +97,7 @@ public class CombatCharManager : MonoBehaviour
 
         UpdateUI();
     }
-    private void CreateCharacter(BasicCharacterStats basicStats, bool isHero)
+    private void CreateCharacter(CharacterStats basicStats, bool isHero)
     {
         CharacterInfo characterInfo = new CharacterInfo();
 
