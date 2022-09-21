@@ -25,7 +25,7 @@ public class CharStatsManager : MonoBehaviour
         characters = new List<BasicCharInfo>();
     }
 
-    public BasicCharacterStats GetBasicStats(CharacterIdentifier identifier)
+    public CharacterStats GetBasicStats(CharacterIdentifier identifier)
     {
         foreach (BasicCharInfo character in characters)
         {

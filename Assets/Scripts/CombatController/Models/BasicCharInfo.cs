@@ -18,6 +18,6 @@ public enum CharacterIdentifier
 [System.Serializable]
 public class BasicCharInfo
 {
-    public BasicCharacterStats characterStats;
+    public CharacterStats characterStats;
     public CharacterIdentifier characterIdentifier;
 }

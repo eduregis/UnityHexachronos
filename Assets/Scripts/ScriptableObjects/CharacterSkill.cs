@@ -42,6 +42,7 @@ public class CharacterSkill : ScriptableObject
     public Skill skill_id;
     public string skill_name;
     public string description;
+    public string[] skill_execution;
     public int cost;
     public AffectType affectType;
     public bool isAffectFaint = false;

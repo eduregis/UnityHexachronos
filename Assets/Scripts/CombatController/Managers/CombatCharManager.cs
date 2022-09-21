@@ -97,7 +97,7 @@ public class CombatCharManager : MonoBehaviour
 
         UpdateUI();
     }
-    private void CreateCharacter(BasicCharacterStats basicStats, bool isHero)
+    private void CreateCharacter(CharacterStats basicStats, bool isHero)
     {
         CharacterInfo characterInfo = new CharacterInfo();
 
@@ -109,16 +109,15 @@ public class CombatCharManager : MonoBehaviour
         characterInfo.technique = basicStats.technique;
         characterInfo.agility = basicStats.agility;
         characterInfo.luck = basicStats.luck;
-        characterInfo.level = basicStats.level;
         characterInfo.skillList = basicStats.skills;
         characterInfo.buffList = new List<Buff>();
 
-        characterInfo.maxLife = ((basicStats.vitality + basicStats.level) * 5);
+        characterInfo.maxLife = ((basicStats.vitality) * 5);
         characterInfo.life = characterInfo.maxLife;
         characterInfo.maxEnergy = 100;
         characterInfo.energy = characterInfo.maxEnergy;
         characterInfo.defense = 1f;
-        characterInfo.damage = (basicStats.strength + (basicStats.technique / 2) + (basicStats.level / 5));
+        characterInfo.damage = (basicStats.strength + (basicStats.technique / 2));
         characterInfo.hitRate = (50 + basicStats.technique + (basicStats.agility / 2) + (basicStats.luck / 4));
         characterInfo.evasionRate = ((basicStats.agility / 3) + (basicStats.luck / 3) + (basicStats.intelligence / 3));
         characterInfo.critRate = (5 + (basicStats.luck / 2));
