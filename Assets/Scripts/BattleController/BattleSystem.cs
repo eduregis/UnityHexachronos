@@ -27,13 +27,13 @@ public class BattleSystem : MonoBehaviour
     public CharacterStats enemy2;
     public CharacterStats enemy3;
 
-    [Header("Battle Stations")]
-    public Transform hero1BattleStation;
-    public Transform hero2BattleStation;
-    public Transform hero3BattleStation;
-    public Transform enemy1BattleStation;
-    public Transform enemy2BattleStation;
-    public Transform enemy3BattleStation;
+    [Header("Character Sprites")]
+    public GameObject hero1Sprite;
+    public GameObject hero2Sprite;
+    public GameObject hero3Sprite;
+    public GameObject enemy1Sprite;
+    public GameObject enemy2Sprite;
+    public GameObject enemy3Sprite;
 
     [Header("Auxiliar Text (Will Be Removed)")]
     public TextMeshProUGUI auxText;
@@ -93,40 +93,40 @@ public class BattleSystem : MonoBehaviour
 
         if (hero1 != null) {
             hero1.LoadBattleStats();
+            SpriteRenderer sptRen = hero1Sprite.GetComponent<SpriteRenderer>();
+            hero1Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero1.char_name);
             hero1HUD.SetHUD(hero1);
         }
 
         if (hero2 != null) {
             hero2.LoadBattleStats();
+            hero2Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero2.char_name);
             hero2HUD.SetHUD(hero2);
+        }
+
+        if (hero3 != null) {
+            hero3.LoadBattleStats();
+            hero3Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero3.char_name);
+            hero3HUD.SetHUD(hero3);
         }
 
         if (enemy1 != null) {
             enemy1.LoadBattleStats();
+            enemy1Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy1.char_name);
             enemy1HUD.SetHUD(enemy1);
         }
 
         if (enemy2 != null) {
             enemy2.LoadBattleStats();
+            enemy2Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy2.char_name);
             enemy2HUD.SetHUD(enemy2);
         }
 
-        /*
-        GameObject hero1GO = Instantiate(hero1Prefab, hero1BattleStation);
-        hero1Unit = hero1GO.GetComponent<Unit>();
-        hero1HUD.SetHUD(hero1Unit);
-
-        GameObject hero2GO = Instantiate(hero2Prefab, hero2BattleStation);
-        hero2Unit = hero2GO.GetComponent<Unit>();
-        hero2HUD.SetHUD(hero2Unit);
-
-        GameObject enemy1GO = Instantiate(enemy1Prefab, enemy1BattleStation);
-        enemy1Unit = enemy1GO.GetComponent<Unit>();
-        enemy1HUD.SetHUD(enemy1Unit);
-
-        GameObject enemy2GO = Instantiate(enemy2Prefab, enemy2BattleStation);
-        enemy2Unit = enemy2GO.GetComponent<Unit>();
-        enemy2HUD.SetHUD(enemy2Unit);*/
+        if (enemy3 != null) {
+            enemy3.LoadBattleStats();
+            enemy3Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy3.char_name);
+            enemy3HUD.SetHUD(enemy3);
+        }
 
         StartCoroutine(StartBattle());
     }

@@ -1016,7 +1016,7 @@ GameObject:
   - component: {fileID: 365123057}
   - component: {fileID: 365123056}
   m_Layer: 0
-  m_Name: Hero2BattleStation
+  m_Name: Hero2Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1063,15 +1063,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 9f0b75d9d7044984196420b109abbf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d430ead9cf225824ebb9f4aa58e258be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.37, y: 2.25}
+  m_Size: {x: 8.99, y: 10.37}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &365123057
@@ -1384,24 +1384,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3e765230f10fc4294c5d5b9baa49f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hero1Prefab: {fileID: 2141352171352839188, guid: f22c9f22f8af7d047a28545909b5c00d, type: 3}
-  hero2Prefab: {fileID: 2141352171352839188, guid: f22c9f22f8af7d047a28545909b5c00d, type: 3}
-  hero3Prefab: {fileID: 2141352171352839188, guid: f22c9f22f8af7d047a28545909b5c00d, type: 3}
-  enemy1Prefab: {fileID: 2141352171352839188, guid: b57a5b70b745fed4595c3c99f9663ccd, type: 3}
-  enemy2Prefab: {fileID: 2141352171352839188, guid: b57a5b70b745fed4595c3c99f9663ccd, type: 3}
-  enemy3Prefab: {fileID: 2141352171352839188, guid: b57a5b70b745fed4595c3c99f9663ccd, type: 3}
-  hero1: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
-  hero2: {fileID: 11400000, guid: 07e30a4e3f89fd147a166ae17b29b31e, type: 2}
+  hero1: {fileID: 11400000, guid: e54be3f3b703bcc4cb0781a41f0e45a4, type: 2}
+  hero2: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
   hero3: {fileID: 0}
-  enemy1: {fileID: 11400000, guid: e54be3f3b703bcc4cb0781a41f0e45a4, type: 2}
-  enemy2: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
+  enemy1: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
+  enemy2: {fileID: 11400000, guid: 07e30a4e3f89fd147a166ae17b29b31e, type: 2}
   enemy3: {fileID: 0}
-  hero1BattleStation: {fileID: 935983391}
-  hero2BattleStation: {fileID: 365123057}
-  hero3BattleStation: {fileID: 1853560830}
-  enemy1BattleStation: {fileID: 1986678911}
-  enemy2BattleStation: {fileID: 1090641261}
-  enemy3BattleStation: {fileID: 1462078674}
+  hero1Sprite: {fileID: 935983389}
+  hero2Sprite: {fileID: 365123055}
+  hero3Sprite: {fileID: 1853560828}
+  enemy1Sprite: {fileID: 1986678909}
+  enemy2Sprite: {fileID: 1090641259}
+  enemy3Sprite: {fileID: 1462078672}
   auxText: {fileID: 1647162211}
   mainMenuPanel: {fileID: 1784567359}
   skillsMenuPanel: {fileID: 181453212}
@@ -3427,7 +3421,7 @@ GameObject:
   - component: {fileID: 935983391}
   - component: {fileID: 935983390}
   m_Layer: 0
-  m_Name: Hero1BattleStation
+  m_Name: Hero1Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3474,15 +3468,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 9f0b75d9d7044984196420b109abbf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d430ead9cf225824ebb9f4aa58e258be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.37, y: 2.25}
+  m_Size: {x: 8.99, y: 10.37}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &935983391
@@ -4414,7 +4408,7 @@ GameObject:
   - component: {fileID: 1090641261}
   - component: {fileID: 1090641260}
   m_Layer: 0
-  m_Name: Enemy2BattleStation
+  m_Name: Enemy2Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4461,15 +4455,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 9f0b75d9d7044984196420b109abbf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e612ba418474434b90052502fb5b3e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.37, y: 2.25}
+  m_Size: {x: 12.13, y: 12.47}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1090641261
@@ -6410,7 +6404,7 @@ GameObject:
   - component: {fileID: 1462078674}
   - component: {fileID: 1462078673}
   m_Layer: 0
-  m_Name: Enemy3BattleStation
+  m_Name: Enemy3Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6457,15 +6451,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 9f0b75d9d7044984196420b109abbf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e612ba418474434b90052502fb5b3e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.37, y: 2.25}
+  m_Size: {x: 12.13, y: 12.47}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1462078674
@@ -8406,7 +8400,7 @@ GameObject:
   - component: {fileID: 1853560830}
   - component: {fileID: 1853560829}
   m_Layer: 0
-  m_Name: Hero3BattleStation
+  m_Name: Hero3Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8453,15 +8447,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 9f0b75d9d7044984196420b109abbf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d430ead9cf225824ebb9f4aa58e258be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.37, y: 2.25}
+  m_Size: {x: 8.99, y: 10.37}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1853560830
@@ -9330,7 +9324,7 @@ GameObject:
   - component: {fileID: 1986678911}
   - component: {fileID: 1986678910}
   m_Layer: 0
-  m_Name: Enemy1BattleStation
+  m_Name: Enemy1Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9377,15 +9371,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
-  m_Sprite: {fileID: 21300000, guid: 9f0b75d9d7044984196420b109abbf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e612ba418474434b90052502fb5b3e9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.37, y: 2.25}
+  m_Size: {x: 12.13, y: 12.47}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1986678911
