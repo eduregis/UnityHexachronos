@@ -30,6 +30,7 @@ public class CharacterStats : ScriptableObject
     public bool isBlocking;
 
     public List<CharacterSkill> skills;
+    public List<Buff> buffs;
 
     public void LoadBattleStats()
     {
