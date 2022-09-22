@@ -17,6 +17,11 @@ public enum BattleState {
     LOST
 } 
 
+public enum MenuTargetType {
+    ATTACK,
+    SKILL
+}
+
 public class BattleSystem : MonoBehaviour {
 
     #region External variables
@@ -89,8 +94,8 @@ public class BattleSystem : MonoBehaviour {
 
     #region Control variables
     bool isInSkillsMenu = false;
+    MenuTargetType menuTargetType;
     List<CharacterSkill> skills;
-    //int skillsMenuIndice = 0;
     #endregion
 
     // Start is called before the first frame update
@@ -236,20 +241,43 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(1f);
 
-        switch (TargetId){
-            case 1:
-                enemy1.TakeDamage(hero1.damage);
-                enemy1HUD.SetHP(enemy1.life);
+        switch (menuTargetType) {
+            case MenuTargetType.ATTACK:
+                switch (TargetId) {
+                    case 1:
+                        enemy1.TakeDamage(hero1.damage);
+                        enemy1HUD.SetHP(enemy1.life);
+                        break;
+                    case 2:
+                        enemy2.TakeDamage(hero2.damage);
+                        enemy2HUD.SetHP(enemy2.life);
+                        break;
+                    case 3:
+                        enemy3.TakeDamage(hero3.damage);
+                        enemy3HUD.SetHP(enemy3.life);
+                        break;
+                    default:
+                        break;
+                }
                 break;
-            case 2:
-                enemy2.TakeDamage(hero2.damage);
-                enemy2HUD.SetHP(enemy2.life);
-                break;
-            case 3:
-                enemy3.TakeDamage(hero3.damage);
-                enemy3HUD.SetHP(enemy3.life);
-                break;
-            default:
+            case MenuTargetType.SKILL:
+                // Chamar função que executará as etapas da skill
+                switch (TargetId) {
+                    case 1:
+                        enemy1.TakeDamage(hero1.damage * 2);
+                        enemy1HUD.SetHP(enemy1.life);
+                        break;
+                    case 2:
+                        enemy2.TakeDamage(hero2.damage * 2);
+                        enemy2HUD.SetHP(enemy2.life);
+                        break;
+                    case 3:
+                        enemy3.TakeDamage(hero3.damage * 2);
+                        enemy3HUD.SetHP(enemy3.life);
+                        break;
+                    default:
+                        break;
+                }
                 break;
         }
         
@@ -408,10 +436,6 @@ public class BattleSystem : MonoBehaviour {
             enemy3Arrow.gameObject.SetActive(false);
     }
 
-    void SetCharactersSkillsInHUD() {
-        
-    }
-
     void ShowDescriptionSkill() {
         if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skill1Button.gameObject)) {
             descriptionSkill.text = skills[0].description;
@@ -440,6 +464,9 @@ public class BattleSystem : MonoBehaviour {
 
     #region Button functions
     public void OnAttackButton() {
+
+        menuTargetType = MenuTargetType.ATTACK;
+
         StartCoroutine(PlayerSelectAttackSingleTarget());
     }
 
@@ -481,8 +508,17 @@ public class BattleSystem : MonoBehaviour {
     }
 
     public void OnSelectedSkill(int TargetId) {
-        isInSkillsMenu = false;
-        auxText.text = "Using skill " + TargetId;
+
+        menuTargetType = MenuTargetType.SKILL;
+
+        if (skills[TargetId - 1].affectType == AffectType.EnemyTarget) {
+            isInSkillsMenu = false;
+            skillsMenuPanel.SetActive(false);
+            auxText.text = "Selecting skill " + TargetId;
+            // Subsitituir para target especifico de skill
+            StartCoroutine(PlayerSelectAttackSingleTarget());
+        }
+        
     }
 
     public void OnBlockButton() {
