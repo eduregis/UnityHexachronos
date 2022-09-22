@@ -17,8 +17,9 @@ public enum BattleState {
     LOST
 } 
 
-public class BattleSystem : MonoBehaviour
-{
+public class BattleSystem : MonoBehaviour {
+
+    #region External variables
     [Header("Characters Stats")]
     public CharacterStats hero1;
     public CharacterStats hero2;
@@ -55,6 +56,18 @@ public class BattleSystem : MonoBehaviour
     public Button skill3Button;
     public Button skill4Button;
 
+    [Header("Skills Menu Button Texts")]
+    public TextMeshProUGUI skill1Text;
+    public TextMeshProUGUI skill2Text;
+    public TextMeshProUGUI skill3Text;
+    public TextMeshProUGUI skill4Text;
+
+    [Header("Descipriton Skill Texts")]
+    public TextMeshProUGUI descriptionSkill;
+    public TextMeshProUGUI nameSkill;
+    public TextMeshProUGUI costSkill;
+    public TextMeshProUGUI targetSkill;
+
     [Header("Target Arrows Menu Buttons")]
     public Button hero1Arrow;
     public Button hero2Arrow;
@@ -72,11 +85,24 @@ public class BattleSystem : MonoBehaviour
     public BattleHUD enemy3HUD;
 
     public BattleState state;
+    #endregion
+
+    #region Control variables
+    bool isInSkillsMenu = false;
+    List<CharacterSkill> skills;
+    //int skillsMenuIndice = 0;
+    #endregion
 
     // Start is called before the first frame update
     void Start() {
         state = BattleState.START;
         SetupBattle();
+    }
+
+    void Update() {
+        if ((state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) && isInSkillsMenu) {
+            ShowDescriptionSkill();
+        }
     }
 
     #region Turn functions
@@ -193,6 +219,15 @@ public class BattleSystem : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
         yield return new WaitForEndOfFrame();
         EventSystem.current.SetSelectedGameObject(skill1Button.gameObject);
+
+        if (skills[0] != null)
+            skill1Text.text = skills[0].skill_name;
+        if (skills[1] != null)
+            skill2Text.text = skills[1].skill_name;
+        if (skills[2] != null)
+            skill3Text.text = skills[2].skill_name;
+        if (skills[3] != null)
+            skill4Text.text = skills[3].skill_name;
     }
 
     IEnumerator PlayerActionEnemyTarget(int TargetId)
@@ -373,6 +408,34 @@ public class BattleSystem : MonoBehaviour
             enemy3Arrow.gameObject.SetActive(false);
     }
 
+    void SetCharactersSkillsInHUD() {
+        
+    }
+
+    void ShowDescriptionSkill() {
+        if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skill1Button.gameObject)) {
+            descriptionSkill.text = skills[0].description;
+            nameSkill.text = skills[0].skill_name;
+            costSkill.text = "Cost: " + skills[0].cost;
+            targetSkill.text = "Targets: " + skills[0].affectType;
+        } else if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skill2Button.gameObject)) {
+            descriptionSkill.text = skills[1].description;
+            nameSkill.text = skills[1].skill_name;
+            costSkill.text = "Cost: " + skills[1].cost;
+            targetSkill.text = "Targets: " + skills[1].affectType;
+        } else if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skill3Button.gameObject)) {
+            descriptionSkill.text = skills[2].description;
+            nameSkill.text = skills[2].skill_name;
+            costSkill.text = "Cost: " + skills[2].cost;
+            targetSkill.text = "Targets: " + skills[2].affectType;
+        } else if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skill4Button.gameObject)) {
+            descriptionSkill.text = skills[3].description;
+            nameSkill.text = skills[3].skill_name;
+            costSkill.text = "Cost: " + skills[3].cost;
+            targetSkill.text = "Targets: " + skills[3].affectType;
+        }
+    }
+
     #endregion
 
     #region Button functions
@@ -403,14 +466,25 @@ public class BattleSystem : MonoBehaviour
     }
 
     public void OnSkillsButton() {
+
+        if (state == BattleState.HERO1TURN) {
+            skills = hero1.skills;
+        } else if (state == BattleState.HERO2TURN) {
+            skills = hero2.skills;
+        } else if (state == BattleState.HERO3TURN) {
+            skills = hero3.skills;
+        }
+
         StartCoroutine(PlayerSelectSkills());
+        isInSkillsMenu = true;
         auxText.text = "Using skills!";
     }
 
-    public void OnSelectedSkill(int TargetId)
-    {
+    public void OnSelectedSkill(int TargetId) {
+        isInSkillsMenu = false;
         auxText.text = "Using skill " + TargetId;
     }
+
     public void OnBlockButton() {
         auxText.text = "Blocking!";
     }
