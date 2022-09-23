@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 10
   skill_name: Nem doeu nada!
   description: Recupera 50 pontos de vida.
+  skill_execution:
+  - heal-3-100
   cost: 30
   affectType: 0
+  isAffectFaint: 0

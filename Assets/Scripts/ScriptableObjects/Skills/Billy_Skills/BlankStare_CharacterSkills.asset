@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 13
   skill_name: Olhar Vazio
   description: Chance de atordoamento.
+  skill_execution:
+  - buff-10-Stunned-Status-2-15
   cost: 30
   affectType: 1
+  isAffectFaint: 0

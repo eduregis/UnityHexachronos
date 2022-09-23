@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 9
   skill_name: "Vida Longa a Revolu\xE7\xE3o!"
   description: Aplica taunt em si.
+  skill_execution:
+  - buff-1,5-Taunt-Multiplier-3-100
   cost: 30
   affectType: 0
+  isAffectFaint: 0

@@ -17,6 +17,6 @@ MonoBehaviour:
   description: "Aumenta a pr\xF3pria defesa por 3 turnos."
   skill_execution:
   - buff-1,5-DefenseUp-Multiplier-3-100
-  cost: 60
+  cost: 30
   affectType: 0
   isAffectFaint: 0
