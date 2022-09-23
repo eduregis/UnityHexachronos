@@ -374,8 +374,7 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator PlayerActionAllEnemies() {
         CharacterStats skillUser = hero1;
 
-        switch (state)
-        {
+        switch (state) {
             case BattleState.HERO1TURN:
                 skillUser = hero1;
                 break;
@@ -415,12 +414,10 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
-    IEnumerator PlayerActionAllHeroes()
-    {
+    IEnumerator PlayerActionAllHeroes() {
         CharacterStats skillUser = hero1;
 
-        switch (state)
-        {
+        switch (state) {
             case BattleState.HERO1TURN:
                 skillUser = hero1;
                 break;
@@ -432,20 +429,17 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
-        if (hero1 != null && hero1.life > 0)
-        {
+        if (hero1 != null && hero1.life > 0) {
             hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             hero1HUD.UpdateUI(hero1);
         }
 
-        if (hero2 != null && hero2.life > 0)
-        {
+        if (hero2 != null && hero2.life > 0) {
             hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             hero2HUD.UpdateUI(hero2);
         }
 
-        if (hero3 != null && hero3.life > 0)
-        {
+        if (hero3 != null && hero3.life > 0) {
             hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             hero3HUD.UpdateUI(hero3);
         }
@@ -454,15 +448,37 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(1f);
 
-        if (IsAllEnemiesDead())
-        {
-            state = BattleState.WON;
-            EndBattle();
+        NextTurn();
+    }
+
+    IEnumerator PlayerActionSelf() {
+
+        switch (state) {
+            case BattleState.HERO1TURN:
+                if (hero1 != null && hero1.life > 0) {
+                    hero1.ApplySkill(hero1, skills[selectedSkillIndex - 1]);
+                    hero1HUD.UpdateUI(hero1);
+                }
+                break;
+            case BattleState.HERO2TURN:
+                if (hero2 != null && hero2.life > 0) {
+                    hero2.ApplySkill(hero2, skills[selectedSkillIndex - 1]);
+                    hero2HUD.UpdateUI(hero2);
+                }
+                break;
+            case BattleState.HERO3TURN:
+                if (hero3 != null && hero3.life > 0) {
+                    hero3.ApplySkill(hero3, skills[selectedSkillIndex - 1]);
+                    hero3HUD.UpdateUI(hero3);
+                }
+                break;
         }
-        else
-        {
-            NextTurn();
-        }
+
+        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " inself";
+
+        yield return new WaitForSeconds(1f);
+
+        NextTurn();
     }
 
     IEnumerator EnemyTurn() {
@@ -751,6 +767,11 @@ public class BattleSystem : MonoBehaviour {
                 isInSkillsMenu = false;
                 skillsMenuPanel.SetActive(false);
                 StartCoroutine(PlayerActionAllHeroes());
+                break;
+            case AffectType.Self:
+                isInSkillsMenu = false;
+                skillsMenuPanel.SetActive(false);
+                StartCoroutine(PlayerActionSelf());
                 break;
             default:
                 break;
