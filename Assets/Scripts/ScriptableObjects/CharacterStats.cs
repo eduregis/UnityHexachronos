@@ -59,6 +59,16 @@ public class CharacterStats : ScriptableObject
         }
     }
 
+    public bool LoseEnergy(int cost) {
+        if (cost >= energy) {
+            energy = 0;
+            return true;
+        } else {
+            energy -= cost;
+            return false;
+        }
+    }
+
     public void ReceivingAttackDamage(CharacterStats attacker)
     {
         // TODO: Apply battle stats calcs in this damage

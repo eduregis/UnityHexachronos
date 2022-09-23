@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum Skill
-{
+public enum Skill {
     TryToCatchMe,
     DesencanaComIsso,
     BehindYou,
@@ -37,8 +36,7 @@ public enum Skill
 
 [CreateAssetMenu(fileName = "CharacterSkills", menuName = "CharacterSkills")]
 
-public class CharacterSkill : ScriptableObject
-{
+public class CharacterSkill : ScriptableObject {
     public Skill skill_id;
     public string skill_name;
     public string description;
@@ -48,8 +46,7 @@ public class CharacterSkill : ScriptableObject
     public bool isAffectFaint = false;
 };
 
-public enum AffectType
-{
+public enum AffectType {
     Self,
     EnemyTarget,
     AllyTarget,

@@ -677,6 +677,33 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
+    private bool HaveEnoughEnergy(int TargetId) {
+        switch (state) {
+            case BattleState.HERO1TURN:
+                if (skills[TargetId].cost <= hero1.energy) {
+                    hero1.LoseEnergy(skills[TargetId].cost);
+                    hero1HUD.UpdateUI(hero1);
+                    return true;
+                }
+                return false;
+            case BattleState.HERO2TURN:
+                if (skills[TargetId].cost <= hero2.energy) {
+                    hero2.LoseEnergy(skills[TargetId].cost);
+                    hero2HUD.UpdateUI(hero2);
+                    return true;
+                }
+                return false;
+            case BattleState.HERO3TURN:
+                if (skills[TargetId].cost <= hero3.energy) {
+                    hero3.LoseEnergy(skills[TargetId].cost);
+                    hero3HUD.UpdateUI(hero3);
+                    return true;
+                }
+                return false;
+        }
+        return false;
+    }
+
     #endregion
 
     #region Button functions
@@ -743,38 +770,40 @@ public class BattleSystem : MonoBehaviour {
     }
 
     public void OnSelectedSkill(int TargetId) {
+        
+        if(HaveEnoughEnergy(TargetId - 1)) {
+            menuTargetType = MenuTargetType.SKILL;
+            selectedSkillIndex = TargetId;
 
-        menuTargetType = MenuTargetType.SKILL;
-        selectedSkillIndex = TargetId;
-
-        switch(skills[TargetId - 1].affectType) {
-            case AffectType.EnemyTarget:
-                isInSkillsMenu = false;
-                skillsMenuPanel.SetActive(false);
-                StartCoroutine(PlayerSelectAttackSingleTarget());
-                break;
-            case AffectType.AllEnemies:
-                isInSkillsMenu = false;
-                skillsMenuPanel.SetActive(false);
-                StartCoroutine(PlayerActionAllEnemies());
-                break;
-            case AffectType.AllyTarget:
-                isInSkillsMenu = false;
-                skillsMenuPanel.SetActive(false);
-                StartCoroutine(PlayerSelectHeroSingleTarget());
-                break;
-            case AffectType.AllAllies:
-                isInSkillsMenu = false;
-                skillsMenuPanel.SetActive(false);
-                StartCoroutine(PlayerActionAllHeroes());
-                break;
-            case AffectType.Self:
-                isInSkillsMenu = false;
-                skillsMenuPanel.SetActive(false);
-                StartCoroutine(PlayerActionSelf());
-                break;
-            default:
-                break;
+            switch (skills[TargetId - 1].affectType) {
+                case AffectType.EnemyTarget:
+                    isInSkillsMenu = false;
+                    skillsMenuPanel.SetActive(false);
+                    StartCoroutine(PlayerSelectAttackSingleTarget());
+                    break;
+                case AffectType.AllEnemies:
+                    isInSkillsMenu = false;
+                    skillsMenuPanel.SetActive(false);
+                    StartCoroutine(PlayerActionAllEnemies());
+                    break;
+                case AffectType.AllyTarget:
+                    isInSkillsMenu = false;
+                    skillsMenuPanel.SetActive(false);
+                    StartCoroutine(PlayerSelectHeroSingleTarget());
+                    break;
+                case AffectType.AllAllies:
+                    isInSkillsMenu = false;
+                    skillsMenuPanel.SetActive(false);
+                    StartCoroutine(PlayerActionAllHeroes());
+                    break;
+                case AffectType.Self:
+                    isInSkillsMenu = false;
+                    skillsMenuPanel.SetActive(false);
+                    StartCoroutine(PlayerActionSelf());
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

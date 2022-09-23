@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 8
   skill_name: "Escudo de M\xE3o"
   description: "Aumenta a pr\xF3pria defesa por 3 turnos."
-  cost: 30
+  skill_execution:
+  - buff-1,5-DefenseUp-Multiplier-3-100
+  cost: 60
   affectType: 0
+  isAffectFaint: 0
