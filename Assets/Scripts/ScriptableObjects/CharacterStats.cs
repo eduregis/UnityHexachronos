@@ -59,6 +59,16 @@ public class CharacterStats : ScriptableObject
         }
     }
 
+    public bool TakeHeal(int heal) {
+        if (heal + life >= maxLife) {
+            life = maxLife;
+            return true;
+        } else {
+            life += heal;
+            return false;
+        }
+    }
+
     public bool LoseEnergy(int cost) {
         if (cost >= energy) {
             energy = 0;
@@ -83,11 +93,24 @@ public class CharacterStats : ScriptableObject
         for (int i = 0; i < quantity; i++) {
             int random = UnityEngine.Random.Range(0, 99);
             if (random < rate) {
-                int damage = (int)(attacker.damage * damageMultiplier);
-                Debug.Log("Damage: " + damage + ", rate: " + random);
+                int finalDamage = (int)(attacker.damage * damageMultiplier);
+                Debug.Log("Damage: " + finalDamage + ", rate: " + random);
                 TakeDamage(damage);
             }
         }
+    }
+
+    public void ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
+
+        // TODO: Apply battle stats calcs in this damage
+        // TODO: Apply buff modifications in this damage
+            int random = UnityEngine.Random.Range(0, 99);
+            if (random < rate)
+            {
+                int heal = (int)(healer.intelligence * healMultiplier);
+                Debug.Log("Heal: " + heal + ", rate: " + random);
+                TakeHeal(heal);
+            }
     }
 
     public void UpdateBuffs() {
@@ -169,6 +192,7 @@ public class CharacterStats : ScriptableObject
                     }
                     break;
                 case "attack":
+                    // ATTACK SYNTAX: Attack identifier (attack) - Multiplier - Quantity of attacks - Chance of success
                     ReceivingSkillDamage(
                         skillUser,
                         float.Parse(strlist[1]),
@@ -176,6 +200,11 @@ public class CharacterStats : ScriptableObject
                         int.Parse(strlist[3]));
                     break;
                 case "heal":
+                    // HEAL SYNTAX: Heal identifier (heal) - Multiplier - Chance of success
+                    ReceivingHeal(
+                        skillUser,
+                        float.Parse(strlist[1]),
+                        int.Parse(strlist[2]));
                     break;
             }
         }
