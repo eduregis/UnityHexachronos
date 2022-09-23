@@ -249,15 +249,15 @@ public class BattleSystem : MonoBehaviour {
                 switch (TargetId) {
                     case 1:
                         enemy1.TakeDamage(hero1.damage);
-                        enemy1HUD.UpdateUI(enemy1.life, enemy1.energy);
+                        enemy1HUD.UpdateUI(enemy1);
                         break;
                     case 2:
                         enemy2.TakeDamage(hero2.damage);
-                        enemy2HUD.UpdateUI(enemy2.life, enemy2.energy);
+                        enemy2HUD.UpdateUI(enemy2);
                         break;
                     case 3:
                         enemy3.TakeDamage(hero3.damage);
-                        enemy3HUD.UpdateUI(enemy3.life, enemy2.energy);
+                        enemy3HUD.UpdateUI(enemy3);
                         break;
                     default:
                         break;
@@ -269,17 +269,17 @@ public class BattleSystem : MonoBehaviour {
                 switch (TargetId) {
                     case 1:
                         enemy1.ApplySkill(skills[selectedSkillIndex - 1]);
-                        enemy1HUD.UpdateUI(enemy1.life, enemy1.energy);
+                        enemy1HUD.UpdateUI(enemy1);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy1"; 
                         break;
                     case 2:
                         enemy2.ApplySkill(skills[selectedSkillIndex - 1]);
-                        enemy2HUD.UpdateUI(enemy2.life, enemy2.energy);
+                        enemy2HUD.UpdateUI(enemy2);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy2";
                         break;
                     case 3:
                         enemy3.ApplySkill(skills[selectedSkillIndex - 1]);
-                        enemy3HUD.UpdateUI(enemy3.life, enemy3.energy);
+                        enemy3HUD.UpdateUI(enemy3);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy3";
                         break;
                     default:
@@ -308,7 +308,7 @@ public class BattleSystem : MonoBehaviour {
             yield return new WaitForSeconds(1f);
 
             hero1.TakeDamage(enemy1.damage);
-            hero1HUD.UpdateUI(hero1.life, hero1.energy);
+            hero1HUD.UpdateUI(hero1);
 
             yield return new WaitForSeconds(1f);
 

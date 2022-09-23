@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName ="BasicStats", menuName ="BasicStats")]
@@ -68,10 +69,23 @@ public class CharacterStats : ScriptableObject
     }
 
     public void ApplySkill(CharacterSkill skill) {
+        Debug.Log("Buffs: " + buffs.Count);
         foreach (string effect in skill.skill_execution) {
-                //CreateBuff(2f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
-            Debug.Log("Ativar" + effect);
+            char[] separators = { '-' };
+            String[] strlist = effect.Split(separators, 5, StringSplitOptions.None);
+            switch (strlist[0]) {
+                case "buff":
+                    Debug.Log("value: " + float.Parse(strlist[1]) + ", buff type: " + strlist[2] + ", buff modifier: " + strlist[3] + ", duration: " + strlist[4]);
+                    Buff buff = CreateBuff(float.Parse(strlist[1]), BuffType.DefenseDown, BuffModifier.Multiplier, int.Parse(strlist[4]));
+                    buffs.Add(buff);
+                    break;
+                case "attack":
+                    break;
+                case "heal":
+                    break;
+            }
         }
+        Debug.Log("Buffs: " + buffs.Count);
     }
 }
 

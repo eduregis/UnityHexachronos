@@ -21,9 +21,10 @@ public class BattleHUD : MonoBehaviour {
         ReloadEffects(character.buffs);
     } 
 
-    public void UpdateUI(int hp, int mp) {
-        hpSlider.value = hp;
-        mpSlider.value = mp;
+    public void UpdateUI(CharacterStats character) {
+        hpSlider.value = character.life;
+        mpSlider.value = character.energy;
+        ReloadEffects(character.buffs);
     }
 
     public void ReloadEffects(List<Buff> buffs) {
