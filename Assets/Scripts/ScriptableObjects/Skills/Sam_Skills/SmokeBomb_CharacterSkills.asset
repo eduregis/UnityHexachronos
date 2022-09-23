@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 5
   skill_name: "Bomba de fuma\xE7a"
   description: "Aumenta evas\xE3o de todos do time por 3 turnos."
+  skill_execution:
+  - buff-1,5-EvasionUp-Multiplier-3-100
   cost: 20
   affectType: 4
+  isAffectFaint: 0

@@ -2546,9 +2546,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3e765230f10fc4294c5d5b9baa49f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hero1: {fileID: 11400000, guid: 67e16df0ded8d674682f520a599dd214, type: 2}
+  hero1: {fileID: 11400000, guid: 2481888836602c64db3b9cf8a474e85e, type: 2}
   hero2: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
-  hero3: {fileID: 0}
+  hero3: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
   enemy1: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
   enemy2: {fileID: 11400000, guid: 1d6710c2e574014409f98bf3e6b0c4da, type: 2}
   enemy3: {fileID: 0}

@@ -363,8 +363,8 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(1f);
 
-        if (IsAllEnemiesDead()) {
-            state = BattleState.WON;
+        if (IsAllHeroesDead()) {
+            state = BattleState.LOST;
             EndBattle();
         } else {
             NextTurn();
@@ -411,6 +411,56 @@ public class BattleSystem : MonoBehaviour {
             EndBattle();
         }
         else {
+            NextTurn();
+        }
+    }
+
+    IEnumerator PlayerActionAllHeroes()
+    {
+        CharacterStats skillUser = hero1;
+
+        switch (state)
+        {
+            case BattleState.HERO1TURN:
+                skillUser = hero1;
+                break;
+            case BattleState.HERO2TURN:
+                skillUser = hero2;
+                break;
+            case BattleState.HERO3TURN:
+                skillUser = hero3;
+                break;
+        }
+
+        if (hero1 != null && hero1.life > 0)
+        {
+            hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            hero1HUD.UpdateUI(hero1);
+        }
+
+        if (hero2 != null && hero2.life > 0)
+        {
+            hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            hero2HUD.UpdateUI(hero2);
+        }
+
+        if (hero3 != null && hero3.life > 0)
+        {
+            hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            hero3HUD.UpdateUI(hero3);
+        }
+
+        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all heroes";
+
+        yield return new WaitForSeconds(1f);
+
+        if (IsAllEnemiesDead())
+        {
+            state = BattleState.WON;
+            EndBattle();
+        }
+        else
+        {
             NextTurn();
         }
     }
@@ -685,20 +735,22 @@ public class BattleSystem : MonoBehaviour {
             case AffectType.EnemyTarget:
                 isInSkillsMenu = false;
                 skillsMenuPanel.SetActive(false);
-                auxText.text = "Selecting skill " + TargetId;
                 StartCoroutine(PlayerSelectAttackSingleTarget());
                 break;
             case AffectType.AllEnemies:
                 isInSkillsMenu = false;
                 skillsMenuPanel.SetActive(false);
-                auxText.text = "Selecting skill " + TargetId;
                 StartCoroutine(PlayerActionAllEnemies());
                 break;
             case AffectType.AllyTarget:
                 isInSkillsMenu = false;
                 skillsMenuPanel.SetActive(false);
-                auxText.text = "Selecting skill " + TargetId;
                 StartCoroutine(PlayerSelectHeroSingleTarget());
+                break;
+            case AffectType.AllAllies:
+                isInSkillsMenu = false;
+                skillsMenuPanel.SetActive(false);
+                StartCoroutine(PlayerActionAllHeroes());
                 break;
             default:
                 break;
