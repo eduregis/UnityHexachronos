@@ -59,33 +59,109 @@ public class CharacterStats : ScriptableObject
         }
     }
 
-    private Buff CreateBuff(float value, BuffType buffType, BuffModifier modifier, int duration) {
-        Buff buff = new Buff();
-        buff.value = value;
-        buff.buffType = buffType;
-        buff.modifier = modifier;
-        buff.duration = duration;
-        return buff;
+    public void ReceivingAttackDamage(CharacterStats attacker)
+    {
+        // TODO: Applying battle stats calcs in this damage
+        // TODO: Applying buff modifications in this damage
+        TakeDamage(attacker.damage);
     }
 
-    public void ApplySkill(CharacterSkill skill) {
-        Debug.Log("Buffs: " + buffs.Count);
+    public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
+
+    // TODO: Applying battle stats calcs in this damage
+    // TODO: Applying buff modifications in this damage
+        for (int i = 0; i < quantity; i++) {
+            int random = UnityEngine.Random.Range(0, 99);
+            if (random < rate) {
+                int damage = (int)(attacker.damage * damageMultiplier);
+                Debug.Log("Damage: " + damage + ", rate: " + random);
+                TakeDamage(damage);
+            }
+        }
+    }
+
+    public void UpdateBuffs() {
+        for (int i = 0; i < buffs.Count; i++) {
+            buffs[i].duration--;
+            if (buffs[i].duration < 0)
+                buffs.RemoveAt(i);
+        }
+    }
+
+    private Buff CreateBuff(float value, BuffType buffType, BuffModifier modifier, int duration, int rate) {
+
+        int random = UnityEngine.Random.Range(0, 99);
+        if (random < rate) {
+            Buff buff = new() {
+                value = value,
+                buffType = buffType,
+                modifier = modifier,
+                duration = duration
+            };
+            Debug.Log("Buff( value: " + buff.value + ", buffType: " + buff.buffType + ", Modifier: " + buff.modifier + ", Duration: " + buff.duration + ")");
+            return buff;
+        }
+        return null;
+    }
+
+    private BuffType GetBuffType(String buffTypeStr) {
+        return buffTypeStr switch {
+            "DamageUp" => BuffType.DamageUp,
+            "DamageDown" => BuffType.DamageDown,
+            "DefenseUp" => BuffType.DefenseUp,
+            "DefenseDown" => BuffType.DefenseDown,
+            "CritRateUp" => BuffType.CritRateUp,
+            "CritRateDown" => BuffType.CritRateDown,
+            "CritDamageUp" => BuffType.CritDamageUp,
+            "CritDamageDown" => BuffType.CritDamageDown,
+            "EvasionUp" => BuffType.EvasionUp,
+            "EvasionDown" => BuffType.EvasionDown,
+            "HitRateUp" => BuffType.HitRateUp,
+            "HitRateDown" => BuffType.HitRateDown,
+            "Stunned" => BuffType.Stunned,
+            "Bleeding" => BuffType.Bleeding,
+            "Taunt" => BuffType.Taunt,
+            _ => BuffType.DamageUp,
+        };
+    }
+
+    private BuffModifier GetBuffModifier(String buffModifierStr) {
+        return buffModifierStr switch {
+            "Constant" => BuffModifier.Constant,
+            "Multiplier" => BuffModifier.Multiplier,
+            "Status" => BuffModifier.Status,
+            _ => BuffModifier.Status,
+        };
+    }
+
+    public void ApplySkill(CharacterStats skillUser, CharacterSkill skill) {
         foreach (string effect in skill.skill_execution) {
             char[] separators = { '-' };
-            String[] strlist = effect.Split(separators, 5, StringSplitOptions.None);
+            String[] strlist = effect.Split(separators, 6, StringSplitOptions.None);
             switch (strlist[0]) {
                 case "buff":
-                    Debug.Log("value: " + float.Parse(strlist[1]) + ", buff type: " + strlist[2] + ", buff modifier: " + strlist[3] + ", duration: " + strlist[4]);
-                    Buff buff = CreateBuff(float.Parse(strlist[1]), BuffType.DefenseDown, BuffModifier.Multiplier, int.Parse(strlist[4]));
-                    buffs.Add(buff);
+                    // BUFF SYNTAX: Buff identifier (buff) - Value - Buff type - Buff modifier - Turn duration - Chance of application
+                    Buff buff = CreateBuff(
+                        float.Parse(strlist[1]), 
+                        GetBuffType(strlist[2]), 
+                        GetBuffModifier(strlist[3]), 
+                        int.Parse(strlist[4]),
+                        int.Parse(strlist[5]));
+                    if (buff != null) {
+                        buffs.Add(buff);
+                    }
                     break;
                 case "attack":
+                    ReceivingSkillDamage(
+                        skillUser,
+                        float.Parse(strlist[1]),
+                        int.Parse(strlist[2]),
+                        int.Parse(strlist[3]));
                     break;
                 case "heal":
                     break;
             }
         }
-        Debug.Log("Buffs: " + buffs.Count);
     }
 }
 

@@ -241,22 +241,33 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator PlayerActionEnemyTarget(int TargetId)
     {
         selectEnemyMenuPanel.SetActive(false);
+        CharacterStats skillUser = hero1;
 
-        
+        switch(state) {
+            case BattleState.HERO1TURN:
+                skillUser = hero1;
+                break;
+            case BattleState.HERO2TURN:
+                skillUser = hero2;
+                break;
+            case BattleState.HERO3TURN:
+                skillUser = hero3;
+                break;
+        }
 
         switch (menuTargetType) {
             case MenuTargetType.ATTACK:
                 switch (TargetId) {
                     case 1:
-                        enemy1.TakeDamage(hero1.damage);
+                        enemy1.ReceivingAttackDamage(hero1);
                         enemy1HUD.UpdateUI(enemy1);
                         break;
                     case 2:
-                        enemy2.TakeDamage(hero2.damage);
+                        enemy2.ReceivingAttackDamage(hero2);
                         enemy2HUD.UpdateUI(enemy2);
                         break;
                     case 3:
-                        enemy3.TakeDamage(hero3.damage);
+                        enemy3.ReceivingAttackDamage(hero3);
                         enemy3HUD.UpdateUI(enemy3);
                         break;
                     default:
@@ -265,20 +276,19 @@ public class BattleSystem : MonoBehaviour {
                 auxText.text = "The attack is successful!";
                 break;
             case MenuTargetType.SKILL:
-                // Chamar função que executará as etapas da skill
                 switch (TargetId) {
                     case 1:
-                        enemy1.ApplySkill(skills[selectedSkillIndex - 1]);
+                        enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
                         enemy1HUD.UpdateUI(enemy1);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy1"; 
                         break;
                     case 2:
-                        enemy2.ApplySkill(skills[selectedSkillIndex - 1]);
+                        enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
                         enemy2HUD.UpdateUI(enemy2);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy2";
                         break;
                     case 3:
-                        enemy3.ApplySkill(skills[selectedSkillIndex - 1]);
+                        enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
                         enemy3HUD.UpdateUI(enemy3);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy3";
                         break;
@@ -307,7 +317,7 @@ public class BattleSystem : MonoBehaviour {
 
             yield return new WaitForSeconds(1f);
 
-            hero1.TakeDamage(enemy1.damage);
+            hero1.ReceivingAttackDamage(enemy1);
             hero1HUD.UpdateUI(hero1);
 
             yield return new WaitForSeconds(1f);
@@ -327,26 +337,50 @@ public class BattleSystem : MonoBehaviour {
         switch (state) {
             case BattleState.HERO1TURN:
                 state = BattleState.HERO2TURN;
+                if (hero2 != null) {
+                    hero2.UpdateBuffs();
+                    hero2HUD.UpdateUI(hero2);
+                }
                 StartCoroutine(PlayerTurn());
                 break;
             case BattleState.HERO2TURN:
                 state = BattleState.HERO3TURN;
+                if (hero3 != null) {
+                    hero3.UpdateBuffs();
+                    hero3HUD.UpdateUI(hero3);
+                }
                 StartCoroutine(PlayerTurn());
                 break;
             case BattleState.HERO3TURN:
                 state = BattleState.ENEMY1TURN;
+                if (enemy1 != null) {
+                    enemy1.UpdateBuffs();
+                    enemy1HUD.UpdateUI(enemy1);
+                }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY1TURN:
                 state = BattleState.ENEMY2TURN;
+                if (enemy2 != null) {
+                    enemy2.UpdateBuffs();
+                    enemy2HUD.UpdateUI(enemy2);
+                }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY2TURN:
                 state = BattleState.ENEMY3TURN;
+                if (enemy3 != null) {
+                    enemy3.UpdateBuffs();
+                    enemy3HUD.UpdateUI(enemy3);
+                }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY3TURN:
                 state = BattleState.HERO1TURN;
+                if (hero1 != null) {
+                    hero1.UpdateBuffs();
+                    hero1HUD.UpdateUI(hero1);
+                }
                 StartCoroutine(PlayerTurn());
                 break;
         }
@@ -516,13 +550,17 @@ public class BattleSystem : MonoBehaviour {
         menuTargetType = MenuTargetType.SKILL;
         selectedSkillIndex = TargetId;
 
-        if (skills[TargetId - 1].affectType == AffectType.EnemyTarget) {
-            isInSkillsMenu = false;
-            skillsMenuPanel.SetActive(false);
-            auxText.text = "Selecting skill " + TargetId;
-            StartCoroutine(PlayerSelectAttackSingleTarget());
+        switch(skills[TargetId - 1].affectType)
+        {
+            case AffectType.EnemyTarget:
+                isInSkillsMenu = false;
+                skillsMenuPanel.SetActive(false);
+                auxText.text = "Selecting skill " + TargetId;
+                StartCoroutine(PlayerSelectAttackSingleTarget());
+                break;
+            default:
+                break;
         }
-        
     }
 
     public void OnBlockButton() {

@@ -39,54 +39,32 @@ public class CharacterCombatSpriteManager : MonoBehaviour
     }
 
     public Sprite CharacterPortraitImage(String imageText) {
-        switch (imageText) {
-            case "Luca":
-                return Luca_Portrait;
-            case "Sam":
-                return Sam_Portrait;
-            case "Borell":
-                return Borell_Portrait;
-            case "Salvato":
-                return Salvato_Portrait;
-            case "Billy":
-                return Billy_Portrait;
-            case "Dandara":
-                return Dandara_Portrait;
-            case "Morya":
-                return Morya_Portrait;
-            case "Basic Soldier":
-                return BasicSoldier_Portrait;
-            case "Basic Lieutenant":
-                return BasicSoldier_Portrait;
-            default:
-                return Luca_Idle;
-        }
+        return imageText switch {
+            "Luca" => Luca_Portrait,
+            "Sam" => Sam_Portrait,
+            "Borell" => Borell_Portrait,
+            "Salvato" => Salvato_Portrait,
+            "Billy" => Billy_Portrait,
+            "Dandara" => Dandara_Portrait,
+            "Morya" => Morya_Portrait,
+            "Basic Soldier" => BasicSoldier_Portrait,
+            "Basic Lieutenant" => BasicSoldier_Portrait,
+            _ => Luca_Idle,
+        };
     }
 
-    public Sprite CharacterSpriteIdleImage(String imageText)
-    {
-        switch (imageText)
-        {
-            case "Luca":
-                return Luca_Idle;
-            case "Sam":
-                return Sam_Idle;
-            case "Borell":
-                return Borell_Idle;
-            case "Salvato":
-                return Salvato_Idle;
-            case "Billy":
-                return Billy_Idle;
-            case "Dandara":
-                return Dandara_Idle;
-            case "Morya":
-                return Morya_Idle;
-            case "Basic Soldier":
-                return BasicSoldier_Idle;
-            case "Basic Lieutenant":
-                return BasicSoldier_Idle;
-            default:
-                return Luca_Idle;
-        }
+    public Sprite CharacterSpriteIdleImage(String imageText) {
+        return imageText switch {
+            "Luca" => Luca_Idle,
+            "Sam" => Sam_Idle,
+            "Borell" => Borell_Idle,
+            "Salvato" => Salvato_Idle,
+            "Billy" => Billy_Idle,
+            "Dandara" => Dandara_Idle,
+            "Morya" => Morya_Idle,
+            "Basic Soldier" => BasicSoldier_Idle,
+            "Basic Lieutenant" => BasicSoldier_Idle,
+            _ => Luca_Idle,
+        };
     }
 }

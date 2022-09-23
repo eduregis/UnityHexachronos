@@ -36,39 +36,23 @@ public class CharacterBuffsSpriteManager : MonoBehaviour {
     }
 
     public Sprite BuffSpriteImage(BuffType type) {
-        switch (type) {
-            case BuffType.DamageUp:
-                return attackUp;
-            case BuffType.DamageDown:
-                return attackDown;
-            case BuffType.DefenseUp:
-                return defenseUp;
-            case BuffType.DefenseDown:
-                return defenseDown;
-            case BuffType.CritRateUp:
-                return critRateUp;
-            case BuffType.CritRateDown:
-                return critRateDown;
-            case BuffType.CritDamageUp:
-                return critDamageUp;
-            case BuffType.CritDamageDown:
-                return critDamageDown;
-            case BuffType.HitRateUp:
-                return hitRateUp;
-            case BuffType.HitRateDown:
-                return hitRateDown;
-            case BuffType.EvasionUp:
-                return evasionUp;
-            case BuffType.EvasionDown:
-                return evasionDown;
-            case BuffType.Stunned:
-                return stunned;
-            case BuffType.Bleeding:
-                return bleeding;
-            case BuffType.Taunt:
-                return taunt;
-            default:
-                return attackUp;
-        }
+        return type switch {
+            BuffType.DamageUp => attackUp,
+            BuffType.DamageDown => attackDown,
+            BuffType.DefenseUp => defenseUp,
+            BuffType.DefenseDown => defenseDown,
+            BuffType.CritRateUp => critRateUp,
+            BuffType.CritRateDown => critRateDown,
+            BuffType.CritDamageUp => critDamageUp,
+            BuffType.CritDamageDown => critDamageDown,
+            BuffType.HitRateUp => hitRateUp,
+            BuffType.HitRateDown => hitRateDown,
+            BuffType.EvasionUp => evasionUp,
+            BuffType.EvasionDown => evasionDown,
+            BuffType.Stunned => stunned,
+            BuffType.Bleeding => bleeding,
+            BuffType.Taunt => taunt,
+            _ => attackUp,
+        };
     }
 }
