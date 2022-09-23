@@ -79,6 +79,16 @@ public class CharacterStats : ScriptableObject
         }
     }
 
+    public bool GainEnergy(int recoveredEnergy) {
+        if (recoveredEnergy + energy >= maxEnergy) {
+            energy = maxEnergy;
+            return true;
+        } else {
+            energy += recoveredEnergy;
+            return false;
+        }
+    }
+
     public void ReceivingAttackDamage(CharacterStats attacker)
     {
         // TODO: Apply battle stats calcs in this damage
@@ -205,6 +215,10 @@ public class CharacterStats : ScriptableObject
                         skillUser,
                         float.Parse(strlist[1]),
                         int.Parse(strlist[2]));
+                    break;
+                case "energy":
+                    // HEAL SYNTAX: Energy identifier (energy) - Value
+                    GainEnergy(int.Parse(strlist[1]));
                     break;
             }
         }
