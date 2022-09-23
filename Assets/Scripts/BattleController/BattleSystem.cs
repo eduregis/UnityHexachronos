@@ -208,7 +208,7 @@ public class BattleSystem : MonoBehaviour {
 
         selectEnemyMenuPanel.SetActive(true);
 
-        auxText.text = "Select a target!";
+        auxText.text = "Select a enemy target!";
 
         EventSystem.current.SetSelectedGameObject(null);
         yield return new WaitForEndOfFrame();
@@ -217,6 +217,21 @@ public class BattleSystem : MonoBehaviour {
         CheckingAvailableEnemyTargets();
     }
 
+    IEnumerator PlayerSelectHeroSingleTarget() {
+        mainMenuPanel.SetActive(false);
+
+        yield return new WaitForSeconds(0.5f);
+
+        selectHeroMenuPanel.SetActive(true);
+
+        auxText.text = "Select a hero target!";
+
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
+        EventSystem.current.SetSelectedGameObject(hero1Arrow.gameObject);
+
+        CheckingAvailableHeroTargets();
+    }
     IEnumerator PlayerSelectSkills() {
         mainMenuPanel.SetActive(false);
 
@@ -300,13 +315,58 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(1f);
 
-        if (IsAllEnemiesDead())
-        {
+        if (IsAllEnemiesDead()) {
             state = BattleState.WON;
             EndBattle();
+        } else {
+            NextTurn();
         }
-        else
+    }
+
+    IEnumerator PlayerActionHeroTarget(int TargetId)
+    {
+        selectEnemyMenuPanel.SetActive(false);
+        CharacterStats skillUser = hero1;
+
+        switch (state)
         {
+            case BattleState.HERO1TURN:
+                skillUser = hero1;
+                break;
+            case BattleState.HERO2TURN:
+                skillUser = hero2;
+                break;
+            case BattleState.HERO3TURN:
+                skillUser = hero3;
+                break;
+        }
+
+        switch (TargetId) {
+            case 1:
+                hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                hero1HUD.UpdateUI(hero1);
+                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero1";
+                break;
+            case 2:
+                hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                hero2HUD.UpdateUI(hero2);
+                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero2";
+                break;
+            case 3:
+                hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                hero3HUD.UpdateUI(hero3);
+                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero3";
+                break;
+            default:
+                break;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        if (IsAllEnemiesDead()) {
+            state = BattleState.WON;
+            EndBattle();
+        } else {
             NextTurn();
         }
     }
@@ -518,6 +578,15 @@ public class BattleSystem : MonoBehaviour {
             enemy3Arrow.gameObject.SetActive(false);
     }
 
+    void CheckingAvailableHeroTargets() {
+        if (hero1 == null)
+            hero1Arrow.gameObject.SetActive(false);
+        if (hero2 == null)
+            hero2Arrow.gameObject.SetActive(false);
+        if (hero3 == null)
+            hero3Arrow.gameObject.SetActive(false);
+    }
+
     void ShowDescriptionSkill() {
         if (GameObject.ReferenceEquals(EventSystem.current.currentSelectedGameObject, skill1Button.gameObject)) {
             descriptionSkill.text = skills[0].description;
@@ -553,7 +622,6 @@ public class BattleSystem : MonoBehaviour {
     }
 
     public void OnSelectEnemyTargetButton(int TargetId) {
-
         switch (TargetId) {
             case 1:
                 if (enemy1.life == 0)
@@ -570,8 +638,27 @@ public class BattleSystem : MonoBehaviour {
             default:
                 break;
         }
-
         StartCoroutine(PlayerActionEnemyTarget(TargetId));
+    }
+
+    public void OnSelectHeroesTargetButton(int TargetId) {
+        switch (TargetId) {
+            case 1:
+                if (hero1.life == 0)
+                    return;
+                break;
+            case 2:
+                if (hero2.life == 0)
+                    return;
+                break;
+            case 3:
+                if (hero3.life == 0)
+                    return;
+                break;
+            default:
+                break;
+        }
+        StartCoroutine(PlayerActionHeroTarget(TargetId));
     }
 
     public void OnSkillsButton() {
@@ -606,6 +693,12 @@ public class BattleSystem : MonoBehaviour {
                 skillsMenuPanel.SetActive(false);
                 auxText.text = "Selecting skill " + TargetId;
                 StartCoroutine(PlayerActionAllEnemies());
+                break;
+            case AffectType.AllyTarget:
+                isInSkillsMenu = false;
+                skillsMenuPanel.SetActive(false);
+                auxText.text = "Selecting skill " + TargetId;
+                StartCoroutine(PlayerSelectHeroSingleTarget());
                 break;
             default:
                 break;

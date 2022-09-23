@@ -281,7 +281,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3990317}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 484789369}
+        m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
+        m_MethodName: OnSelectHeroesTargetButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3990317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2534,7 +2546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed3e765230f10fc4294c5d5b9baa49f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hero1: {fileID: 11400000, guid: e54be3f3b703bcc4cb0781a41f0e45a4, type: 2}
+  hero1: {fileID: 11400000, guid: 67e16df0ded8d674682f520a599dd214, type: 2}
   hero2: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
   hero3: {fileID: 0}
   enemy1: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
@@ -10871,7 +10883,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1671501575}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 484789369}
+        m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
+        m_MethodName: OnSelectHeroesTargetButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1671501575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10892,7 +10916,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e1ef654b7ae96bb43aa84e3ba2f91f1f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d3521200aeb892e409228ab5d1f6043e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11220,7 +11244,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1711404374}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 484789369}
+        m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
+        m_MethodName: OnSelectHeroesTargetButton
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1711404374
 MonoBehaviour:
   m_ObjectHideFlags: 0

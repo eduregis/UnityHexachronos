@@ -81,10 +81,17 @@ public class CharacterStats : ScriptableObject
     }
 
     public void UpdateBuffs() {
-        for (int i = 0; i < buffs.Count; i++) {
+
+        List<int> removedBuffsList = new();
+
+        for (int i = buffs.Count - 1; i >= 0; i--) {
             buffs[i].duration--;
             if (buffs[i].duration < 0)
-                buffs.RemoveAt(i);
+                removedBuffsList.Add(i);
+        }
+
+        foreach (int i in removedBuffsList) {
+            buffs.RemoveAt(i);
         }
     }
 

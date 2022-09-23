@@ -17,7 +17,6 @@ MonoBehaviour:
   description: Diminiu defesa do alvo por 3 turnos.
   skill_execution:
   - buff-2-DefenseDown-Multiplier-1-100
-  - attack-0.5-1-100
   cost: 30
   affectType: 1
   isAffectFaint: 0
