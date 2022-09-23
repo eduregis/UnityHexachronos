@@ -15,5 +15,9 @@ MonoBehaviour:
   skill_id: 24
   skill_name: Marcar inimigo
   description: Aplica taunt em um inimigo e diminui sua defesa por 2 turnos.
+  skill_execution:
+  - buff-10-Taunt-Status-2-100
+  - buff-10-DefenseDown-Multiplier-2-100
   cost: 30
   affectType: 1
+  isAffectFaint: 0

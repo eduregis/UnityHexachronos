@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 25
   skill_name: Mantenha-se Calma!
   description: Recupera 50 pontos de energia.
-  cost: 30
+  skill_execution:
+  - energy-50
+  cost: 15
   affectType: 0
+  isAffectFaint: 0
