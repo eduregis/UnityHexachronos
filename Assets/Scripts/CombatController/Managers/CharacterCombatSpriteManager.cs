@@ -27,23 +27,19 @@ public class CharacterCombatSpriteManager : MonoBehaviour
     public Sprite Morya_Idle;
     public Sprite BasicSoldier_Idle;
 
-    private void Awake()
-    {
-        if (instance != null)
-        {
+    private void Awake() {
+        if (instance != null) {
             Debug.LogWarning("Found more than one CharacterCombatSpriteManager in the scene");
         }
         instance = this;
     }
-    public static CharacterCombatSpriteManager GetInstance()
-    {
+
+    public static CharacterCombatSpriteManager GetInstance() {
         return instance;
     }
 
-    public Sprite CharacterPortraitImage(String imageText)
-    {
-        switch (imageText)
-        {
+    public Sprite CharacterPortraitImage(String imageText) {
+        switch (imageText) {
             case "Luca":
                 return Luca_Portrait;
             case "Sam":

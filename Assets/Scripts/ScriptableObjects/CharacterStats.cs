@@ -45,19 +45,32 @@ public class CharacterStats : ScriptableObject
         critRate = (5 + (luck / 2));
         critDamage = 50;
         isBlocking = false;
+        buffs = new List<Buff>();
     }
 
-    public bool TakeDamage(int dmg)
-    {
-        if (dmg >= life)
-        {
+    public bool TakeDamage(int dmg) {
+        if (dmg >= life) {
             life = 0;
             return true;
-        }
-        else
-        {
+        } else {
             life -= dmg;
             return false;
+        }
+    }
+
+    private Buff CreateBuff(float value, BuffType buffType, BuffModifier modifier, int duration) {
+        Buff buff = new Buff();
+        buff.value = value;
+        buff.buffType = buffType;
+        buff.modifier = modifier;
+        buff.duration = duration;
+        return buff;
+    }
+
+    public void ApplySkill(CharacterSkill skill) {
+        foreach (string effect in skill.skill_execution) {
+                //CreateBuff(2f, BuffType.DefenseDown, BuffModifier.Multiplier, 2);
+            Debug.Log("Ativar" + effect);
         }
     }
 }
