@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 3
   skill_name: Vamos acabar com isso!
   description: Sequencia de 5 ataques.
+  skill_execution:
+  - attack-0,65-5-80
   cost: 40
   affectType: 1
+  isAffectFaint: 0
