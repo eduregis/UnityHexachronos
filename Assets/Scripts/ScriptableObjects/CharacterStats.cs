@@ -61,15 +61,15 @@ public class CharacterStats : ScriptableObject
 
     public void ReceivingAttackDamage(CharacterStats attacker)
     {
-        // TODO: Applying battle stats calcs in this damage
-        // TODO: Applying buff modifications in this damage
+        // TODO: Apply battle stats calcs in this damage
+        // TODO: Apply buff modifications in this damage
         TakeDamage(attacker.damage);
     }
 
     public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
 
-    // TODO: Applying battle stats calcs in this damage
-    // TODO: Applying buff modifications in this damage
+    // TODO: Apply battle stats calcs in this damage
+    // TODO: Apply buff modifications in this damage
         for (int i = 0; i < quantity; i++) {
             int random = UnityEngine.Random.Range(0, 99);
             if (random < rate) {

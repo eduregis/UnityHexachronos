@@ -311,6 +311,50 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
+    IEnumerator PlayerActionAllEnemies() {
+        CharacterStats skillUser = hero1;
+
+        switch (state)
+        {
+            case BattleState.HERO1TURN:
+                skillUser = hero1;
+                break;
+            case BattleState.HERO2TURN:
+                skillUser = hero2;
+                break;
+            case BattleState.HERO3TURN:
+                skillUser = hero3;
+                break;
+        }
+
+        if (enemy1 != null && enemy1.life > 0) {
+            enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy1HUD.UpdateUI(enemy1);
+        }
+
+        if (enemy2 != null && enemy2.life > 0) {
+            enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy2HUD.UpdateUI(enemy2);
+        }
+
+        if (enemy3 != null && enemy3.life > 0) {
+            enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy3HUD.UpdateUI(enemy3);
+        }
+
+        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all enemies";
+
+        yield return new WaitForSeconds(1f);
+
+        if (IsAllEnemiesDead()) {
+            state = BattleState.WON;
+            EndBattle();
+        }
+        else {
+            NextTurn();
+        }
+    }
+
     IEnumerator EnemyTurn() {
         if (IsEnemyReadyToAct()) {
             auxText.text = state + ": attacks!";
@@ -550,13 +594,18 @@ public class BattleSystem : MonoBehaviour {
         menuTargetType = MenuTargetType.SKILL;
         selectedSkillIndex = TargetId;
 
-        switch(skills[TargetId - 1].affectType)
-        {
+        switch(skills[TargetId - 1].affectType) {
             case AffectType.EnemyTarget:
                 isInSkillsMenu = false;
                 skillsMenuPanel.SetActive(false);
                 auxText.text = "Selecting skill " + TargetId;
                 StartCoroutine(PlayerSelectAttackSingleTarget());
+                break;
+            case AffectType.AllEnemies:
+                isInSkillsMenu = false;
+                skillsMenuPanel.SetActive(false);
+                auxText.text = "Selecting skill " + TargetId;
+                StartCoroutine(PlayerActionAllEnemies());
                 break;
             default:
                 break;
