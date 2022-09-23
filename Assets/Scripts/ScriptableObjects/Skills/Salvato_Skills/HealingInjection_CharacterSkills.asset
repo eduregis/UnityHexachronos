@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 16
   skill_name: "Inje\xE7\xE3o de Cura"
   description: Cura 30 pontos de vida de um alvo.
+  skill_execution:
+  - heal-1,2-1-100
   cost: 30
   affectType: 2
+  isAffectFaint: 0

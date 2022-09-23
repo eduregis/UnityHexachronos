@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 20
   skill_name: Queima, Quengaral!
   description: Aumenta o dano de todos da equipe por 2 turnos.
+  skill_execution:
+  - buff-1,3-DamageUp-Multiplier-3-100
   cost: 30
   affectType: 4
+  isAffectFaint: 0

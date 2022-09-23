@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 21
   skill_name: Martelo Energizado
   description: Aplica eletricidade no martelo para dar mais dano.
+  skill_execution:
+  - attack-1,5-1-100
   cost: 30
   affectType: 1
+  isAffectFaint: 0
