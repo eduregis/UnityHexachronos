@@ -15,5 +15,9 @@ MonoBehaviour:
   skill_id: 2
   skill_name: "Atr\xE1s de Voc\xEA!"
   description: Causa dano e tem chance de causar sangramento.
+  skill_execution:
+  - attack-0,7-1-100
+  - buff-10-Bleeding-Status-2-20
   cost: 30
   affectType: 1
+  isAffectFaint: 0

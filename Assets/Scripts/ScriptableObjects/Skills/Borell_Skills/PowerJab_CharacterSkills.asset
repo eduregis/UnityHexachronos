@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 11
   skill_name: "Porrad\xE3o"
   description: "Soc\xE3o nas venta."
+  skill_execution:
+  - attack-2,5-100
   cost: 30
   affectType: 1
+  isAffectFaint: 0

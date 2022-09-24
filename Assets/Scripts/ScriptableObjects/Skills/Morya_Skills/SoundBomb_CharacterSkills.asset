@@ -16,5 +16,9 @@ MonoBehaviour:
   skill_name: Bomba Sonora
   description: Diminui chance de acerto dos inimigos e tem chance de atordoar por
     2 turnos.
+  skill_execution:
+  - buff-25-HitRateDown-Constant-2-100
+  - buff-10-Stunned-Status-2-10
   cost: 30
   affectType: 3
+  isAffectFaint: 0

@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 22
   skill_name: Carga
   description: Recupera 50 pontos de energia.
+  skill_execution:
+  - energy-50
   cost: 0
   affectType: 0
+  isAffectFaint: 0

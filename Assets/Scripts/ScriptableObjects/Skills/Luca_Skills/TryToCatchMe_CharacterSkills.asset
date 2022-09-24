@@ -15,5 +15,9 @@ MonoBehaviour:
   skill_id: 0
   skill_name: Tente me pegar!
   description: "Aumenta a evas\xE3o e taxa cr\xEDtica em 3 turnos."
+  skill_execution:
+  - buff-1,5-EvasionUp-Multiplier-3-100
+  - buff-10-CritRateUp-Constant-3-100
   cost: 30
   affectType: 0
+  isAffectFaint: 0

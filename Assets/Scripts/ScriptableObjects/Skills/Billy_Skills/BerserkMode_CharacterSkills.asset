@@ -15,5 +15,9 @@ MonoBehaviour:
   skill_id: 15
   skill_name: "Modo F\xFAria"
   description: Diminui bastante a defesa e aumenta bastante o ataque em 2 turnos.
+  skill_execution:
+  - buff-2,5-DefenseDown-Multiplier-2-100
+  - buff-2,5-DamageUp-Multiplier-2-100
   cost: 30
   affectType: 0
+  isAffectFaint: 0

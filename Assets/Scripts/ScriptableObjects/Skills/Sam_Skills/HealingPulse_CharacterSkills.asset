@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 6
   skill_name: Pulso de Cura
   description: "D\xE1 um pequena cura para todos os aliados."
+  skill_execution:
+  - heal-1,2-100
   cost: 20
   affectType: 4
+  isAffectFaint: 0

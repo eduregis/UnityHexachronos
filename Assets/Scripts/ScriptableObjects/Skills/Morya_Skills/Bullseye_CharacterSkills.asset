@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 27
   skill_name: Na mosca!
   description: Dano em um alvo.
+  skill_execution:
+  - attack-3-1-100
   cost: 40
   affectType: 1
+  isAffectFaint: 0

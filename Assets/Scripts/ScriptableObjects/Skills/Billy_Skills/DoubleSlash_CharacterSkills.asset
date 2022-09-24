@@ -15,5 +15,9 @@ MonoBehaviour:
   skill_id: 12
   skill_name: Corte duplo
   description: "Dois ataques em sequ\xEAncia."
+  skill_execution:
+  - attack-0,7-1-100
+  - attack-0,8-1-100
   cost: 30
   affectType: 1
+  isAffectFaint: 0

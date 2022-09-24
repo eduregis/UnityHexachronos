@@ -15,5 +15,9 @@ MonoBehaviour:
   skill_id: 14
   skill_name: Abrir Feridas
   description: Causa dano e tem chance de causar sangramento.
+  skill_execution:
+  - attack-0,5-1-100
+  - buff-10-Bleeding-Status-2-40
   cost: 30
   affectType: 1
+  isAffectFaint: 0

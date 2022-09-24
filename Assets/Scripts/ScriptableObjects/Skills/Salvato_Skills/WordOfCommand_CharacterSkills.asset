@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 19
   skill_name: Palavra de Comando
   description: Diminiu defesa do alvo por 3 turnos.
+  skill_execution:
+  - buff-2-DefenseDown-Multiplier-1-100
   cost: 30
   affectType: 1
+  isAffectFaint: 0

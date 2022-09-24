@@ -15,5 +15,8 @@ MonoBehaviour:
   skill_id: 18
   skill_name: Manenham o foco!
   description: Aumenta chance de acerto para todos da equipe por 3 turnos.
+  skill_execution:
+  - buff-25-HitRateUp-Constant-3-100
   cost: 30
   affectType: 4
+  isAffectFaint: 0
