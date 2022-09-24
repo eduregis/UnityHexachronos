@@ -89,11 +89,30 @@ public class CharacterStats : ScriptableObject
         }
     }
 
-    public void ReceivingAttackDamage(CharacterStats attacker)
-    {
-        // TODO: Apply battle stats calcs in this damage
+    public void ReceivingAttackDamage(CharacterStats attacker) {
+
         // TODO: Apply buff modifications in this damage
-        TakeDamage(attacker.damage);
+        int maxHitValue = (attacker.hitRate > 100) ? attacker.hitRate : 100;
+        int hitRNG = UnityEngine.Random.Range(0, maxHitValue);
+
+        int finalDamage;
+
+        Debug.Log(attacker.damage + " , " + defense);
+
+        if (hitRNG > evasionRate) {
+            int critRNG = UnityEngine.Random.Range(0, 100);
+            if (critRNG < attacker.critRate && !isBlocking) {
+                int critDamage = (int)(attacker.damage * attacker.critDamage);
+                finalDamage = (int)(critDamage / defense);
+            } else {
+                float finalDefense = isBlocking ? defense : (float)(defense * 1.5);
+                finalDamage = (int)(attacker.damage / finalDefense);
+            }
+            TakeDamage(finalDamage);
+        } else {
+            Debug.Log("ERRRROOOOUUU!");
+        }
+        
     }
 
     public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
@@ -141,7 +160,9 @@ public class CharacterStats : ScriptableObject
     private Buff CreateBuff(float value, BuffType buffType, BuffModifier modifier, int duration, int rate) {
 
         int random = UnityEngine.Random.Range(0, 99);
-        if (random < rate) {
+        int intIncrease = 0;
+        if (modifier == BuffModifier.Status) intIncrease = intelligence;
+        if (random < (rate + intIncrease)) {
             Buff buff = new() {
                 value = value,
                 buffType = buffType,

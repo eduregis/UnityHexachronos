@@ -189,7 +189,9 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator PlayerTurn() {
         if (IsHeroReadyToAct()) {
-            auxText.text = state + ": Your turn!";
+            if (state == BattleState.HERO1TURN) auxText.text = hero1.char_name + ": Your turn!";
+            if (state == BattleState.HERO2TURN) auxText.text = hero2.char_name + ": Your turn!";
+            if (state == BattleState.HERO3TURN) auxText.text = hero3.char_name + ": Your turn!";
 
             mainMenuPanel.SetActive(true);
 
@@ -632,6 +634,7 @@ public class BattleSystem : MonoBehaviour {
             if (enemy3.life > 0)
                 return false;
         }
+        
         return true;
     }
 
