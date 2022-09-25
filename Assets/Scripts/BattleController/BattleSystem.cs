@@ -276,15 +276,15 @@ public class BattleSystem : MonoBehaviour {
             case MenuTargetType.ATTACK:
                 switch (TargetId) {
                     case 1:
-                        enemy1.ReceivingAttackDamage(hero1);
+                        enemy1.ReceivingAttackDamage(skillUser);
                         enemy1HUD.UpdateUI(enemy1);
                         break;
                     case 2:
-                        enemy2.ReceivingAttackDamage(hero2);
+                        enemy2.ReceivingAttackDamage(skillUser);
                         enemy2HUD.UpdateUI(enemy2);
                         break;
                     case 3:
-                        enemy3.ReceivingAttackDamage(hero3);
+                        enemy3.ReceivingAttackDamage(skillUser);
                         enemy3HUD.UpdateUI(enemy3);
                         break;
                     default:
@@ -327,7 +327,7 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator PlayerActionHeroTarget(int TargetId)
     {
-        selectEnemyMenuPanel.SetActive(false);
+        selectHeroMenuPanel.SetActive(false);
         CharacterStats skillUser = hero1;
 
         switch (state)

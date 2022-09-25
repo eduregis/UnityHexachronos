@@ -90,56 +90,85 @@ public class CharacterStats : ScriptableObject
     }
 
     public void ReceivingAttackDamage(CharacterStats attacker) {
-
-        // TODO: Apply buff modifications in this damage
-        int maxHitValue = (attacker.hitRate > 100) ? attacker.hitRate : 100;
-        int hitRNG = UnityEngine.Random.Range(0, maxHitValue);
-
-        int finalDamage;
-
-        Debug.Log(attacker.damage + " , " + defense);
-
-        if (hitRNG > evasionRate) {
-            int critRNG = UnityEngine.Random.Range(0, 100);
-            if (critRNG < attacker.critRate && !isBlocking) {
-                int critDamage = (int)(attacker.damage * attacker.critDamage);
-                finalDamage = (int)(critDamage / defense);
-            } else {
-                float finalDefense = isBlocking ? defense : (float)(defense * 1.5);
-                finalDamage = (int)(attacker.damage / finalDefense);
-            }
-            TakeDamage(finalDamage);
-        } else {
-            Debug.Log("ERRRROOOOUUU!");
-        }
-        
+        Debug.Log("Character: " + attacker.char_name + ", damage: " + attacker.damage);
+        DamageWithBuffsAndStatsApplied(attacker, attacker.damage);
     }
 
     public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
 
-    // TODO: Apply battle stats calcs in this damage
-    // TODO: Apply buff modifications in this damage
         for (int i = 0; i < quantity; i++) {
             int random = UnityEngine.Random.Range(0, 99);
             if (random < rate) {
                 int finalDamage = (int)(attacker.damage * damageMultiplier);
                 Debug.Log("Damage: " + finalDamage + ", rate: " + random);
-                TakeDamage(damage);
+                DamageWithBuffsAndStatsApplied(attacker, finalDamage);
             }
         }
     }
 
     public void ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
 
-        // TODO: Apply battle stats calcs in this damage
-        // TODO: Apply buff modifications in this damage
-            int random = UnityEngine.Random.Range(0, 99);
-            if (random < rate)
-            {
-                int heal = (int)(healer.intelligence * healMultiplier);
-                Debug.Log("Heal: " + heal + ", rate: " + random);
-                TakeHeal(heal);
+        int random = UnityEngine.Random.Range(0, 99);
+        if (random < rate)
+        {
+            int heal = (int)(healer.intelligence * healMultiplier);
+            Debug.Log("Heal: " + heal + ", rate: " + random);
+            TakeHeal(heal);
+        }
+    }
+
+    private void DamageWithBuffsAndStatsApplied(CharacterStats attacker, int receivedDamage) {
+
+        // Applying buff modifications. B.D.A. is Buff and Debuffs Applied
+        int BDA_attackerHitRate = (int)GenericBuffApplier(attacker, (float)attacker.hitRate, BuffType.HitRateUp, BuffType.HitRateDown);
+        int BDA_attackerCritDamage = (int)GenericBuffApplier(attacker, (float)attacker.critDamage, BuffType.CritDamageUp, BuffType.CritDamageDown);
+        int BDA_attackerCritRate = (int)GenericBuffApplier(attacker, (float)attacker.critRate, BuffType.CritRateUp, BuffType.CritRateDown);
+        int BDA_attackerDamage = (int)GenericBuffApplier(attacker, (float)receivedDamage, BuffType.DamageUp, BuffType.DamageDown);
+        float BDA_defense = GenericBuffApplier(this, this.defense, BuffType.DefenseUp, BuffType.DefenseDown);
+        int BDA_evasionRate = (int)GenericBuffApplier(this, (float)this.evasionRate, BuffType.EvasionUp, BuffType.EvasionDown);
+
+        int maxHitValue = (BDA_attackerHitRate > 100) ? BDA_attackerHitRate : 100;
+        int hitRNG = UnityEngine.Random.Range(0, maxHitValue);
+
+        int finalDamage;
+
+        if (hitRNG > BDA_evasionRate) {
+            int critRNG = UnityEngine.Random.Range(0, 100);
+            if (critRNG < BDA_attackerCritRate && !isBlocking) {
+                int attackCritDamage = BDA_attackerDamage + (int)(BDA_attackerDamage * BDA_attackerCritDamage * 0.01);
+                finalDamage = (int)(attackCritDamage / BDA_defense);
+                Debug.Log("Character1: " + attacker.char_name + "critRate: " + BDA_attackerCritRate + "critDamage: " + BDA_attackerCritDamage + ", damage: " + finalDamage);
+            } else {
+                float finalDefense = (isBlocking) ? BDA_defense : (float)(BDA_defense * 1.5);
+                finalDamage = (int)(BDA_attackerDamage / finalDefense);
+                Debug.Log("Character2: " + attacker.char_name + ", damage: " + finalDamage);
             }
+            TakeDamage(finalDamage);
+        } else {
+            Debug.Log("ERRRROOOOUUU!");
+        }
+    }
+
+    private float GenericBuffApplier(CharacterStats buffOwner, float initialValue, BuffType buffTypeUp, BuffType buffTypeDown) {
+        float finalValue = (float)initialValue;
+
+        foreach (Buff buff in buffOwner.buffs) {
+            if (buff.buffType == buffTypeUp) {
+                if (buff.modifier == BuffModifier.Multiplier) {
+                    finalValue *= buff.value;
+                } else if (buff.modifier == BuffModifier.Constant) {
+                    finalValue += buff.value;
+                }
+            }
+            if (buff.buffType == buffTypeDown) {
+                if (buff.modifier == BuffModifier.Multiplier) {
+                    finalValue /= buff.value;
+                } else if (buff.modifier == BuffModifier.Constant) {
+                    finalValue -= buff.value;
+                }
+            }
+        }
+        return finalValue;
     }
 
     public void UpdateBuffs() {
