@@ -94,6 +94,22 @@ public class BattleSystem : MonoBehaviour {
 
     #region Control variables
 
+    #region Time variables
+    const float START_BATTLE_TIME = 1.2f;
+    const float MENU_TO_ENEMYSINGLETARGET_TIME = 0.5f;
+    const float MENU_TO_HEROSINGLETARGET_TIME = 0.5f;
+    const float MAINMENU_TO_SKILLMENU_TIME = 0.5f;
+    const float ENEMYSINGLETARGET_TO_NEXTTURN_TIME = 1f;
+    const float HEROSINGLETARGET_TO_NEXTTURN_TIME = 1f;
+    const float ALLENEMIES_TO_NEXTTURN_TIME = 1f;
+    const float ALLHEROES_TO_NEXTTURN_TIME = 1f;
+    const float SELFTARGET_TO_NEXTTURN_TIME = 1f;
+    const float ENEMYTURN_TO_ENEMYATTACK_TIME = 1f;
+    const float ENEMYATTACK_TO_NEXTTURN_TIME = 1f;
+    const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
+    const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
+    #endregion
+
     bool isInSkillsMenu = false;
     MenuTargetType menuTargetType;
     List<CharacterSkill> skills;
@@ -182,7 +198,7 @@ public class BattleSystem : MonoBehaviour {
 
         state = BattleState.HERO1TURN;
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(START_BATTLE_TIME);
 
         StartCoroutine(PlayerTurn());
     }
@@ -206,7 +222,7 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator PlayerSelectAttackSingleTarget() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MENU_TO_ENEMYSINGLETARGET_TIME);
 
         selectEnemyMenuPanel.SetActive(true);
 
@@ -222,7 +238,7 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator PlayerSelectHeroSingleTarget() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MENU_TO_HEROSINGLETARGET_TIME);
 
         selectHeroMenuPanel.SetActive(true);
 
@@ -234,10 +250,11 @@ public class BattleSystem : MonoBehaviour {
 
         CheckingAvailableHeroTargets();
     }
+    
     IEnumerator PlayerSelectSkills() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MAINMENU_TO_SKILLMENU_TIME);
 
         skillsMenuPanel.SetActive(true);
 
@@ -315,7 +332,7 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(ENEMYSINGLETARGET_TO_NEXTTURN_TIME);
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
@@ -363,7 +380,7 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(HEROSINGLETARGET_TO_NEXTTURN_TIME);
 
         if (IsAllHeroesDead()) {
             state = BattleState.LOST;
@@ -405,7 +422,7 @@ public class BattleSystem : MonoBehaviour {
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all enemies";
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(ALLENEMIES_TO_NEXTTURN_TIME);
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
@@ -448,7 +465,7 @@ public class BattleSystem : MonoBehaviour {
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all heroes";
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(ALLHEROES_TO_NEXTTURN_TIME);
 
         NextTurn();
     }
@@ -478,7 +495,7 @@ public class BattleSystem : MonoBehaviour {
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " inself";
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(SELFTARGET_TO_NEXTTURN_TIME);
 
         NextTurn();
     }
@@ -487,7 +504,7 @@ public class BattleSystem : MonoBehaviour {
         if (IsEnemyReadyToAct()) {
             auxText.text = state + ": attacks!";
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(ENEMYTURN_TO_ENEMYATTACK_TIME);
 
             CharacterStats heroTarget = ChoosingATargetHero();
 
@@ -505,7 +522,7 @@ public class BattleSystem : MonoBehaviour {
 
             UpdateUI();
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(ENEMYATTACK_TO_NEXTTURN_TIME);
 
             if (IsAllHeroesDead()) {
                 state = BattleState.LOST;
@@ -530,7 +547,7 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator Blocking() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MAINMENU_TO_BLOCKING_TIME);
 
         auxText.text = "Blocking!";
 
@@ -546,7 +563,7 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(BLOCKING_TO_NEXTTURN_TIME);
 
         NextTurn();
     }
