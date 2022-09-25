@@ -94,7 +94,15 @@ public class BattleSystem : MonoBehaviour {
 
     #region Control variables
 
+    bool isInSkillsMenu = false;
+    MenuTargetType menuTargetType;
+    List<CharacterSkill> skills;
+    int selectedSkillIndex = 0;
+
+    #endregion
+
     #region Time variables
+
     const float START_BATTLE_TIME = 1.2f;
     const float MENU_TO_ENEMYSINGLETARGET_TIME = 0.5f;
     const float MENU_TO_HEROSINGLETARGET_TIME = 0.5f;
@@ -108,12 +116,6 @@ public class BattleSystem : MonoBehaviour {
     const float ENEMYATTACK_TO_NEXTTURN_TIME = 1f;
     const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
     const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
-    #endregion
-
-    bool isInSkillsMenu = false;
-    MenuTargetType menuTargetType;
-    List<CharacterSkill> skills;
-    int selectedSkillIndex = 0;
 
     #endregion
 
