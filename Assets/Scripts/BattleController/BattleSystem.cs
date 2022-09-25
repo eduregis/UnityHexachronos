@@ -100,13 +100,17 @@ public class BattleSystem : MonoBehaviour {
     List<CharacterSkill> skills;
     int selectedSkillIndex = 0;
 
-    Transform hero1Position;
-    Transform hero2Position;
-    Transform hero3Position;
+    Vector3 hero1Position;
+    Vector3 hero2Position;
+    Vector3 hero3Position;
 
-    Transform enemy1Position;
-    Transform enemy2Position;
-    Transform enemy3Position;
+    SpriteRenderer hero1Renderer;
+    SpriteRenderer hero2Renderer;
+    SpriteRenderer hero3Renderer;
+
+    Vector3 enemy1Position;
+    Vector3 enemy2Position;
+    Vector3 enemy3Position;
 
     #endregion
 
@@ -126,6 +130,7 @@ public class BattleSystem : MonoBehaviour {
     const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
     const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
     const float ROTATE_TO_NEXTTURN_TIME = 1f;
+    const float ROTATE_DURATION_TIME = 0.8f;
 
     #endregion
 
@@ -133,13 +138,17 @@ public class BattleSystem : MonoBehaviour {
     void Start() {
         state = BattleState.START;
 
-        hero1Position = hero1Sprite.transform;
-        hero2Position = hero2Sprite.transform;
-        hero3Position = hero3Sprite.transform;
+        hero1Position = GetPosition(hero1Sprite);
+        hero2Position = GetPosition(hero2Sprite);
+        hero3Position = GetPosition(hero3Sprite);
 
-        enemy1Position = enemy1Sprite.transform;
-        enemy2Position = enemy2Sprite.transform;
-        enemy3Position = enemy3Sprite.transform;
+        hero1Renderer = hero1Sprite.GetComponent<SpriteRenderer>();
+        hero2Renderer = hero2Sprite.GetComponent<SpriteRenderer>();
+        hero3Renderer = hero3Sprite.GetComponent<SpriteRenderer>();
+
+        enemy1Position = GetPosition(enemy1Sprite);
+        enemy1Position = GetPosition(enemy1Sprite);
+        enemy1Position = GetPosition(enemy1Sprite);
 
         SetupBattle();
     }
@@ -565,8 +574,42 @@ public class BattleSystem : MonoBehaviour {
     }
 
     private void RotateHeroes() {
-        hero1Sprite.transform.position = Vector3.Lerp(hero1Position.position, hero2Position.position, 7f * Time.deltaTime);
-        Debug.Log(state + "rodando");
+        switch (state) {
+            case BattleState.HERO1TURN:
+                RenderingAndRotateCharacter(hero1Sprite, hero1Renderer, hero3Position, 3);
+                RenderingAndRotateCharacter(hero2Sprite, hero2Renderer, hero1Position, 1);
+                RenderingAndRotateCharacter(hero3Sprite, hero3Renderer, hero2Position, 2);
+                break;
+            case BattleState.HERO2TURN:
+                RenderingAndRotateCharacter(hero1Sprite, hero1Renderer, hero2Position, 2);
+                RenderingAndRotateCharacter(hero2Sprite, hero2Renderer, hero3Position, 3);
+                RenderingAndRotateCharacter(hero3Sprite, hero3Renderer, hero1Position, 1);
+                break;
+            case BattleState.HERO3TURN:
+                RenderingAndRotateCharacter(hero1Sprite, hero1Renderer, hero1Position, 1);
+                RenderingAndRotateCharacter(hero2Sprite, hero2Renderer, hero2Position, 2);
+                RenderingAndRotateCharacter(hero3Sprite, hero3Renderer, hero3Position, 3);
+                break;
+        }
+    }
+
+    private void RenderingAndRotateCharacter(GameObject character, SpriteRenderer renderer, Vector3 position, int newTurn) {
+        character.transform.position = Vector3.Lerp(character.transform.position, position, 10f * Time.deltaTime);
+        switch (newTurn) {
+            case 1:
+                renderer.sortingOrder = -8;
+                renderer.color = Color.Lerp(renderer.color, Color.white, 4f * Time.deltaTime);
+                break;
+            case 2:
+                renderer.sortingOrder = -9;
+                renderer.color = Color.Lerp(renderer.color, new Color(0.4f, 0.4f, 0.4f, 1f), 4f * Time.deltaTime);
+                break;
+            case 3:
+                renderer.sortingOrder = -10;
+                renderer.color = Color.Lerp(renderer.color, new Color(0.4f, 0.4f, 0.4f, 1f), 4f * Time.deltaTime);
+                break;
+        }
+
     }
 
     IEnumerator Blocking() {
@@ -667,6 +710,11 @@ public class BattleSystem : MonoBehaviour {
     #endregion
 
     #region Check functions
+
+    private Vector3 GetPosition(GameObject sprite) {
+        return new Vector3(sprite.transform.position.x, sprite.transform.position.y, sprite.transform.position.z);
+    }
+
     bool IsHeroReadyToAct() {
         switch (state) {
             case BattleState.HERO1TURN:
