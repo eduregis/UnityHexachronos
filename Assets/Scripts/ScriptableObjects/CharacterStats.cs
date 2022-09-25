@@ -137,11 +137,11 @@ public class CharacterStats : ScriptableObject
             if (critRNG < BDA_attackerCritRate && !isBlocking) {
                 int attackCritDamage = BDA_attackerDamage + (int)(BDA_attackerDamage * BDA_attackerCritDamage * 0.01);
                 finalDamage = (int)(attackCritDamage / BDA_defense);
-                Debug.Log("Character1: " + attacker.char_name + "critRate: " + BDA_attackerCritRate + "critDamage: " + BDA_attackerCritDamage + ", damage: " + finalDamage);
+                Debug.Log("Character: " + attacker.char_name + "critRate: " + BDA_attackerCritRate + "critDamage: " + BDA_attackerCritDamage + ", damage: " + finalDamage);
             } else {
-                float finalDefense = (isBlocking) ? BDA_defense : (float)(BDA_defense * 1.5);
+                float finalDefense = (isBlocking == false) ? BDA_defense : (float)(BDA_defense * 1.5);
                 finalDamage = (int)(BDA_attackerDamage / finalDefense);
-                Debug.Log("Character2: " + attacker.char_name + ", damage: " + finalDamage);
+                Debug.Log("Character: " + attacker.char_name + ", damage: " + finalDamage);
             }
             TakeDamage(finalDamage);
         } else {

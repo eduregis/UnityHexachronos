@@ -489,8 +489,21 @@ public class BattleSystem : MonoBehaviour {
 
             yield return new WaitForSeconds(1f);
 
-            hero1.ReceivingAttackDamage(enemy1);
-            hero1HUD.UpdateUI(hero1);
+            CharacterStats heroTarget = ChoosingATargetHero();
+
+            switch (state) {
+                case BattleState.ENEMY1TURN:
+                    heroTarget.ReceivingAttackDamage(enemy1);
+                    break;
+                case BattleState.ENEMY2TURN:
+                    heroTarget.ReceivingAttackDamage(enemy2);
+                    break;
+                case BattleState.ENEMY3TURN:
+                    heroTarget.ReceivingAttackDamage(enemy3);
+                    break;
+            }
+
+            UpdateUI();
 
             yield return new WaitForSeconds(1f);
 
@@ -505,11 +518,45 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
+    private void UpdateUI() {
+        if (hero1 != null) hero1HUD.UpdateUI(hero1);
+        if (hero2 != null) hero2HUD.UpdateUI(hero2);
+        if (hero3 != null) hero3HUD.UpdateUI(hero3);
+        if (enemy1 != null) enemy1HUD.UpdateUI(enemy1);
+        if (enemy2 != null) enemy2HUD.UpdateUI(enemy2);
+        if (enemy3 != null) enemy3HUD.UpdateUI(enemy3);
+    }
+
+    IEnumerator Blocking() {
+        mainMenuPanel.SetActive(false);
+
+        yield return new WaitForSeconds(0.5f);
+
+        auxText.text = "Blocking!";
+
+        switch (state) {
+            case BattleState.HERO1TURN:
+                hero1.isBlocking = true;
+                break;
+            case BattleState.HERO2TURN:
+                hero2.isBlocking = true;
+                break;
+            case BattleState.HERO3TURN:
+                hero3.isBlocking = true;
+                break;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        NextTurn();
+    }
+
     void NextTurn() {
         switch (state) {
             case BattleState.HERO1TURN:
                 state = BattleState.HERO2TURN;
                 if (hero2 != null) {
+                    hero2.isBlocking = false;
                     hero2.UpdateBuffs();
                     hero2HUD.UpdateUI(hero2);
                 }
@@ -518,6 +565,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.HERO2TURN:
                 state = BattleState.HERO3TURN;
                 if (hero3 != null) {
+                    hero3.isBlocking = false;
                     hero3.UpdateBuffs();
                     hero3HUD.UpdateUI(hero3);
                 }
@@ -526,6 +574,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.HERO3TURN:
                 state = BattleState.ENEMY1TURN;
                 if (enemy1 != null) {
+                    enemy1.isBlocking = false;
                     enemy1.UpdateBuffs();
                     enemy1HUD.UpdateUI(enemy1);
                 }
@@ -534,6 +583,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.ENEMY1TURN:
                 state = BattleState.ENEMY2TURN;
                 if (enemy2 != null) {
+                    enemy2.isBlocking = false;
                     enemy2.UpdateBuffs();
                     enemy2HUD.UpdateUI(enemy2);
                 }
@@ -542,6 +592,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.ENEMY2TURN:
                 state = BattleState.ENEMY3TURN;
                 if (enemy3 != null) {
+                    enemy3.isBlocking = false;
                     enemy3.UpdateBuffs();
                     enemy3HUD.UpdateUI(enemy3);
                 }
@@ -550,6 +601,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.ENEMY3TURN:
                 state = BattleState.HERO1TURN;
                 if (hero1 != null) {
+                    hero1.isBlocking = false;
                     hero1.UpdateBuffs();
                     hero1HUD.UpdateUI(hero1);
                 }
@@ -707,6 +759,26 @@ public class BattleSystem : MonoBehaviour {
         return false;
     }
 
+    private CharacterStats ChoosingATargetHero() {
+        while (true) {
+            int targetRNG = UnityEngine.Random.Range(1, 4);
+            switch (targetRNG) {
+                case 1:
+                    if (hero1 != null && hero1.life > 0)
+                        return hero1;
+                    break;
+                case 2:
+                    if (hero2 != null && hero2.life > 0)
+                        return hero2;
+                    break;
+                case 3:
+                    if (hero3 != null && hero3.life > 0)
+                        return hero3;
+                    break;
+            }
+        }
+    }
+
     #endregion
 
     #region Button functions
@@ -811,7 +883,7 @@ public class BattleSystem : MonoBehaviour {
     }
 
     public void OnBlockButton() {
-        auxText.text = "Blocking!";
+        StartCoroutine(Blocking());
     }
 
     #endregion
