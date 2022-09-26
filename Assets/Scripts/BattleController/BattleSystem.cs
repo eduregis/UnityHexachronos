@@ -95,21 +95,73 @@ public class BattleSystem : MonoBehaviour {
     #region Control variables
 
     bool isInSkillsMenu = false;
+    bool rotatingHeroes = false;
     MenuTargetType menuTargetType;
     List<CharacterSkill> skills;
     int selectedSkillIndex = 0;
+    Color backCharColor = new(0.4f, 0.4f, 0.4f, 1f);
+
+    Vector3 hero1Position;
+    Vector3 hero2Position;
+    Vector3 hero3Position;
+
+    SpriteRenderer hero1Renderer;
+    SpriteRenderer hero2Renderer;
+    SpriteRenderer hero3Renderer;
+
+    Vector3 enemy1Position;
+    Vector3 enemy2Position;
+    Vector3 enemy3Position;
+
+    #endregion
+
+    #region Time variables
+
+    const float START_BATTLE_TIME = 1.2f;
+    const float MENU_TO_ENEMYSINGLETARGET_TIME = 0.5f;
+    const float MENU_TO_HEROSINGLETARGET_TIME = 0.5f;
+    const float MAINMENU_TO_SKILLMENU_TIME = 0.5f;
+    const float ENEMYSINGLETARGET_TO_NEXTTURN_TIME = 1f;
+    const float HEROSINGLETARGET_TO_NEXTTURN_TIME = 1f;
+    const float ALLENEMIES_TO_NEXTTURN_TIME = 1f;
+    const float ALLHEROES_TO_NEXTTURN_TIME = 1f;
+    const float SELFTARGET_TO_NEXTTURN_TIME = 1f;
+    const float ENEMYTURN_TO_ENEMYATTACK_TIME = 1f;
+    const float ENEMYATTACK_TO_NEXTTURN_TIME = 1f;
+    const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
+    const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
+    const float ROTATE_TO_NEXTTURN_TIME = 1f;
 
     #endregion
 
     // Start is called before the first frame update
     void Start() {
         state = BattleState.START;
+
+        hero1Position = GetPosition(hero1Sprite);
+        hero2Position = GetPosition(hero2Sprite);
+        hero3Position = GetPosition(hero3Sprite);
+
+        hero1Renderer = hero1Sprite.GetComponent<SpriteRenderer>();
+        hero2Renderer = hero2Sprite.GetComponent<SpriteRenderer>();
+        hero3Renderer = hero3Sprite.GetComponent<SpriteRenderer>();
+
+        if (hero3 != null) {
+            hero2Renderer.color = backCharColor;
+            hero3Renderer.color = backCharColor;
+        }
+
+        enemy1Position = GetPosition(enemy1Sprite);
+        enemy1Position = GetPosition(enemy1Sprite);
+        enemy1Position = GetPosition(enemy1Sprite);
+
         SetupBattle();
     }
 
     void Update() {
-        if ((state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) && isInSkillsMenu) {
-            ShowDescriptionSkill();
+        if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
+            if (rotatingHeroes == true && hero3 != null) RotateHeroes();
+            if (isInSkillsMenu == true) ShowDescriptionSkill();
         }
     }
 
@@ -182,31 +234,55 @@ public class BattleSystem : MonoBehaviour {
 
         state = BattleState.HERO1TURN;
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(START_BATTLE_TIME);
 
         StartCoroutine(PlayerTurn());
     }
 
     IEnumerator PlayerTurn() {
         if (IsHeroReadyToAct()) {
-            if (state == BattleState.HERO1TURN) auxText.text = hero1.char_name + ": Your turn!";
-            if (state == BattleState.HERO2TURN) auxText.text = hero2.char_name + ": Your turn!";
-            if (state == BattleState.HERO3TURN) auxText.text = hero3.char_name + ": Your turn!";
 
-            mainMenuPanel.SetActive(true);
+            CharacterStats hero = hero1;
 
-            EventSystem.current.SetSelectedGameObject(null);
-            yield return new WaitForEndOfFrame();
-            EventSystem.current.SetSelectedGameObject(attackButton.gameObject);
+            switch(state) {
+                case BattleState.HERO1TURN:
+                    hero = hero1;
+                    auxText.text = hero1.char_name + ": Your turn!";
+                    break;
+                case BattleState.HERO2TURN:
+                    hero = hero2;
+                    auxText.text = hero2.char_name + ": Your turn!";
+                    break;
+                case BattleState.HERO3TURN:
+                    hero = hero3;
+                    auxText.text = hero3.char_name + ": Your turn!";
+                    break;
+            }
+
+            if (IsInNegativeStatus(BuffType.Stunned)) {
+                auxText.text = state + " stunned!";
+                StartCoroutine(NextTurn());
+            } else {
+                if (IsInNegativeStatus(BuffType.Bleeding)) {
+                    hero.TakeDamage(10);
+                    auxText.text = state + " bleeding!";
+                    UpdateUI();
+                }
+                mainMenuPanel.SetActive(true);
+
+                EventSystem.current.SetSelectedGameObject(null);
+                yield return new WaitForEndOfFrame();
+                EventSystem.current.SetSelectedGameObject(attackButton.gameObject);
+            }
         } else {
-            NextTurn();
+            StartCoroutine(NextTurn());
         }
     }
 
     IEnumerator PlayerSelectAttackSingleTarget() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MENU_TO_ENEMYSINGLETARGET_TIME);
 
         selectEnemyMenuPanel.SetActive(true);
 
@@ -222,7 +298,7 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator PlayerSelectHeroSingleTarget() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MENU_TO_HEROSINGLETARGET_TIME);
 
         selectHeroMenuPanel.SetActive(true);
 
@@ -234,10 +310,11 @@ public class BattleSystem : MonoBehaviour {
 
         CheckingAvailableHeroTargets();
     }
+    
     IEnumerator PlayerSelectSkills() {
         mainMenuPanel.SetActive(false);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(MAINMENU_TO_SKILLMENU_TIME);
 
         skillsMenuPanel.SetActive(true);
 
@@ -276,15 +353,15 @@ public class BattleSystem : MonoBehaviour {
             case MenuTargetType.ATTACK:
                 switch (TargetId) {
                     case 1:
-                        enemy1.ReceivingAttackDamage(hero1);
+                        enemy1.ReceivingAttackDamage(skillUser);
                         enemy1HUD.UpdateUI(enemy1);
                         break;
                     case 2:
-                        enemy2.ReceivingAttackDamage(hero2);
+                        enemy2.ReceivingAttackDamage(skillUser);
                         enemy2HUD.UpdateUI(enemy2);
                         break;
                     case 3:
-                        enemy3.ReceivingAttackDamage(hero3);
+                        enemy3.ReceivingAttackDamage(skillUser);
                         enemy3HUD.UpdateUI(enemy3);
                         break;
                     default:
@@ -315,19 +392,19 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(ENEMYSINGLETARGET_TO_NEXTTURN_TIME);
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
             EndBattle();
         } else {
-            NextTurn();
+            StartCoroutine(NextTurn());
         }
     }
 
     IEnumerator PlayerActionHeroTarget(int TargetId)
     {
-        selectEnemyMenuPanel.SetActive(false);
+        selectHeroMenuPanel.SetActive(false);
         CharacterStats skillUser = hero1;
 
         switch (state)
@@ -363,13 +440,13 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(HEROSINGLETARGET_TO_NEXTTURN_TIME);
 
         if (IsAllHeroesDead()) {
             state = BattleState.LOST;
             EndBattle();
         } else {
-            NextTurn();
+            StartCoroutine(NextTurn());
         }
     }
 
@@ -405,14 +482,14 @@ public class BattleSystem : MonoBehaviour {
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all enemies";
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(ALLENEMIES_TO_NEXTTURN_TIME);
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
             EndBattle();
         }
         else {
-            NextTurn();
+            StartCoroutine(NextTurn());
         }
     }
 
@@ -448,9 +525,8 @@ public class BattleSystem : MonoBehaviour {
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all heroes";
 
-        yield return new WaitForSeconds(1f);
-
-        NextTurn();
+        yield return new WaitForSeconds(ALLHEROES_TO_NEXTTURN_TIME);
+        StartCoroutine(NextTurn());
     }
 
     IEnumerator PlayerActionSelf() {
@@ -478,38 +554,145 @@ public class BattleSystem : MonoBehaviour {
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " inself";
 
-        yield return new WaitForSeconds(1f);
-
-        NextTurn();
+        yield return new WaitForSeconds(SELFTARGET_TO_NEXTTURN_TIME);
+        StartCoroutine(NextTurn());
     }
 
     IEnumerator EnemyTurn() {
         if (IsEnemyReadyToAct()) {
-            auxText.text = state + ": attacks!";
+            auxText.text = state + " turn!";
 
-            yield return new WaitForSeconds(1f);
+            CharacterStats enemy = enemy1;
 
-            hero1.ReceivingAttackDamage(enemy1);
-            hero1HUD.UpdateUI(hero1);
+            switch(state) {
+                case BattleState.ENEMY1TURN:
+                    enemy = enemy1;
+                    break;
+                case BattleState.ENEMY2TURN:
+                    enemy = enemy2;
+                    break;
+                case BattleState.ENEMY3TURN:
+                    enemy = enemy3;
+                    break;
+            }
 
-            yield return new WaitForSeconds(1f);
+            if (IsInNegativeStatus(BuffType.Bleeding)) {
+                enemy.TakeDamage(10);
+                auxText.text = state + " bleeding!";
+                UpdateUI();
+            }
+            
+            yield return new WaitForSeconds(ENEMYTURN_TO_ENEMYATTACK_TIME);
+
+            if (!IsInNegativeStatus(BuffType.Stunned)) {
+                CharacterStats heroTarget = ChoosingATargetHero();
+                heroTarget.ReceivingAttackDamage(enemy);
+            } else {
+                auxText.text = state + "  stunned!";
+            }
+
+            UpdateUI();
+
+            yield return new WaitForSeconds(ENEMYATTACK_TO_NEXTTURN_TIME);
 
             if (IsAllHeroesDead()) {
                 state = BattleState.LOST;
                 EndBattle();
             } else {
-                NextTurn();
+                StartCoroutine(NextTurn());
             }
         } else {
-            NextTurn();
+            StartCoroutine(NextTurn());
         }
     }
 
-    void NextTurn() {
+    private void UpdateUI() {
+        if (hero1 != null) hero1HUD.UpdateUI(hero1);
+        if (hero2 != null) hero2HUD.UpdateUI(hero2);
+        if (hero3 != null) hero3HUD.UpdateUI(hero3);
+        if (enemy1 != null) enemy1HUD.UpdateUI(enemy1);
+        if (enemy2 != null) enemy2HUD.UpdateUI(enemy2);
+        if (enemy3 != null) enemy3HUD.UpdateUI(enemy3);
+    }
+
+    private void RotateHeroes() {
+        switch (state) {
+            case BattleState.HERO1TURN:
+                RenderingAndRotateCharacter(hero1Sprite, hero1Renderer, hero3Position, 3);
+                RenderingAndRotateCharacter(hero2Sprite, hero2Renderer, hero1Position, 1);
+                RenderingAndRotateCharacter(hero3Sprite, hero3Renderer, hero2Position, 2);
+                break;
+            case BattleState.HERO2TURN:
+                RenderingAndRotateCharacter(hero1Sprite, hero1Renderer, hero2Position, 2);
+                RenderingAndRotateCharacter(hero2Sprite, hero2Renderer, hero3Position, 3);
+                RenderingAndRotateCharacter(hero3Sprite, hero3Renderer, hero1Position, 1);
+                break;
+            case BattleState.HERO3TURN:
+                RenderingAndRotateCharacter(hero1Sprite, hero1Renderer, hero1Position, 1);
+                RenderingAndRotateCharacter(hero2Sprite, hero2Renderer, hero2Position, 2);
+                RenderingAndRotateCharacter(hero3Sprite, hero3Renderer, hero3Position, 3);
+                break;
+        }
+    }
+
+    private void RenderingAndRotateCharacter(GameObject character, SpriteRenderer renderer, Vector3 position, int newTurn) {
+        character.transform.position = Vector3.Lerp(character.transform.position, position, 10f * Time.deltaTime);
+        switch (newTurn) {
+            case 1:
+                renderer.sortingOrder = -8;
+                renderer.color = Color.Lerp(renderer.color, Color.white, 4f * Time.deltaTime);
+                break;
+            case 2:
+                renderer.sortingOrder = -9;
+                renderer.color = Color.Lerp(renderer.color, backCharColor, 4f * Time.deltaTime);
+                break;
+            case 3:
+                renderer.sortingOrder = -10;
+                renderer.color = Color.Lerp(renderer.color, backCharColor, 4f * Time.deltaTime);
+                break;
+        }
+
+    }
+
+    IEnumerator Blocking() {
+        mainMenuPanel.SetActive(false);
+
+        yield return new WaitForSeconds(MAINMENU_TO_BLOCKING_TIME);
+
+        auxText.text = "Blocking!";
+
+        switch (state) {
+            case BattleState.HERO1TURN:
+                hero1.isBlocking = true;
+                break;
+            case BattleState.HERO2TURN:
+                hero2.isBlocking = true;
+                break;
+            case BattleState.HERO3TURN:
+                hero3.isBlocking = true;
+                break;
+        }
+
+        yield return new WaitForSeconds(BLOCKING_TO_NEXTTURN_TIME);
+        StartCoroutine(NextTurn());
+    }
+
+    IEnumerator NextTurn() {
+
+        if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
+            if (hero3 != null) {
+                rotatingHeroes = true;
+                yield return new WaitForSeconds(ROTATE_TO_NEXTTURN_TIME);
+                RepositioningHeroTargets();
+                rotatingHeroes = false;
+            }
+        }
+
         switch (state) {
             case BattleState.HERO1TURN:
                 state = BattleState.HERO2TURN;
                 if (hero2 != null) {
+                    hero2.isBlocking = false;
                     hero2.UpdateBuffs();
                     hero2HUD.UpdateUI(hero2);
                 }
@@ -518,6 +701,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.HERO2TURN:
                 state = BattleState.HERO3TURN;
                 if (hero3 != null) {
+                    hero3.isBlocking = false;
                     hero3.UpdateBuffs();
                     hero3HUD.UpdateUI(hero3);
                 }
@@ -526,6 +710,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.HERO3TURN:
                 state = BattleState.ENEMY1TURN;
                 if (enemy1 != null) {
+                    enemy1.isBlocking = false;
                     enemy1.UpdateBuffs();
                     enemy1HUD.UpdateUI(enemy1);
                 }
@@ -534,6 +719,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.ENEMY1TURN:
                 state = BattleState.ENEMY2TURN;
                 if (enemy2 != null) {
+                    enemy2.isBlocking = false;
                     enemy2.UpdateBuffs();
                     enemy2HUD.UpdateUI(enemy2);
                 }
@@ -542,6 +728,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.ENEMY2TURN:
                 state = BattleState.ENEMY3TURN;
                 if (enemy3 != null) {
+                    enemy3.isBlocking = false;
                     enemy3.UpdateBuffs();
                     enemy3HUD.UpdateUI(enemy3);
                 }
@@ -550,6 +737,7 @@ public class BattleSystem : MonoBehaviour {
             case BattleState.ENEMY3TURN:
                 state = BattleState.HERO1TURN;
                 if (hero1 != null) {
+                    hero1.isBlocking = false;
                     hero1.UpdateBuffs();
                     hero1HUD.UpdateUI(hero1);
                 }
@@ -569,6 +757,29 @@ public class BattleSystem : MonoBehaviour {
     #endregion
 
     #region Check functions
+
+    private Vector3 GetPosition(GameObject sprite) {
+        return new Vector3(sprite.transform.position.x, sprite.transform.position.y, sprite.transform.position.z);
+    }
+
+    bool IsInNegativeStatus(BuffType statusBuffType) {
+        switch (state) {
+            case BattleState.HERO1TURN:
+                return (hero1 != null && hero1.IsInNegativeStatus(statusBuffType));
+            case BattleState.HERO2TURN:
+                return (hero2 != null && hero2.IsInNegativeStatus(statusBuffType));
+            case BattleState.HERO3TURN:
+                return (hero3 != null && hero3.IsInNegativeStatus(statusBuffType));
+            case BattleState.ENEMY1TURN:
+                return (enemy1 != null && enemy1.IsInNegativeStatus(statusBuffType));
+            case BattleState.ENEMY2TURN:
+                return (enemy2 != null && enemy2.IsInNegativeStatus(statusBuffType));
+            case BattleState.ENEMY3TURN:
+                return (enemy3 != null && enemy3.IsInNegativeStatus(statusBuffType));
+        }
+        return false;
+    }
+
     bool IsHeroReadyToAct() {
         switch (state) {
             case BattleState.HERO1TURN:
@@ -707,6 +918,41 @@ public class BattleSystem : MonoBehaviour {
         return false;
     }
 
+    private CharacterStats ChoosingATargetHero() {
+
+        if (hero1.IsInNegativeStatus(BuffType.Taunt) == true) return hero1;
+        if (hero2.IsInNegativeStatus(BuffType.Taunt) == true) return hero2;
+        if (hero3.IsInNegativeStatus(BuffType.Taunt) == true) return hero3;
+
+        while (true) {
+            int targetRNG = UnityEngine.Random.Range(1, 4);
+            switch (targetRNG) {
+                case 1:
+                    if (hero1 != null && hero1.life > 0)
+                        return hero1;
+                    break;
+                case 2:
+                    if (hero2 != null && hero2.life > 0)
+                        return hero2;
+                    break;
+                case 3:
+                    if (hero3 != null && hero3.life > 0)
+                        return hero3;
+                    break;
+            }
+        }
+    }
+
+    private void RepositioningHeroTargets() {
+        Vector3 pos1 = GetPosition(hero1Arrow.gameObject);
+        Vector3 pos2 = GetPosition(hero2Arrow.gameObject);
+        Vector3 pos3 = GetPosition(hero3Arrow.gameObject);
+
+        hero1Arrow.transform.position = pos3;
+        hero2Arrow.transform.position = pos1;
+        hero3Arrow.transform.position = pos2;
+    }
+
     #endregion
 
     #region Button functions
@@ -811,7 +1057,7 @@ public class BattleSystem : MonoBehaviour {
     }
 
     public void OnBlockButton() {
-        auxText.text = "Blocking!";
+        StartCoroutine(Blocking());
     }
 
     #endregion
