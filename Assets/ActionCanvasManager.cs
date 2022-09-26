@@ -49,25 +49,46 @@ public class ActionCanvasManager : MonoBehaviour
     public void TriggerEnemySingleTargetAction(string hero_name, string enemy_name, List<string> messages) {
         actionCanvas.SetActive(true);
 
-        GameObject hero1Sprite = Instantiate(charPrefab, hero2Position.transform.position, Quaternion.identity);
-        hero1Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero_name);
-        instances.Add(hero1Sprite);
+        ShowHero(hero_name, hero2Position.transform.position);
 
-        GameObject enemy1Sprite = Instantiate(charPrefab, enemy2Position.transform.position, Quaternion.identity);
-        enemy1Sprite.GetComponent<SpriteRenderer>().flipX = true;
-        enemy1Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy_name);
-        instances.Add(enemy1Sprite);
+        ShowEnemy(enemy_name, enemy2Position.transform.position);
 
+        ShowMultipleMessages(messages, enemy2Position.transform.position);
+    }
+
+    public void TriggerAllEnemiesAction(string hero_name, string enemy1_name, string enemy2_name, string enemy3_name, 
+        List<string> enemy1messages, List<string> enemy2messages, List<string> enemy3messages) {
+
+        ShowHero(hero_name, hero2Position.transform.position);
+
+        if (enemy1_name != "") ShowEnemy(enemy1_name, enemy1Position.transform.position);
+        if (enemy2_name != "") ShowEnemy(enemy2_name, enemy2Position.transform.position);
+        if (enemy3_name != "") ShowEnemy(enemy3_name, enemy3Position.transform.position);
+
+        if (enemy1_name != "") ShowMultipleMessages(enemy1messages, enemy1Position.transform.position);
+        if (enemy2_name != "") ShowMultipleMessages(enemy2messages, enemy2Position.transform.position);
+        if (enemy3_name != "") ShowMultipleMessages(enemy3messages, enemy3Position.transform.position);
+    }
+
+    private void ShowHero(string hero_name, Vector3 position) {
+        GameObject heroSprite = Instantiate(charPrefab, position, Quaternion.identity);
+        heroSprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero_name);
+        instances.Add(heroSprite);
+    }
+
+    private void ShowEnemy(string enemy_name, Vector3 position) {
+        GameObject enemySprite = Instantiate(charPrefab, position, Quaternion.identity);
+        enemySprite.GetComponent<SpriteRenderer>().flipX = true;
+        enemySprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy_name);
+        instances.Add(enemySprite);
+    }
+
+    private void ShowMultipleMessages(List<string> messages, Vector3 position) {
         float distance = 0.5f;
-        
+
         foreach (string msg in messages) {
             GameObject damageEnemySprite = Instantiate(
-            textPrefab,
-            new Vector3(
-                (float)enemy2Position.transform.position.x,
-                (float)enemy2Position.transform.position.y + 3.5f + distance,
-                (float)enemy2Position.transform.position.z),
-            Quaternion.identity);
+            textPrefab, new Vector3((float)position.x, (float)position.y + 3.5f + distance, (float)position.z), Quaternion.identity);
             damageEnemySprite.GetComponent<TextMeshProUGUI>().text = msg;
             damageEnemySprite.GetComponent<Transform>().localScale = new(0.01f, 0.01f, 1f);
             damageEnemySprite.transform.SetParent(canvas.transform);
@@ -75,7 +96,6 @@ public class ActionCanvasManager : MonoBehaviour
 
             distance += 0.5f;
         }
-        
     }
 
     public void DismissAction() {

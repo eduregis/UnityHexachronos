@@ -491,20 +491,33 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        string enemy1Name = "";
+        string enemy2Name = "";
+        string enemy3Name = "";
+
+        List<string> enemy1Messages = new();
+        List<string> enemy2Messages = new();
+        List<string> enemy3Messages = new();
+
         if (enemy1 != null && enemy1.life > 0) {
-            enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy1Name = enemy1.char_name;
+            enemy1Messages = enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             enemy1HUD.UpdateUI(enemy1);
         }
 
         if (enemy2 != null && enemy2.life > 0) {
-            enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy2Name = enemy2.char_name;
+            enemy2Messages = enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             enemy2HUD.UpdateUI(enemy2);
         }
 
         if (enemy3 != null && enemy3.life > 0) {
-            enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy3Name = enemy3.char_name;
+            enemy3Messages = enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             enemy3HUD.UpdateUI(enemy3);
         }
+
+        ActionCanvasManager.GetInstance().TriggerAllEnemiesAction(skillUser.char_name, enemy1Name, enemy2Name, enemy3Name, enemy1Messages, enemy2Messages, enemy3Messages);
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all enemies";
 
