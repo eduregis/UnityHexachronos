@@ -117,6 +117,15 @@ public class CharacterStats : ScriptableObject
         }
     }
 
+    public bool IsInNegativeStatus(BuffType statusBuffType) {
+        foreach (Buff buff in buffs) {
+            if (buff.buffType == statusBuffType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void DamageWithBuffsAndStatsApplied(CharacterStats attacker, int receivedDamage) {
 
         // Applying buff modifications. B.D.A. is Buff and Debuffs Applied

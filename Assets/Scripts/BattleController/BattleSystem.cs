@@ -99,6 +99,7 @@ public class BattleSystem : MonoBehaviour {
     MenuTargetType menuTargetType;
     List<CharacterSkill> skills;
     int selectedSkillIndex = 0;
+    Color backCharColor = new(0.4f, 0.4f, 0.4f, 1f);
 
     Vector3 hero1Position;
     Vector3 hero2Position;
@@ -130,7 +131,6 @@ public class BattleSystem : MonoBehaviour {
     const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
     const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
     const float ROTATE_TO_NEXTTURN_TIME = 1f;
-    const float ROTATE_DURATION_TIME = 0.8f;
 
     #endregion
 
@@ -146,6 +146,11 @@ public class BattleSystem : MonoBehaviour {
         hero2Renderer = hero2Sprite.GetComponent<SpriteRenderer>();
         hero3Renderer = hero3Sprite.GetComponent<SpriteRenderer>();
 
+        if (hero3 != null) {
+            hero2Renderer.color = backCharColor;
+            hero3Renderer.color = backCharColor;
+        }
+
         enemy1Position = GetPosition(enemy1Sprite);
         enemy1Position = GetPosition(enemy1Sprite);
         enemy1Position = GetPosition(enemy1Sprite);
@@ -155,7 +160,7 @@ public class BattleSystem : MonoBehaviour {
 
     void Update() {
         if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
-            if (rotatingHeroes == true) RotateHeroes();
+            if (rotatingHeroes == true && hero3 != null) RotateHeroes();
             if (isInSkillsMenu == true) ShowDescriptionSkill();
         }
     }
@@ -531,22 +536,24 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator EnemyTurn() {
         if (IsEnemyReadyToAct()) {
-            auxText.text = state + ": attacks!";
+            auxText.text = state + " turn!";
 
             yield return new WaitForSeconds(ENEMYTURN_TO_ENEMYATTACK_TIME);
 
-            CharacterStats heroTarget = ChoosingATargetHero();
+            if (!IsInNegativeStatus(BuffType.Stunned)) {
+                CharacterStats heroTarget = ChoosingATargetHero();
 
-            switch (state) {
-                case BattleState.ENEMY1TURN:
-                    heroTarget.ReceivingAttackDamage(enemy1);
-                    break;
-                case BattleState.ENEMY2TURN:
-                    heroTarget.ReceivingAttackDamage(enemy2);
-                    break;
-                case BattleState.ENEMY3TURN:
-                    heroTarget.ReceivingAttackDamage(enemy3);
-                    break;
+                switch (state) {
+                    case BattleState.ENEMY1TURN:
+                        heroTarget.ReceivingAttackDamage(enemy1);
+                        break;
+                    case BattleState.ENEMY2TURN:
+                        heroTarget.ReceivingAttackDamage(enemy2);
+                        break;
+                    case BattleState.ENEMY3TURN:
+                        heroTarget.ReceivingAttackDamage(enemy3);
+                        break;
+                }
             }
 
             UpdateUI();
@@ -602,11 +609,11 @@ public class BattleSystem : MonoBehaviour {
                 break;
             case 2:
                 renderer.sortingOrder = -9;
-                renderer.color = Color.Lerp(renderer.color, new Color(0.4f, 0.4f, 0.4f, 1f), 4f * Time.deltaTime);
+                renderer.color = Color.Lerp(renderer.color, backCharColor, 4f * Time.deltaTime);
                 break;
             case 3:
                 renderer.sortingOrder = -10;
-                renderer.color = Color.Lerp(renderer.color, new Color(0.4f, 0.4f, 0.4f, 1f), 4f * Time.deltaTime);
+                renderer.color = Color.Lerp(renderer.color, backCharColor, 4f * Time.deltaTime);
                 break;
         }
 
@@ -637,9 +644,15 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator NextTurn() {
 
-        rotatingHeroes = true;
-        yield return new WaitForSeconds(ROTATE_TO_NEXTTURN_TIME);
-        rotatingHeroes = false;
+        if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
+            if (hero3 != null) {
+                rotatingHeroes = true;
+                yield return new WaitForSeconds(ROTATE_TO_NEXTTURN_TIME);
+                RepositioningHeroTargets();
+                rotatingHeroes = false;
+            }
+        }
+        
 
         switch (state) {
             case BattleState.HERO1TURN:
@@ -713,6 +726,24 @@ public class BattleSystem : MonoBehaviour {
 
     private Vector3 GetPosition(GameObject sprite) {
         return new Vector3(sprite.transform.position.x, sprite.transform.position.y, sprite.transform.position.z);
+    }
+
+    bool IsInNegativeStatus(BuffType statusBuffType) {
+        switch (state) {
+            case BattleState.HERO1TURN:
+                return (hero1 != null && hero1.IsInNegativeStatus(statusBuffType));
+            case BattleState.HERO2TURN:
+                return (hero2 != null && hero2.IsInNegativeStatus(statusBuffType));
+            case BattleState.HERO3TURN:
+                return (hero3 != null && hero3.IsInNegativeStatus(statusBuffType));
+            case BattleState.ENEMY1TURN:
+                return (enemy1 != null && enemy1.IsInNegativeStatus(statusBuffType));
+            case BattleState.ENEMY2TURN:
+                return (enemy2 != null && enemy2.IsInNegativeStatus(statusBuffType));
+            case BattleState.ENEMY3TURN:
+                return (enemy3 != null && enemy3.IsInNegativeStatus(statusBuffType));
+        }
+        return false;
     }
 
     bool IsHeroReadyToAct() {
@@ -871,6 +902,16 @@ public class BattleSystem : MonoBehaviour {
                     break;
             }
         }
+    }
+
+    private void RepositioningHeroTargets() {
+        Vector3 pos1 = GetPosition(hero1Arrow.gameObject);
+        Vector3 pos2 = GetPosition(hero2Arrow.gameObject);
+        Vector3 pos3 = GetPosition(hero3Arrow.gameObject);
+
+        hero1Arrow.transform.position = pos3;
+        hero2Arrow.transform.position = pos1;
+        hero3Arrow.transform.position = pos2;
     }
 
     #endregion
