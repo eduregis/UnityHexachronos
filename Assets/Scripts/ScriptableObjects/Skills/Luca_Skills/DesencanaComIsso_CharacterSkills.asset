@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Causa dano e tem chance de atordoamento.
   skill_execution:
   - attack-0,6-1-100
-  - buff-10-Stunned-Status-2-10
+  - buff-10-Stunned-Status-2-20
   cost: 30
   affectType: 1
   isAffectFaint: 0

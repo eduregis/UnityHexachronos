@@ -538,22 +538,33 @@ public class BattleSystem : MonoBehaviour {
         if (IsEnemyReadyToAct()) {
             auxText.text = state + " turn!";
 
+            CharacterStats enemy = enemy1;
+
+            switch(state) {
+                case BattleState.ENEMY1TURN:
+                    enemy = enemy1;
+                    break;
+                case BattleState.ENEMY2TURN:
+                    enemy = enemy2;
+                    break;
+                case BattleState.ENEMY3TURN:
+                    enemy = enemy3;
+                    break;
+            }
+
+            if (IsInNegativeStatus(BuffType.Bleeding)) {
+                enemy.TakeDamage(10);
+                auxText.text = state + " bleeding!";
+                UpdateUI();
+            }
+            
             yield return new WaitForSeconds(ENEMYTURN_TO_ENEMYATTACK_TIME);
 
             if (!IsInNegativeStatus(BuffType.Stunned)) {
                 CharacterStats heroTarget = ChoosingATargetHero();
-
-                switch (state) {
-                    case BattleState.ENEMY1TURN:
-                        heroTarget.ReceivingAttackDamage(enemy1);
-                        break;
-                    case BattleState.ENEMY2TURN:
-                        heroTarget.ReceivingAttackDamage(enemy2);
-                        break;
-                    case BattleState.ENEMY3TURN:
-                        heroTarget.ReceivingAttackDamage(enemy3);
-                        break;
-                }
+                heroTarget.ReceivingAttackDamage(enemy);
+            } else {
+                auxText.text = state + "  stunned!";
             }
 
             UpdateUI();
@@ -652,7 +663,6 @@ public class BattleSystem : MonoBehaviour {
                 rotatingHeroes = false;
             }
         }
-        
 
         switch (state) {
             case BattleState.HERO1TURN:
