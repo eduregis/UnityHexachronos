@@ -895,6 +895,11 @@ public class BattleSystem : MonoBehaviour {
     }
 
     private CharacterStats ChoosingATargetHero() {
+
+        if (hero1.IsInNegativeStatus(BuffType.Taunt) == true) return hero1;
+        if (hero2.IsInNegativeStatus(BuffType.Taunt) == true) return hero2;
+        if (hero3.IsInNegativeStatus(BuffType.Taunt) == true) return hero3;
+
         while (true) {
             int targetRNG = UnityEngine.Random.Range(1, 4);
             switch (targetRNG) {
