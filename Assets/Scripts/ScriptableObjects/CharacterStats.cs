@@ -49,14 +49,13 @@ public class CharacterStats : ScriptableObject
         buffs = new List<Buff>();
     }
 
-    public bool TakeDamage(int dmg) {
+    public string TakeDamage(int dmg) {
         if (dmg >= life) {
             life = 0;
-            return true;
         } else {
             life -= dmg;
-            return false;
         }
+        return dmg.ToString();
     }
 
     public bool TakeHeal(int heal) {
@@ -89,9 +88,9 @@ public class CharacterStats : ScriptableObject
         }
     }
 
-    public void ReceivingAttackDamage(CharacterStats attacker) {
+    public string ReceivingAttackDamage(CharacterStats attacker) {
         Debug.Log("Character: " + attacker.char_name + ", damage: " + attacker.damage);
-        DamageWithBuffsAndStatsApplied(attacker, attacker.damage);
+        return DamageWithBuffsAndStatsApplied(attacker, attacker.damage);
     }
 
     public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
@@ -126,7 +125,7 @@ public class CharacterStats : ScriptableObject
         return false;
     }
 
-    private void DamageWithBuffsAndStatsApplied(CharacterStats attacker, int receivedDamage) {
+    private string DamageWithBuffsAndStatsApplied(CharacterStats attacker, int receivedDamage) {
 
         // Applying buff modifications. B.D.A. is Buff and Debuffs Applied
         int BDA_attackerHitRate = (int)GenericBuffApplier(attacker, (float)attacker.hitRate, BuffType.HitRateUp, BuffType.HitRateDown);
@@ -152,9 +151,9 @@ public class CharacterStats : ScriptableObject
                 finalDamage = (int)(BDA_attackerDamage / finalDefense);
                 Debug.Log("Character: " + attacker.char_name + ", damage: " + finalDamage);
             }
-            TakeDamage(finalDamage);
+            return TakeDamage(finalDamage);
         } else {
-            Debug.Log("ERRRROOOOUUU!");
+            return "ERRRROOOOUUU!";
         }
     }
 
