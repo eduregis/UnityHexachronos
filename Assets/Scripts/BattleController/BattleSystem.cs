@@ -353,6 +353,9 @@ public class BattleSystem : MonoBehaviour {
 
         switch (menuTargetType) {
             case MenuTargetType.ATTACK:
+
+                ActionCanvasManager.GetInstance().TriggerAction();
+
                 switch (TargetId) {
                     case 1:
                         enemy1.ReceivingAttackDamage(skillUser);
@@ -369,9 +372,12 @@ public class BattleSystem : MonoBehaviour {
                     default:
                         break;
                 }
-                auxText.text = "The attack is successful!";
+                auxText.text = "Attacking!";
                 break;
             case MenuTargetType.SKILL:
+
+                ActionCanvasManager.GetInstance().TriggerAction();
+
                 switch (TargetId) {
                     case 1:
                         enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
@@ -396,6 +402,8 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(ENEMYSINGLETARGET_TO_NEXTTURN_TIME);
 
+        ActionCanvasManager.GetInstance().DismissAction();
+
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
             EndBattle();
@@ -408,6 +416,8 @@ public class BattleSystem : MonoBehaviour {
     {
         selectHeroMenuPanel.SetActive(false);
         CharacterStats skillUser = hero1;
+
+        ActionCanvasManager.GetInstance().TriggerAction();
 
         switch (state)
         {
@@ -444,6 +454,8 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(HEROSINGLETARGET_TO_NEXTTURN_TIME);
 
+        ActionCanvasManager.GetInstance().DismissAction();
+
         if (IsAllHeroesDead()) {
             state = BattleState.LOST;
             EndBattle();
@@ -454,6 +466,8 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator PlayerActionAllEnemies() {
         CharacterStats skillUser = hero1;
+
+        ActionCanvasManager.GetInstance().TriggerAction();
 
         switch (state) {
             case BattleState.HERO1TURN:
@@ -486,6 +500,8 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(ALLENEMIES_TO_NEXTTURN_TIME);
 
+        ActionCanvasManager.GetInstance().DismissAction();
+
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
             EndBattle();
@@ -497,6 +513,8 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator PlayerActionAllHeroes() {
         CharacterStats skillUser = hero1;
+
+        ActionCanvasManager.GetInstance().TriggerAction();
 
         switch (state) {
             case BattleState.HERO1TURN:
@@ -528,10 +546,15 @@ public class BattleSystem : MonoBehaviour {
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all heroes";
 
         yield return new WaitForSeconds(ALLHEROES_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
+
         StartCoroutine(NextTurn());
     }
 
     IEnumerator PlayerActionSelf() {
+
+        ActionCanvasManager.GetInstance().TriggerAction();
 
         switch (state) {
             case BattleState.HERO1TURN:
@@ -557,6 +580,9 @@ public class BattleSystem : MonoBehaviour {
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " inself";
 
         yield return new WaitForSeconds(SELFTARGET_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
+
         StartCoroutine(NextTurn());
     }
 
