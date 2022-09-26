@@ -241,9 +241,24 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator PlayerTurn() {
         if (IsHeroReadyToAct()) {
-            if (state == BattleState.HERO1TURN) auxText.text = hero1.char_name + ": Your turn!";
-            if (state == BattleState.HERO2TURN) auxText.text = hero2.char_name + ": Your turn!";
-            if (state == BattleState.HERO3TURN) auxText.text = hero3.char_name + ": Your turn!";
+
+            CharacterStats hero = hero1;
+
+            if (state == BattleState.HERO1TURN) 
+                hero = hero1;
+                auxText.text = hero1.char_name + ": Your turn!";
+            if (state == BattleState.HERO2TURN)
+                hero = hero1;
+                auxText.text = hero2.char_name + ": Your turn!";
+            if (state == BattleState.HERO3TURN)
+                hero = hero3;
+                auxText.text = hero3.char_name + ": Your turn!";
+
+            if (IsInNegativeStatus(BuffType.Bleeding)) {
+                hero.TakeDamage(10);
+                auxText.text = state + " bleeding!";
+                UpdateUI();
+            }
 
             mainMenuPanel.SetActive(true);
 
