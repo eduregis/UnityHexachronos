@@ -378,8 +378,6 @@ public class BattleSystem : MonoBehaviour {
                 break;
             case MenuTargetType.SKILL:
 
-                ActionCanvasManager.GetInstance().TriggerAction();
-
                 List<string> skillMessages;
 
                 switch (TargetId) {
@@ -388,21 +386,21 @@ public class BattleSystem : MonoBehaviour {
                         foreach (string msg in skillMessages) messages.Add(msg);
                         ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, messages);
                         enemy1HUD.UpdateUI(enemy1);
-                        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy1"; 
+                        auxText.text = skills[selectedSkillIndex - 1].skill_name; 
                         break;
                     case 2:
                         skillMessages = enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
                         foreach (string msg in skillMessages) messages.Add(msg);
                         ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, messages);
                         enemy2HUD.UpdateUI(enemy2);
-                        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy2";
+                        auxText.text = skills[selectedSkillIndex - 1].skill_name;
                         break;
                     case 3:
                         skillMessages = enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
                         foreach (string msg in skillMessages) messages.Add(msg);
                         ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, messages);
                         enemy3HUD.UpdateUI(enemy3);
-                        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy3";
+                        auxText.text = skills[selectedSkillIndex - 1].skill_name;
                         break;
                     default:
                         break;
@@ -442,21 +440,26 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        List<string> messages;
+
         switch (TargetId) {
             case 1:
-                hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                messages = hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                ActionCanvasManager.GetInstance().TriggerHeroSingleTargetAction(skillUser.char_name, hero1.char_name, messages);
                 hero1HUD.UpdateUI(hero1);
-                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero1";
+                auxText.text = skills[selectedSkillIndex - 1].skill_name;
                 break;
             case 2:
-                hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                messages = hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                ActionCanvasManager.GetInstance().TriggerHeroSingleTargetAction(skillUser.char_name, hero2.char_name, messages);
                 hero2HUD.UpdateUI(hero2);
-                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero2";
+                auxText.text = skills[selectedSkillIndex - 1].skill_name;
                 break;
             case 3:
-                hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                messages = hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                ActionCanvasManager.GetInstance().TriggerHeroSingleTargetAction(skillUser.char_name, hero3.char_name, messages);
                 hero3HUD.UpdateUI(hero3);
-                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero3";
+                auxText.text = skills[selectedSkillIndex - 1].skill_name;
                 break;
             default:
                 break;
@@ -476,8 +479,6 @@ public class BattleSystem : MonoBehaviour {
 
     IEnumerator PlayerActionAllEnemies() {
         CharacterStats skillUser = hero1;
-
-        ActionCanvasManager.GetInstance().TriggerAction();
 
         switch (state) {
             case BattleState.HERO1TURN:

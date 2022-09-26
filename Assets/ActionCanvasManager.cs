@@ -47,6 +47,7 @@ public class ActionCanvasManager : MonoBehaviour
     }
 
     public void TriggerEnemySingleTargetAction(string hero_name, string enemy_name, List<string> messages) {
+
         actionCanvas.SetActive(true);
 
         ShowHero(hero_name, hero2Position.transform.position);
@@ -59,6 +60,8 @@ public class ActionCanvasManager : MonoBehaviour
     public void TriggerAllEnemiesAction(string hero_name, string enemy1_name, string enemy2_name, string enemy3_name, 
         List<string> enemy1messages, List<string> enemy2messages, List<string> enemy3messages) {
 
+        actionCanvas.SetActive(true);
+
         ShowHero(hero_name, hero2Position.transform.position);
 
         if (enemy1_name != "") ShowEnemy(enemy1_name, enemy1Position.transform.position);
@@ -68,6 +71,17 @@ public class ActionCanvasManager : MonoBehaviour
         if (enemy1_name != "") ShowMultipleMessages(enemy1messages, enemy1Position.transform.position);
         if (enemy2_name != "") ShowMultipleMessages(enemy2messages, enemy2Position.transform.position);
         if (enemy3_name != "") ShowMultipleMessages(enemy3messages, enemy3Position.transform.position);
+    }
+
+    public void TriggerHeroSingleTargetAction(string hero1_name, string hero2_name, List<string> messages) {
+
+        actionCanvas.SetActive(true);
+
+        ShowHero(hero1_name, hero1Position.transform.position);
+
+        ShowHero(hero2_name, hero3Position.transform.position);
+
+        ShowMultipleMessages(messages, hero3Position.transform.position);
     }
 
     private void ShowHero(string hero_name, Vector3 position) {
