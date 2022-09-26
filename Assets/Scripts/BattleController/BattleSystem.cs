@@ -236,6 +236,8 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(START_BATTLE_TIME);
 
+        hero1HUD.isHighlighted = true;
+
         StartCoroutine(PlayerTurn());
     }
 
@@ -690,55 +692,67 @@ public class BattleSystem : MonoBehaviour {
 
         switch (state) {
             case BattleState.HERO1TURN:
+                hero1HUD.isHighlighted = false;
                 state = BattleState.HERO2TURN;
                 if (hero2 != null) {
                     hero2.isBlocking = false;
                     hero2.UpdateBuffs();
+                    hero2HUD.isHighlighted = true;
                     hero2HUD.UpdateUI(hero2);
                 }
                 StartCoroutine(PlayerTurn());
                 break;
             case BattleState.HERO2TURN:
+                hero2HUD.isHighlighted = false;
                 state = BattleState.HERO3TURN;
                 if (hero3 != null) {
                     hero3.isBlocking = false;
                     hero3.UpdateBuffs();
+                    hero3HUD.isHighlighted = true;
                     hero3HUD.UpdateUI(hero3);
                 }
                 StartCoroutine(PlayerTurn());
                 break;
             case BattleState.HERO3TURN:
+                hero3HUD.isHighlighted = false;
                 state = BattleState.ENEMY1TURN;
                 if (enemy1 != null) {
                     enemy1.isBlocking = false;
                     enemy1.UpdateBuffs();
+                    enemy1HUD.isHighlighted = true;
                     enemy1HUD.UpdateUI(enemy1);
                 }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY1TURN:
+                enemy1HUD.isHighlighted = false;
                 state = BattleState.ENEMY2TURN;
                 if (enemy2 != null) {
                     enemy2.isBlocking = false;
                     enemy2.UpdateBuffs();
+                    enemy2HUD.isHighlighted = true;
                     enemy2HUD.UpdateUI(enemy2);
                 }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY2TURN:
+                enemy2HUD.isHighlighted = false;
                 state = BattleState.ENEMY3TURN;
                 if (enemy3 != null) {
                     enemy3.isBlocking = false;
                     enemy3.UpdateBuffs();
+                    enemy3HUD.isHighlighted = true;
                     enemy3HUD.UpdateUI(enemy3);
                 }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY3TURN:
+                enemy3HUD.isHighlighted = false;
                 state = BattleState.HERO1TURN;
                 if (hero1 != null) {
                     hero1.isBlocking = false;
                     hero1.UpdateBuffs();
+                    hero1HUD.isHighlighted = true;
                     hero1HUD.UpdateUI(hero1);
                 }
                 StartCoroutine(PlayerTurn());
