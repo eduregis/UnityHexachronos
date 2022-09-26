@@ -244,27 +244,36 @@ public class BattleSystem : MonoBehaviour {
 
             CharacterStats hero = hero1;
 
-            if (state == BattleState.HERO1TURN) 
-                hero = hero1;
-                auxText.text = hero1.char_name + ": Your turn!";
-            if (state == BattleState.HERO2TURN)
-                hero = hero1;
-                auxText.text = hero2.char_name + ": Your turn!";
-            if (state == BattleState.HERO3TURN)
-                hero = hero3;
-                auxText.text = hero3.char_name + ": Your turn!";
-
-            if (IsInNegativeStatus(BuffType.Bleeding)) {
-                hero.TakeDamage(10);
-                auxText.text = state + " bleeding!";
-                UpdateUI();
+            switch(state) {
+                case BattleState.HERO1TURN:
+                    hero = hero1;
+                    auxText.text = hero1.char_name + ": Your turn!";
+                    break;
+                case BattleState.HERO2TURN:
+                    hero = hero2;
+                    auxText.text = hero2.char_name + ": Your turn!";
+                    break;
+                case BattleState.HERO3TURN:
+                    hero = hero3;
+                    auxText.text = hero3.char_name + ": Your turn!";
+                    break;
             }
 
-            mainMenuPanel.SetActive(true);
+            if (IsInNegativeStatus(BuffType.Stunned)) {
+                auxText.text = state + " stunned!";
+                StartCoroutine(NextTurn());
+            } else {
+                if (IsInNegativeStatus(BuffType.Bleeding)) {
+                    hero.TakeDamage(10);
+                    auxText.text = state + " bleeding!";
+                    UpdateUI();
+                }
+                mainMenuPanel.SetActive(true);
 
-            EventSystem.current.SetSelectedGameObject(null);
-            yield return new WaitForEndOfFrame();
-            EventSystem.current.SetSelectedGameObject(attackButton.gameObject);
+                EventSystem.current.SetSelectedGameObject(null);
+                yield return new WaitForEndOfFrame();
+                EventSystem.current.SetSelectedGameObject(attackButton.gameObject);
+            }
         } else {
             StartCoroutine(NextTurn());
         }
