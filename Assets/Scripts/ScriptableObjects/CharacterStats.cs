@@ -93,16 +93,22 @@ public class CharacterStats : ScriptableObject
         return DamageWithBuffsAndStatsApplied(attacker, attacker.damage);
     }
 
-    public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
+    public List<string> ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
+
+        List<string> messages = new();
 
         for (int i = 0; i < quantity; i++) {
             int random = UnityEngine.Random.Range(0, 99);
             if (random < rate) {
                 int finalDamage = (int)(attacker.damage * damageMultiplier);
                 Debug.Log("Damage: " + finalDamage + ", rate: " + random);
-                DamageWithBuffsAndStatsApplied(attacker, finalDamage);
+                messages.Add(DamageWithBuffsAndStatsApplied(attacker, finalDamage));
+            } else {
+                messages.Add("MISS!");
             }
         }
+
+        return messages;
     }
 
     public void ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
@@ -146,14 +152,16 @@ public class CharacterStats : ScriptableObject
                 int attackCritDamage = BDA_attackerDamage + (int)(BDA_attackerDamage * BDA_attackerCritDamage * 0.01);
                 finalDamage = (int)(attackCritDamage / BDA_defense);
                 Debug.Log("Character: " + attacker.char_name + "critRate: " + BDA_attackerCritRate + "critDamage: " + BDA_attackerCritDamage + ", damage: " + finalDamage);
+                return TakeDamage(finalDamage) + "\n Crítico!";
             } else {
                 float finalDefense = (isBlocking == false) ? BDA_defense : (float)(BDA_defense * 1.5);
                 finalDamage = (int)(BDA_attackerDamage / finalDefense);
                 Debug.Log("Character: " + attacker.char_name + ", damage: " + finalDamage);
+                return TakeDamage(finalDamage);
             }
-            return TakeDamage(finalDamage);
+            
         } else {
-            return "ERRRROOOOUUU!";
+            return "MISS!";
         }
     }
 
@@ -242,7 +250,10 @@ public class CharacterStats : ScriptableObject
         };
     }
 
-    public void ApplySkill(CharacterStats skillUser, CharacterSkill skill) {
+    public List<string> ApplySkill(CharacterStats skillUser, CharacterSkill skill) {
+
+        List<string> messages = new();
+
         foreach (string effect in skill.skill_execution) {
             char[] separators = { '-' };
             String[] strlist = effect.Split(separators, 6, StringSplitOptions.None);
@@ -256,16 +267,18 @@ public class CharacterStats : ScriptableObject
                         int.Parse(strlist[4]),
                         int.Parse(strlist[5]));
                     if (buff != null) {
+                        messages.Add(buff.buffType.ToString());
                         buffs.Add(buff);
                     }
                     break;
                 case "attack":
                     // ATTACK SYNTAX: Attack identifier (attack) - Multiplier - Quantity of attacks - Chance of success
-                    ReceivingSkillDamage(
+                    List<string> attackMessages = ReceivingSkillDamage(
                         skillUser,
                         float.Parse(strlist[1]),
                         int.Parse(strlist[2]),
                         int.Parse(strlist[3]));
+                    foreach (string attackMessage in attackMessages) messages.Add(attackMessage);
                     break;
                 case "heal":
                     // HEAL SYNTAX: Heal identifier (heal) - Multiplier - Chance of success
@@ -280,6 +293,7 @@ public class CharacterStats : ScriptableObject
                     break;
             }
         }
+        return messages;
     }
 }
 

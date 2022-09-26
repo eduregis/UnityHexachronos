@@ -46,7 +46,7 @@ public class ActionCanvasManager : MonoBehaviour
         actionCanvas.SetActive(true);
     }
 
-    public void TriggerEnemySingleTargetAction(string hero_name, string enemy_name, string damage) {
+    public void TriggerEnemySingleTargetAction(string hero_name, string enemy_name, List<string> messages) {
         actionCanvas.SetActive(true);
 
         GameObject hero1Sprite = Instantiate(charPrefab, hero2Position.transform.position, Quaternion.identity);
@@ -57,18 +57,25 @@ public class ActionCanvasManager : MonoBehaviour
         enemy1Sprite.GetComponent<SpriteRenderer>().flipX = true;
         enemy1Sprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy_name);
         instances.Add(enemy1Sprite);
+
+        float distance = 0.5f;
         
-        GameObject damageEnemySprite = Instantiate(
-            textPrefab, 
+        foreach (string msg in messages) {
+            GameObject damageEnemySprite = Instantiate(
+            textPrefab,
             new Vector3(
                 (float)enemy2Position.transform.position.x,
-                (float)enemy2Position.transform.position.y + 4f,
-                (float)enemy2Position.transform.position.z), 
+                (float)enemy2Position.transform.position.y + 3.5f + distance,
+                (float)enemy2Position.transform.position.z),
             Quaternion.identity);
-        damageEnemySprite.GetComponent<TextMeshProUGUI>().text = damage;
-        damageEnemySprite.GetComponent<Transform>().localScale = new(0.01f, 0.01f, 1f);
-        damageEnemySprite.transform.SetParent(canvas.transform);
-        instances.Add(damageEnemySprite);
+            damageEnemySprite.GetComponent<TextMeshProUGUI>().text = msg;
+            damageEnemySprite.GetComponent<Transform>().localScale = new(0.01f, 0.01f, 1f);
+            damageEnemySprite.transform.SetParent(canvas.transform);
+            instances.Add(damageEnemySprite);
+
+            distance += 0.5f;
+        }
+        
     }
 
     public void DismissAction() {

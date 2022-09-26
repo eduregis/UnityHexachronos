@@ -351,23 +351,24 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        List<string> messages = new();
+
         switch (menuTargetType) {
             case MenuTargetType.ATTACK:
-                string damage = "";
                 switch (TargetId) {
                     case 1:
-                        damage = enemy1.ReceivingAttackDamage(skillUser).ToString();
-                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, damage);
+                        messages.Add(enemy1.ReceivingAttackDamage(skillUser).ToString());
+                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, messages);
                         enemy1HUD.UpdateUI(enemy1);
                         break;
                     case 2:
-                        damage = enemy2.ReceivingAttackDamage(skillUser).ToString();
-                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, damage);
+                        messages.Add(enemy2.ReceivingAttackDamage(skillUser).ToString());
+                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, messages);
                         enemy2HUD.UpdateUI(enemy2);
                         break;
                     case 3:
-                        damage = enemy3.ReceivingAttackDamage(skillUser).ToString();
-                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, damage);
+                        messages.Add(enemy3.ReceivingAttackDamage(skillUser).ToString());
+                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, messages);
                         enemy3HUD.UpdateUI(enemy3);
                         break;
                     default:
@@ -379,22 +380,27 @@ public class BattleSystem : MonoBehaviour {
 
                 ActionCanvasManager.GetInstance().TriggerAction();
 
+                List<string> skillMessages;
+
                 switch (TargetId) {
                     case 1:
-                        enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
-                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, "0");
+                        skillMessages = enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        foreach (string msg in skillMessages) messages.Add(msg);
+                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, messages);
                         enemy1HUD.UpdateUI(enemy1);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy1"; 
                         break;
                     case 2:
-                        enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
-                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, "0");
+                        skillMessages = enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        foreach (string msg in skillMessages) messages.Add(msg);
+                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, messages);
                         enemy2HUD.UpdateUI(enemy2);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy2";
                         break;
                     case 3:
-                        enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
-                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, "0");
+                        skillMessages = enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        foreach (string msg in skillMessages) messages.Add(msg);
+                        ActionCanvasManager.GetInstance().TriggerEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, messages);
                         enemy3HUD.UpdateUI(enemy3);
                         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy3";
                         break;
