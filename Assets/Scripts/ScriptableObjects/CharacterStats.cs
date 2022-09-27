@@ -58,33 +58,37 @@ public class CharacterStats : ScriptableObject
         return dmg.ToString();
     }
 
-    public bool TakeHeal(int heal) {
+    public string TakeHeal(int heal) {
+        
         if (heal + life >= maxLife) {
+            int trueHeal = (heal + life) - maxLife; 
             life = maxLife;
-            return true;
+            return "HEAL " + trueHeal + "!";
         } else {
             life += heal;
-            return false;
+            return "HEAL " + heal + "!";
         }
     }
 
-    public bool LoseEnergy(int cost) {
+    public string LoseEnergy(int cost) {
         if (cost >= energy) {
+            int remainingEnergy = energy;
             energy = 0;
-            return true;
+            return "LOSE " + remainingEnergy + " MP!";
         } else {
             energy -= cost;
-            return false;
+            return "LOSE " + cost + " MP!";
         }
     }
 
-    public bool GainEnergy(int recoveredEnergy) {
+    public string GainEnergy(int recoveredEnergy) {
         if (recoveredEnergy + energy >= maxEnergy) {
+            int trueRecover = (recoveredEnergy + energy) - maxEnergy;
             energy = maxEnergy;
-            return true;
+            return "RECOVER " + trueRecover + "!";
         } else {
             energy += recoveredEnergy;
-            return false;
+            return "RECOVER " + recoveredEnergy + "!";
         }
     }
 
@@ -111,14 +115,15 @@ public class CharacterStats : ScriptableObject
         return messages;
     }
 
-    public void ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
+    public string ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
 
         int random = UnityEngine.Random.Range(0, 99);
-        if (random < rate)
-        {
+        if (random < rate) {
             int heal = (int)(healer.intelligence * healMultiplier);
             Debug.Log("Heal: " + heal + ", rate: " + random);
-            TakeHeal(heal);
+            return TakeHeal(heal);
+        } else {
+            return "FAILED!";
         }
     }
 
@@ -152,7 +157,7 @@ public class CharacterStats : ScriptableObject
                 int attackCritDamage = BDA_attackerDamage + (int)(BDA_attackerDamage * BDA_attackerCritDamage * 0.01);
                 finalDamage = (int)(attackCritDamage / BDA_defense);
                 Debug.Log("Character: " + attacker.char_name + "critRate: " + BDA_attackerCritRate + "critDamage: " + BDA_attackerCritDamage + ", damage: " + finalDamage);
-                return TakeDamage(finalDamage) + "\n Crítico!";
+                return TakeDamage(finalDamage) + "\n Critical!";
             } else {
                 float finalDefense = (isBlocking == false) ? BDA_defense : (float)(BDA_defense * 1.5);
                 finalDamage = (int)(BDA_attackerDamage / finalDefense);
@@ -282,14 +287,16 @@ public class CharacterStats : ScriptableObject
                     break;
                 case "heal":
                     // HEAL SYNTAX: Heal identifier (heal) - Multiplier - Chance of success
-                    ReceivingHeal(
+                    messages.Add(ReceivingHeal(
                         skillUser,
                         float.Parse(strlist[1]),
-                        int.Parse(strlist[2]));
+                        int.Parse(strlist[2])));
                     break;
                 case "energy":
                     // HEAL SYNTAX: Energy identifier (energy) - Value
-                    GainEnergy(int.Parse(strlist[1]));
+                    int energyValue = int.Parse(strlist[1]);
+                    if (energyValue > 0) messages.Add(GainEnergy(energyValue));
+                    else messages.Add(LoseEnergy(energyValue));
                     break;
             }
         }

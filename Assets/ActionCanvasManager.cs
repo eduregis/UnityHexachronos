@@ -46,18 +46,18 @@ public class ActionCanvasManager : MonoBehaviour
         actionCanvas.SetActive(true);
     }
 
-    public void TriggerEnemySingleTargetAction(string hero_name, string enemy_name, List<string> messages) {
+    #region Player Action Functions
+    public void TriggerPlayerToEnemySingleTargetAction(string hero_name, string enemy_name, List<string> messages) {
 
         actionCanvas.SetActive(true);
 
         ShowHero(hero_name, hero2Position.transform.position);
-
         ShowEnemy(enemy_name, enemy2Position.transform.position);
 
         ShowMultipleMessages(messages, enemy2Position.transform.position);
     }
 
-    public void TriggerAllEnemiesAction(string hero_name, string enemy1_name, string enemy2_name, string enemy3_name, 
+    public void TriggerPlayerToAllEnemiesAction(string hero_name, string enemy1_name, string enemy2_name, string enemy3_name, 
         List<string> enemy1messages, List<string> enemy2messages, List<string> enemy3messages) {
 
         actionCanvas.SetActive(true);
@@ -73,16 +73,51 @@ public class ActionCanvasManager : MonoBehaviour
         if (enemy3_name != "") ShowMultipleMessages(enemy3messages, enemy3Position.transform.position);
     }
 
-    public void TriggerHeroSingleTargetAction(string hero1_name, string hero2_name, List<string> messages) {
+    public void TriggerPlayerToHeroSingleTargetAction(string hero1_name, string hero2_name, List<string> messages) {
 
         actionCanvas.SetActive(true);
 
         ShowHero(hero1_name, hero1Position.transform.position);
-
         ShowHero(hero2_name, hero3Position.transform.position);
 
         ShowMultipleMessages(messages, hero3Position.transform.position);
     }
+
+    public void TriggerPlayerToAllHeroesAction(string hero1_name, string hero2_name, string hero3_name,
+        List<string> hero1messages, List<string> hero2messages, List<string> hero3messages) {
+
+        actionCanvas.SetActive(true);
+
+        if (hero1_name != "") ShowHero(hero1_name, hero1Position.transform.position);
+        if (hero2_name != "") ShowHero(hero2_name, hero2Position.transform.position);
+        if (hero3_name != "") ShowHero(hero3_name, hero3Position.transform.position);
+
+        if (hero1_name != "") ShowMultipleMessages(hero1messages, hero1Position.transform.position);
+        if (hero2_name != "") ShowMultipleMessages(hero2messages, hero2Position.transform.position);
+        if (hero3_name != "") ShowMultipleMessages(hero3messages, hero3Position.transform.position);
+    }
+
+    public void TriggerPlayerToHeroSelfTargetAction(string hero_name, List<string> messages) {
+
+        actionCanvas.SetActive(true);
+
+        ShowHero(hero_name, hero2Position.transform.position);
+
+        ShowMultipleMessages(messages, hero2Position.transform.position);
+    }
+    #endregion
+
+    #region CPU Action Functions
+    public void TriggerCPUToHeroSingleTargetAction(string enemy_name, string hero_name, List<string> messages) {
+
+        actionCanvas.SetActive(true);
+
+        ShowEnemy(enemy_name, enemy2Position.transform.position);
+        ShowHero(hero_name, hero2Position.transform.position);
+
+        ShowMultipleMessages(messages, hero2Position.transform.position);
+    }
+    #endregion
 
     private void ShowHero(string hero_name, Vector3 position) {
         GameObject heroSprite = Instantiate(charPrefab, position, Quaternion.identity);
