@@ -19,18 +19,30 @@ public class DialogueTrigger : MonoBehaviour
                     DialogueManager.GetInstance().EnterDialogueMode(inkJSON1);
                     handler = 1;
                     break;
-                case 1:
-                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
-                    handler = 2;
-                    break;
                 default:
                     Debug.Log(DialogueManager.GetInstance().choicesIndexes);
+                    LoadBattleScene("Luca", "Borell", "Sam", "BasicSoldier", "BasicSoldier", "");
                     break;
             }
         }
     }
 
-    public void LoadGame(string input) {
+    
+
+    /*case 1:
+        DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
+        handler = 2;
+        break;
+    */
+
+    public void LoadBattleScene(string hero1Name, string hero2Name, string hero3Name, string enemy1Name, string enemy2Name, string enemy3Name) {
+        DialogueBattleDataBridge.hero1_Name = hero1Name;
+        DialogueBattleDataBridge.hero2_Name = hero2Name;
+        DialogueBattleDataBridge.hero3_Name = hero3Name;
+        DialogueBattleDataBridge.enemy1_Name = enemy1Name;
+        DialogueBattleDataBridge.enemy2_Name = enemy2Name;
+        DialogueBattleDataBridge.enemy3_Name = enemy3Name;
         SceneManager.LoadScene("BattleScene");
     }
+
 }

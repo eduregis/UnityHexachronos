@@ -25,13 +25,6 @@ public enum MenuTargetType {
 public class BattleSystem : MonoBehaviour {
 
     #region External variables
-    [Header("Characters Stats")]
-    public CharacterStats hero1;
-    public CharacterStats hero2;
-    public CharacterStats hero3;
-    public CharacterStats enemy1;
-    public CharacterStats enemy2;
-    public CharacterStats enemy3;
 
     [Header("Character Sprites")]
     public GameObject hero1Sprite;
@@ -94,6 +87,13 @@ public class BattleSystem : MonoBehaviour {
 
     #region Control variables
 
+    CharacterStats hero1;
+    CharacterStats hero2;
+    CharacterStats hero3;
+    CharacterStats enemy1;
+    CharacterStats enemy2;
+    CharacterStats enemy3;
+
     bool isInSkillsMenu = false;
     bool rotatingHeroes = false;
     MenuTargetType menuTargetType;
@@ -138,9 +138,31 @@ public class BattleSystem : MonoBehaviour {
     void Start() {
         state = BattleState.START;
 
-        hero3 = CharacterStatsManager.GetInstance().GetCharacter("Borell");
-        enemy1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter("BasicSoldier"));
-        enemy2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter("BasicSoldier"));
+        string hero1Name = DialogueBattleDataBridge.hero1_Name;
+        string hero2Name = DialogueBattleDataBridge.hero2_Name;
+        string hero3Name = DialogueBattleDataBridge.hero3_Name;
+
+        // TO TEST BATTLESCENE DIRECTLY WILL BE REMOVED IN THE FUTURE
+        //string hero1Name = "Luca"; 
+        //string hero2Name = "Sam";
+        //string hero3Name = "Borell";
+
+        if (!string.IsNullOrEmpty(hero1Name)) hero1 = CharacterStatsManager.GetInstance().GetCharacter(hero1Name);
+        if (!string.IsNullOrEmpty(hero2Name)) hero2 = CharacterStatsManager.GetInstance().GetCharacter(hero2Name);
+        if (!string.IsNullOrEmpty(hero3Name)) hero3 = CharacterStatsManager.GetInstance().GetCharacter(hero3Name);
+
+        string enemy1Name = DialogueBattleDataBridge.enemy1_Name;
+        string enemy2Name = DialogueBattleDataBridge.enemy2_Name;
+        string enemy3Name = DialogueBattleDataBridge.enemy3_Name;
+
+        // TO TEST BATTLESCENE DIRECTLY WILL BE REMOVED IN THE FUTURE
+        //string enemy1Name = "BasicSoldier";
+        //string enemy2Name = "BasicSoldier";
+        //string enemy3Name = "";
+
+        if (!string.IsNullOrEmpty(enemy1Name)) enemy1 = CharacterStatsManager.GetInstance().GetCharacter(enemy1Name);
+        if (!string.IsNullOrEmpty(enemy2Name)) enemy2 = CharacterStatsManager.GetInstance().GetCharacter(enemy2Name);
+        if (!string.IsNullOrEmpty(enemy3Name)) enemy3 = CharacterStatsManager.GetInstance().GetCharacter(enemy3Name);
 
         hero1Position = GetPosition(hero1Sprite);
         hero2Position = GetPosition(hero2Sprite);

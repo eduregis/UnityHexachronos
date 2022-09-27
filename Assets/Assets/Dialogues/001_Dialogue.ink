@@ -18,5 +18,5 @@ Aqui é {time}!
 -> END
 
 === aff ===
-Aff...aaaaa
+Aff...
 -> END
