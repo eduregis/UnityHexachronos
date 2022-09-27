@@ -127,7 +127,7 @@ public class BattleSystem : MonoBehaviour {
     const float ALLHEROES_TO_NEXTTURN_TIME = 1f;
     const float SELFTARGET_TO_NEXTTURN_TIME = 1f;
     const float ENEMYTURN_TO_ENEMYATTACK_TIME = 1f;
-    const float ENEMYATTACK_TO_NEXTTURN_TIME = 1f;
+    const float ENEMYATTACK_TO_NEXTTURN_TIME = 1.5f;
     const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
     const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
     const float ROTATE_TO_NEXTTURN_TIME = 1f;
@@ -236,6 +236,8 @@ public class BattleSystem : MonoBehaviour {
 
         yield return new WaitForSeconds(START_BATTLE_TIME);
 
+        hero1HUD.isHighlighted = true;
+
         StartCoroutine(PlayerTurn());
     }
 
@@ -332,6 +334,7 @@ public class BattleSystem : MonoBehaviour {
             skill4Text.text = skills[3].skill_name;
     }
 
+    #region Player Action Functions
     IEnumerator PlayerActionEnemyTarget(int TargetId)
     {
         selectEnemyMenuPanel.SetActive(false);
@@ -349,42 +352,56 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        List<string> messages = new();
+
         switch (menuTargetType) {
             case MenuTargetType.ATTACK:
                 switch (TargetId) {
                     case 1:
-                        enemy1.ReceivingAttackDamage(skillUser);
+                        messages.Add(enemy1.ReceivingAttackDamage(skillUser).ToString());
+                        ActionCanvasManager.GetInstance().TriggerPlayerToEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, messages);
                         enemy1HUD.UpdateUI(enemy1);
                         break;
                     case 2:
-                        enemy2.ReceivingAttackDamage(skillUser);
+                        messages.Add(enemy2.ReceivingAttackDamage(skillUser).ToString());
+                        ActionCanvasManager.GetInstance().TriggerPlayerToEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, messages);
                         enemy2HUD.UpdateUI(enemy2);
                         break;
                     case 3:
-                        enemy3.ReceivingAttackDamage(skillUser);
+                        messages.Add(enemy3.ReceivingAttackDamage(skillUser).ToString());
+                        ActionCanvasManager.GetInstance().TriggerPlayerToEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, messages);
                         enemy3HUD.UpdateUI(enemy3);
                         break;
                     default:
                         break;
                 }
-                auxText.text = "The attack is successful!";
+                auxText.text = "Attacking!";
                 break;
             case MenuTargetType.SKILL:
+
+                List<string> skillMessages;
+
                 switch (TargetId) {
                     case 1:
-                        enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        skillMessages = enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        foreach (string msg in skillMessages) messages.Add(msg);
+                        ActionCanvasManager.GetInstance().TriggerPlayerToEnemySingleTargetAction(skillUser.char_name, enemy1.char_name, messages);
                         enemy1HUD.UpdateUI(enemy1);
-                        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy1"; 
+                        auxText.text = skills[selectedSkillIndex - 1].skill_name; 
                         break;
                     case 2:
-                        enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        skillMessages = enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        foreach (string msg in skillMessages) messages.Add(msg);
+                        ActionCanvasManager.GetInstance().TriggerPlayerToEnemySingleTargetAction(skillUser.char_name, enemy2.char_name, messages);
                         enemy2HUD.UpdateUI(enemy2);
-                        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy2";
+                        auxText.text = skills[selectedSkillIndex - 1].skill_name;
                         break;
                     case 3:
-                        enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        skillMessages = enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                        foreach (string msg in skillMessages) messages.Add(msg);
+                        ActionCanvasManager.GetInstance().TriggerPlayerToEnemySingleTargetAction(skillUser.char_name, enemy3.char_name, messages);
                         enemy3HUD.UpdateUI(enemy3);
-                        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in enemy3";
+                        auxText.text = skills[selectedSkillIndex - 1].skill_name;
                         break;
                     default:
                         break;
@@ -393,6 +410,8 @@ public class BattleSystem : MonoBehaviour {
         }
 
         yield return new WaitForSeconds(ENEMYSINGLETARGET_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
@@ -420,27 +439,37 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        List<string> messages;
+
         switch (TargetId) {
             case 1:
-                hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                messages = hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                if (skillUser == hero1) ActionCanvasManager.GetInstance().TriggerPlayerToHeroSelfTargetAction(skillUser.char_name, messages);
+                else ActionCanvasManager.GetInstance().TriggerPlayerToHeroSingleTargetAction(skillUser.char_name, hero1.char_name, messages);
                 hero1HUD.UpdateUI(hero1);
-                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero1";
+                auxText.text = skills[selectedSkillIndex - 1].skill_name;
                 break;
             case 2:
-                hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                messages = hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                if (skillUser == hero2) ActionCanvasManager.GetInstance().TriggerPlayerToHeroSelfTargetAction(skillUser.char_name, messages);
+                else ActionCanvasManager.GetInstance().TriggerPlayerToHeroSingleTargetAction(skillUser.char_name, hero2.char_name, messages);
                 hero2HUD.UpdateUI(hero2);
-                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero2";
+                auxText.text = skills[selectedSkillIndex - 1].skill_name;
                 break;
             case 3:
-                hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                messages = hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+                if (skillUser == hero3) ActionCanvasManager.GetInstance().TriggerPlayerToHeroSelfTargetAction(skillUser.char_name, messages);
+                else ActionCanvasManager.GetInstance().TriggerPlayerToHeroSingleTargetAction(skillUser.char_name, hero3.char_name, messages);
                 hero3HUD.UpdateUI(hero3);
-                auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in hero3";
+                auxText.text = skills[selectedSkillIndex - 1].skill_name;
                 break;
             default:
                 break;
         }
 
         yield return new WaitForSeconds(HEROSINGLETARGET_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
 
         if (IsAllHeroesDead()) {
             state = BattleState.LOST;
@@ -465,24 +494,42 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        string enemy1Name = "";
+        string enemy2Name = "";
+        string enemy3Name = "";
+
+        List<string> enemy1Messages = new();
+        List<string> enemy2Messages = new();
+        List<string> enemy3Messages = new();
+
         if (enemy1 != null && enemy1.life > 0) {
-            enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy1Name = enemy1.char_name;
+            enemy1Messages = enemy1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             enemy1HUD.UpdateUI(enemy1);
         }
 
         if (enemy2 != null && enemy2.life > 0) {
-            enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy2Name = enemy2.char_name;
+            enemy2Messages = enemy2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             enemy2HUD.UpdateUI(enemy2);
         }
 
         if (enemy3 != null && enemy3.life > 0) {
-            enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            enemy3Name = enemy3.char_name;
+            enemy3Messages = enemy3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             enemy3HUD.UpdateUI(enemy3);
         }
+
+        ActionCanvasManager.GetInstance().TriggerPlayerToAllEnemiesAction(
+            skillUser.char_name, 
+            enemy1Name, enemy2Name, enemy3Name, 
+            enemy1Messages, enemy2Messages, enemy3Messages);
 
         auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all enemies";
 
         yield return new WaitForSeconds(ALLENEMIES_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
@@ -508,24 +555,40 @@ public class BattleSystem : MonoBehaviour {
                 break;
         }
 
+        string hero1Name = "";
+        string hero2Name = "";
+        string hero3Name = "";
+
+        List<string> hero1Messages = new();
+        List<string> hero2Messages = new();
+        List<string> hero3Messages = new();
+
         if (hero1 != null && hero1.life > 0) {
-            hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            hero1Name = hero1.char_name;
+            hero1Messages = hero1.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             hero1HUD.UpdateUI(hero1);
         }
 
         if (hero2 != null && hero2.life > 0) {
-            hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            hero2Name = hero2.char_name;
+            hero2Messages = hero2.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             hero2HUD.UpdateUI(hero2);
         }
 
         if (hero3 != null && hero3.life > 0) {
-            hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
+            hero3Name = hero3.char_name;
+            hero3Messages = hero3.ApplySkill(skillUser, skills[selectedSkillIndex - 1]);
             hero3HUD.UpdateUI(hero3);
         }
 
-        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " in all heroes";
+        ActionCanvasManager.GetInstance().TriggerPlayerToAllHeroesAction(hero1Name, hero2Name, hero3Name, hero1Messages, hero2Messages, hero3Messages);
+
+        auxText.text = skills[selectedSkillIndex - 1].skill_name;
 
         yield return new WaitForSeconds(ALLHEROES_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
+
         StartCoroutine(NextTurn());
     }
 
@@ -534,29 +597,37 @@ public class BattleSystem : MonoBehaviour {
         switch (state) {
             case BattleState.HERO1TURN:
                 if (hero1 != null && hero1.life > 0) {
-                    hero1.ApplySkill(hero1, skills[selectedSkillIndex - 1]);
+                    List<string> messages = hero1.ApplySkill(hero1, skills[selectedSkillIndex - 1]);
+                    ActionCanvasManager.GetInstance().TriggerPlayerToHeroSelfTargetAction(hero1.char_name, messages);
                     hero1HUD.UpdateUI(hero1);
                 }
                 break;
             case BattleState.HERO2TURN:
                 if (hero2 != null && hero2.life > 0) {
-                    hero2.ApplySkill(hero2, skills[selectedSkillIndex - 1]);
+                    List<string> messages = hero2.ApplySkill(hero2, skills[selectedSkillIndex - 1]);
+                    ActionCanvasManager.GetInstance().TriggerPlayerToHeroSelfTargetAction(hero2.char_name, messages);
                     hero2HUD.UpdateUI(hero2);
                 }
                 break;
             case BattleState.HERO3TURN:
                 if (hero3 != null && hero3.life > 0) {
-                    hero3.ApplySkill(hero3, skills[selectedSkillIndex - 1]);
+                    List<string> messages = hero3.ApplySkill(hero3, skills[selectedSkillIndex - 1]);
+                    ActionCanvasManager.GetInstance().TriggerPlayerToHeroSelfTargetAction(hero3.char_name, messages);
                     hero3HUD.UpdateUI(hero3);
                 }
                 break;
         }
 
-        auxText.text = "used " + skills[selectedSkillIndex - 1].skill_name + " inself";
+        auxText.text = skills[selectedSkillIndex - 1].skill_name;
 
         yield return new WaitForSeconds(SELFTARGET_TO_NEXTTURN_TIME);
+
+        ActionCanvasManager.GetInstance().DismissAction();
+
         StartCoroutine(NextTurn());
     }
+
+    #endregion
 
     IEnumerator EnemyTurn() {
         if (IsEnemyReadyToAct()) {
@@ -586,7 +657,9 @@ public class BattleSystem : MonoBehaviour {
 
             if (!IsInNegativeStatus(BuffType.Stunned)) {
                 CharacterStats heroTarget = ChoosingATargetHero();
-                heroTarget.ReceivingAttackDamage(enemy);
+                List<string> messages = new();
+                messages.Add(heroTarget.ReceivingAttackDamage(enemy));
+                ActionCanvasManager.GetInstance().TriggerCPUToHeroSingleTargetAction(enemy.char_name, heroTarget.char_name, messages);
             } else {
                 auxText.text = state + "  stunned!";
             }
@@ -594,6 +667,7 @@ public class BattleSystem : MonoBehaviour {
             UpdateUI();
 
             yield return new WaitForSeconds(ENEMYATTACK_TO_NEXTTURN_TIME);
+            ActionCanvasManager.GetInstance().DismissAction();
 
             if (IsAllHeroesDead()) {
                 state = BattleState.LOST;
@@ -690,55 +764,67 @@ public class BattleSystem : MonoBehaviour {
 
         switch (state) {
             case BattleState.HERO1TURN:
+                hero1HUD.isHighlighted = false;
                 state = BattleState.HERO2TURN;
                 if (hero2 != null) {
                     hero2.isBlocking = false;
                     hero2.UpdateBuffs();
+                    hero2HUD.isHighlighted = true;
                     hero2HUD.UpdateUI(hero2);
                 }
                 StartCoroutine(PlayerTurn());
                 break;
             case BattleState.HERO2TURN:
+                hero2HUD.isHighlighted = false;
                 state = BattleState.HERO3TURN;
                 if (hero3 != null) {
                     hero3.isBlocking = false;
                     hero3.UpdateBuffs();
+                    hero3HUD.isHighlighted = true;
                     hero3HUD.UpdateUI(hero3);
                 }
                 StartCoroutine(PlayerTurn());
                 break;
             case BattleState.HERO3TURN:
+                hero3HUD.isHighlighted = false;
                 state = BattleState.ENEMY1TURN;
                 if (enemy1 != null) {
                     enemy1.isBlocking = false;
                     enemy1.UpdateBuffs();
+                    enemy1HUD.isHighlighted = true;
                     enemy1HUD.UpdateUI(enemy1);
                 }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY1TURN:
+                enemy1HUD.isHighlighted = false;
                 state = BattleState.ENEMY2TURN;
                 if (enemy2 != null) {
                     enemy2.isBlocking = false;
                     enemy2.UpdateBuffs();
+                    enemy2HUD.isHighlighted = true;
                     enemy2HUD.UpdateUI(enemy2);
                 }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY2TURN:
+                enemy2HUD.isHighlighted = false;
                 state = BattleState.ENEMY3TURN;
                 if (enemy3 != null) {
                     enemy3.isBlocking = false;
                     enemy3.UpdateBuffs();
+                    enemy3HUD.isHighlighted = true;
                     enemy3HUD.UpdateUI(enemy3);
                 }
                 StartCoroutine(EnemyTurn());
                 break;
             case BattleState.ENEMY3TURN:
+                enemy3HUD.isHighlighted = false;
                 state = BattleState.HERO1TURN;
                 if (hero1 != null) {
                     hero1.isBlocking = false;
                     hero1.UpdateBuffs();
+                    hero1HUD.isHighlighted = true;
                     hero1HUD.UpdateUI(hero1);
                 }
                 StartCoroutine(PlayerTurn());

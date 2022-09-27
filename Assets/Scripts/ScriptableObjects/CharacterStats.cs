@@ -49,71 +49,81 @@ public class CharacterStats : ScriptableObject
         buffs = new List<Buff>();
     }
 
-    public bool TakeDamage(int dmg) {
+    public string TakeDamage(int dmg) {
         if (dmg >= life) {
             life = 0;
-            return true;
         } else {
             life -= dmg;
-            return false;
         }
+        return dmg.ToString();
     }
 
-    public bool TakeHeal(int heal) {
+    public string TakeHeal(int heal) {
+        
         if (heal + life >= maxLife) {
+            int trueHeal = (heal + life) - maxLife; 
             life = maxLife;
-            return true;
+            return "HEAL " + trueHeal + "!";
         } else {
             life += heal;
-            return false;
+            return "HEAL " + heal + "!";
         }
     }
 
-    public bool LoseEnergy(int cost) {
+    public string LoseEnergy(int cost) {
         if (cost >= energy) {
+            int remainingEnergy = energy;
             energy = 0;
-            return true;
+            return "LOSE " + remainingEnergy + " MP!";
         } else {
             energy -= cost;
-            return false;
+            return "LOSE " + cost + " MP!";
         }
     }
 
-    public bool GainEnergy(int recoveredEnergy) {
+    public string GainEnergy(int recoveredEnergy) {
         if (recoveredEnergy + energy >= maxEnergy) {
+            int trueRecover = (recoveredEnergy + energy) - maxEnergy;
             energy = maxEnergy;
-            return true;
+            return "RECOVER " + trueRecover + "!";
         } else {
             energy += recoveredEnergy;
-            return false;
+            return "RECOVER " + recoveredEnergy + "!";
         }
     }
 
-    public void ReceivingAttackDamage(CharacterStats attacker) {
+    public string ReceivingAttackDamage(CharacterStats attacker) {
         Debug.Log("Character: " + attacker.char_name + ", damage: " + attacker.damage);
-        DamageWithBuffsAndStatsApplied(attacker, attacker.damage);
+        return DamageWithBuffsAndStatsApplied(attacker, attacker.damage);
     }
 
-    public void ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
+    public List<string> ReceivingSkillDamage(CharacterStats attacker, float damageMultiplier, int quantity, int rate) {
+
+        List<string> messages = new();
 
         for (int i = 0; i < quantity; i++) {
             int random = UnityEngine.Random.Range(0, 99);
             if (random < rate) {
                 int finalDamage = (int)(attacker.damage * damageMultiplier);
                 Debug.Log("Damage: " + finalDamage + ", rate: " + random);
-                DamageWithBuffsAndStatsApplied(attacker, finalDamage);
+                messages.Add(DamageWithBuffsAndStatsApplied(attacker, finalDamage));
+            } else {
+                messages.Add("MISS!");
             }
         }
+
+        return messages;
     }
 
-    public void ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
+    public string ReceivingHeal(CharacterStats healer, float healMultiplier, int rate) {
 
         int random = UnityEngine.Random.Range(0, 99);
-        if (random < rate)
-        {
+        if (random < rate) {
             int heal = (int)(healer.intelligence * healMultiplier);
             Debug.Log("Heal: " + heal + ", rate: " + random);
-            TakeHeal(heal);
+            return TakeHeal(heal);
+        } else {
+            return "FAILED!";
         }
     }
 
@@ -126,7 +136,7 @@ public class CharacterStats : ScriptableObject
         return false;
     }
 
-    private void DamageWithBuffsAndStatsApplied(CharacterStats attacker, int receivedDamage) {
+    private string DamageWithBuffsAndStatsApplied(CharacterStats attacker, int receivedDamage) {
 
         // Applying buff modifications. B.D.A. is Buff and Debuffs Applied
         int BDA_attackerHitRate = (int)GenericBuffApplier(attacker, (float)attacker.hitRate, BuffType.HitRateUp, BuffType.HitRateDown);
@@ -147,14 +157,16 @@ public class CharacterStats : ScriptableObject
                 int attackCritDamage = BDA_attackerDamage + (int)(BDA_attackerDamage * BDA_attackerCritDamage * 0.01);
                 finalDamage = (int)(attackCritDamage / BDA_defense);
                 Debug.Log("Character: " + attacker.char_name + "critRate: " + BDA_attackerCritRate + "critDamage: " + BDA_attackerCritDamage + ", damage: " + finalDamage);
+                return TakeDamage(finalDamage) + "\n Critical!";
             } else {
                 float finalDefense = (isBlocking == false) ? BDA_defense : (float)(BDA_defense * 1.5);
                 finalDamage = (int)(BDA_attackerDamage / finalDefense);
                 Debug.Log("Character: " + attacker.char_name + ", damage: " + finalDamage);
+                return TakeDamage(finalDamage);
             }
-            TakeDamage(finalDamage);
+            
         } else {
-            Debug.Log("ERRRROOOOUUU!");
+            return "MISS!";
         }
     }
 
@@ -243,7 +255,10 @@ public class CharacterStats : ScriptableObject
         };
     }
 
-    public void ApplySkill(CharacterStats skillUser, CharacterSkill skill) {
+    public List<string> ApplySkill(CharacterStats skillUser, CharacterSkill skill) {
+
+        List<string> messages = new();
+
         foreach (string effect in skill.skill_execution) {
             char[] separators = { '-' };
             String[] strlist = effect.Split(separators, 6, StringSplitOptions.None);
@@ -257,30 +272,35 @@ public class CharacterStats : ScriptableObject
                         int.Parse(strlist[4]),
                         int.Parse(strlist[5]));
                     if (buff != null) {
+                        messages.Add(buff.buffType.ToString());
                         buffs.Add(buff);
                     }
                     break;
                 case "attack":
                     // ATTACK SYNTAX: Attack identifier (attack) - Multiplier - Quantity of attacks - Chance of success
-                    ReceivingSkillDamage(
+                    List<string> attackMessages = ReceivingSkillDamage(
                         skillUser,
                         float.Parse(strlist[1]),
                         int.Parse(strlist[2]),
                         int.Parse(strlist[3]));
+                    foreach (string attackMessage in attackMessages) messages.Add(attackMessage);
                     break;
                 case "heal":
                     // HEAL SYNTAX: Heal identifier (heal) - Multiplier - Chance of success
-                    ReceivingHeal(
+                    messages.Add(ReceivingHeal(
                         skillUser,
                         float.Parse(strlist[1]),
-                        int.Parse(strlist[2]));
+                        int.Parse(strlist[2])));
                     break;
                 case "energy":
                     // HEAL SYNTAX: Energy identifier (energy) - Value
-                    GainEnergy(int.Parse(strlist[1]));
+                    int energyValue = int.Parse(strlist[1]);
+                    if (energyValue > 0) messages.Add(GainEnergy(energyValue));
+                    else messages.Add(LoseEnergy(energyValue));
                     break;
             }
         }
+        return messages;
     }
 }
 
