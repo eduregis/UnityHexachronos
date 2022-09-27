@@ -2821,7 +2821,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero1: {fileID: 11400000, guid: 2481888836602c64db3b9cf8a474e85e, type: 2}
   hero2: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
-  hero3: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
+  hero3: {fileID: 0}
   enemy1: {fileID: 11400000, guid: 1d6710c2e574014409f98bf3e6b0c4da, type: 2}
   enemy2: {fileID: 11400000, guid: 43652d1940911c245919c4879c2036f6, type: 2}
   enemy3: {fileID: 0}
@@ -6985,6 +6985,7 @@ Transform:
   - {fileID: 568640940}
   - {fileID: 758605927}
   - {fileID: 1951532485}
+  - {fileID: 1069184570}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7064,6 +7065,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1026390596}
   m_CullTransparentMesh: 1
+--- !u!1 &1069184569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1069184570}
+  - component: {fileID: 1069184571}
+  m_Layer: 0
+  m_Name: CharacterStatsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1069184570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069184569}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1024999703}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1069184571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069184569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d193c1baede977a41b9acb567549d7c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  luca: {fileID: 11400000, guid: 91ec167e52b34524a94d3f1355cda599, type: 2}
+  sam: {fileID: 11400000, guid: 2481888836602c64db3b9cf8a474e85e, type: 2}
+  borell: {fileID: 11400000, guid: efc89722ea2ac884aa02ffba85e290e0, type: 2}
+  billy: {fileID: 11400000, guid: 43652d1940911c245919c4879c2036f6, type: 2}
+  salvato: {fileID: 11400000, guid: e54be3f3b703bcc4cb0781a41f0e45a4, type: 2}
+  dandara: {fileID: 11400000, guid: 07e30a4e3f89fd147a166ae17b29b31e, type: 2}
+  morya: {fileID: 11400000, guid: 67e16df0ded8d674682f520a599dd214, type: 2}
+  basicSoldier: {fileID: 11400000, guid: 1d6710c2e574014409f98bf3e6b0c4da, type: 2}
+  basicLieutenant: {fileID: 11400000, guid: 97e41e7a74c57754a8ab8dc6105c5d6d, type: 2}
 --- !u!1 &1080829069
 GameObject:
   m_ObjectHideFlags: 0

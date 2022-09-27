@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/CombatScene.unity
-    guid: 7018a4c067fcbdc459ab75923039cee0
-  - enabled: 1
     path: Assets/Scenes/DialogueScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/BattleScene.unity
+    guid: 15c0a9ccaa38a48438b373b1ff433a75
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: edf97ff56193fa6409f883a38b543eaa, type: 2}

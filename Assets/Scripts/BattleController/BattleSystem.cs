@@ -138,6 +138,10 @@ public class BattleSystem : MonoBehaviour {
     void Start() {
         state = BattleState.START;
 
+        hero3 = CharacterStatsManager.GetInstance().GetCharacter("Borell");
+        enemy1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter("BasicSoldier"));
+        enemy2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter("BasicSoldier"));
+
         hero1Position = GetPosition(hero1Sprite);
         hero2Position = GetPosition(hero2Sprite);
         hero3Position = GetPosition(hero3Sprite);
@@ -1006,9 +1010,9 @@ public class BattleSystem : MonoBehaviour {
 
     private CharacterStats ChoosingATargetHero() {
 
-        if (hero1.IsInNegativeStatus(BuffType.Taunt) == true) return hero1;
-        if (hero2.IsInNegativeStatus(BuffType.Taunt) == true) return hero2;
-        if (hero3.IsInNegativeStatus(BuffType.Taunt) == true) return hero3;
+        if ((hero3 != null) && (hero1.IsInNegativeStatus(BuffType.Taunt) == true)) return hero1;
+        if ((hero3 != null) && (hero2.IsInNegativeStatus(BuffType.Taunt) == true)) return hero2;
+        if ((hero3 != null) && (hero3.IsInNegativeStatus(BuffType.Taunt) == true)) return hero3;
 
         while (true) {
             int targetRNG = UnityEngine.Random.Range(1, 4);
