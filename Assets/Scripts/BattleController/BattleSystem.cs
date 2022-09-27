@@ -83,6 +83,9 @@ public class BattleSystem : MonoBehaviour {
     public BattleHUD enemy2HUD;
     public BattleHUD enemy3HUD;
 
+    [Header("Transition Panel")]
+    public GameObject transitionPanel;
+
     public BattleState state;
     #endregion
 
@@ -102,6 +105,9 @@ public class BattleSystem : MonoBehaviour {
     int selectedSkillIndex = 0;
     Color backCharColor = new(0.4f, 0.4f, 0.4f, 1f);
 
+    bool isFadeInTransition = true;
+    bool isFadeOutTransition = false;
+
     Vector3 hero1Position;
     Vector3 hero2Position;
     Vector3 hero3Position;
@@ -118,6 +124,7 @@ public class BattleSystem : MonoBehaviour {
 
     #region Time variables
 
+    const float FADEIN_TRANSITION_TIME = 1f;
     const float START_BATTLE_TIME = 1.2f;
     const float MENU_TO_ENEMYSINGLETARGET_TIME = 0.5f;
     const float MENU_TO_HEROSINGLETARGET_TIME = 0.5f;
@@ -187,6 +194,11 @@ public class BattleSystem : MonoBehaviour {
     }
 
     void Update() {
+
+        if (isFadeInTransition) {
+            AnimateFadeInTransition();
+        }
+
         if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
             if (rotatingHeroes == true && hero3 != null) RotateHeroes();
             if (isInSkillsMenu == true) ShowDescriptionSkill();
@@ -242,10 +254,10 @@ public class BattleSystem : MonoBehaviour {
             enemy3HUD.SetHUD(enemy3);
         }
 
-        StartCoroutine(StartBattle());
+        StartBattle();
     }
 
-    IEnumerator StartBattle()
+    void StartBattle()
     {
         if (hero1 == null)
             hero1HUD.gameObject.SetActive(false);
@@ -260,13 +272,7 @@ public class BattleSystem : MonoBehaviour {
         if (enemy3 == null)
             enemy3HUD.gameObject.SetActive(false);
 
-        state = BattleState.HERO1TURN;
-
-        yield return new WaitForSeconds(START_BATTLE_TIME);
-
-        hero1HUD.isHighlighted = true;
-
-        StartCoroutine(PlayerTurn());
+        StartCoroutine(FadeInTransition());
     }
 
     IEnumerator PlayerTurn() {
@@ -869,6 +875,30 @@ public class BattleSystem : MonoBehaviour {
         yield return new WaitForSeconds(ENDBATTLE_TO_NEXTSCENE);
 
         SceneManager.LoadScene("DialogueScene");
+    }
+
+    IEnumerator FadeInTransition() {
+        transitionPanel.SetActive(true);
+        yield return new WaitForSeconds(FADEIN_TRANSITION_TIME);
+        isFadeInTransition = false;
+        transitionPanel.SetActive(false);
+        state = BattleState.HERO1TURN;
+        yield return new WaitForSeconds(START_BATTLE_TIME);
+        hero1HUD.isHighlighted = true;
+        StartCoroutine(PlayerTurn());
+    }
+
+    public void AnimateFadeInTransition() {
+        Color panelColor = transitionPanel.GetComponent<Image>().color;
+        panelColor = Color.Lerp(
+            panelColor,
+            new Color(
+                panelColor.r,
+                panelColor.g,
+                panelColor.b,
+                panelColor.a - 0.5f),
+            4f * Time.deltaTime);
+        transitionPanel.GetComponent<Image>().color = panelColor;
     }
 
     #endregion

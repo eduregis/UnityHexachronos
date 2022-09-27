@@ -24,17 +24,13 @@ public class DialogueTrigger : MonoBehaviour
                     handler = 1;
                     break;
                 case 1:
-                    StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON1));
-                    handler = 2;
-                    break;
-                case 2:
                     Debug.Log("Choices: " + DialogueManager.GetInstance().choicesIndexes);
                     DialogueManager.GetInstance().isFadeOutTransition = true;
                     StartCoroutine(LoadBattleScene("Luca", "Borell", "Sam", "BasicSoldier", "BasicSoldier", ""));
                     break;
-                case 3:
+                case 2:
                     StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON2));
-                    handler = 4;
+                    handler = 3;
                     break;
                 default:
                     break;
