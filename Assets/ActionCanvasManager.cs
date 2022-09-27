@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
-public class ActionCanvasManager : MonoBehaviour
-{
+public class ActionCanvasManager : MonoBehaviour {
+
+    #region External variables
+
     public GameObject actionCanvas;
 
     public GameObject overlay;
     public GameObject charPrefab;
     public GameObject textPrefab;
-    List<GameObject> instances = new();
 
     public Transform hero1Position;
     public Transform hero2Position;
@@ -19,7 +21,25 @@ public class ActionCanvasManager : MonoBehaviour
     public Transform enemy1Position;
     public Transform enemy2Position;
     public Transform enemy3Position;
+    #endregion
+
+    #region Control variables
+
+    List<GameObject> instances = new();
+    List<GameObject> messageInstances = new();
     GameObject canvas;
+
+    #endregion
+
+    #region Constants
+    Color debuffRed =      new Color(0.85f, 0.15f, 0.15f);
+    Color buffCyan =       new Color(0.15f, 0.85f, 0.85f);
+    Color greenHeal =      new Color(0.15f, 0.85f, 0.15f);
+    Color magentaEnergy =  new Color(0.85f, 0.15f, 0.85f);
+    Color orangeCritical = new Color(0.85f, 0.50f, 0.15f);
+    Color yellowNormal =   new Color(0.85f, 0.85f, 0.15f);
+    Color grayError =      new Color(0.85f, 0.85f, 0.85f);
+    #endregion
 
     private static ActionCanvasManager instance;
 
@@ -138,22 +158,35 @@ public class ActionCanvasManager : MonoBehaviour
         foreach (string msg in messages) {
             GameObject damageEnemySprite = Instantiate(
             textPrefab, new Vector3((float)position.x, (float)position.y + 3.5f + distance, (float)position.z), Quaternion.identity);
+            damageEnemySprite.GetComponent<TextMeshProUGUI>().color = TypeOfMessage((String)msg);
             damageEnemySprite.GetComponent<TextMeshProUGUI>().text = msg;
             damageEnemySprite.GetComponent<Transform>().localScale = new(0.01f, 0.01f, 1f);
             damageEnemySprite.transform.SetParent(canvas.transform);
-            instances.Add(damageEnemySprite);
+            messageInstances.Add(damageEnemySprite);
 
             distance += 0.5f;
         }
     }
 
+    private Color TypeOfMessage(String msg) {
+        if (msg.IndexOf("CRITICAL", StringComparison.OrdinalIgnoreCase) >= 0) return orangeCritical;
+        if (msg.IndexOf("UP", StringComparison.OrdinalIgnoreCase) >= 0)       return buffCyan;
+        if (msg.IndexOf("DOWN", StringComparison.OrdinalIgnoreCase) >= 0)     return debuffRed;
+        if (msg.IndexOf("HEAL", StringComparison.OrdinalIgnoreCase) >= 0)     return greenHeal;
+        if (msg.IndexOf("RECOVER", StringComparison.OrdinalIgnoreCase) >= 0)  return magentaEnergy;
+        if (msg.IndexOf("LOSE", StringComparison.OrdinalIgnoreCase) >= 0)     return magentaEnergy;
+        if (msg.IndexOf("MISS", StringComparison.OrdinalIgnoreCase) >= 0)     return grayError;
+        if (msg.IndexOf("FAILED", StringComparison.OrdinalIgnoreCase) >= 0)   return grayError;
+        return yellowNormal;
+    }
+
     public void DismissAction() {
         actionCanvas.SetActive(false);
 
-        foreach(GameObject inst in instances) {
-            Destroy(inst);
-        }
+        foreach(GameObject inst in instances) Destroy(inst);
+        foreach(GameObject inst in messageInstances) Destroy(inst);
 
         instances.Clear();
+        messageInstances.Clear();
     }
 }
