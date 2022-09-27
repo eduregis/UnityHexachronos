@@ -32,6 +32,8 @@ public class ActionCanvasManager : MonoBehaviour {
     #endregion
 
     #region Constants
+    bool isRunning = false;
+
     Color debuffRed =      new Color(0.85f, 0.15f, 0.15f);
     Color buffCyan =       new Color(0.15f, 0.85f, 0.85f);
     Color greenHeal =      new Color(0.15f, 0.85f, 0.15f);
@@ -62,14 +64,21 @@ public class ActionCanvasManager : MonoBehaviour {
         actionCanvas.SetActive(false);
     }
 
+    private void Update() {
+        if (isRunning) {
+            AnimateTexts();
+        }
+    }
+
     public void TriggerAction() {
         actionCanvas.SetActive(true);
+        isRunning = true;
     }
 
     #region Player Action Functions
     public void TriggerPlayerToEnemySingleTargetAction(string hero_name, string enemy_name, List<string> messages) {
 
-        actionCanvas.SetActive(true);
+        TriggerAction();
 
         ShowHero(hero_name, hero2Position.transform.position);
         ShowEnemy(enemy_name, enemy2Position.transform.position);
@@ -80,7 +89,7 @@ public class ActionCanvasManager : MonoBehaviour {
     public void TriggerPlayerToAllEnemiesAction(string hero_name, string enemy1_name, string enemy2_name, string enemy3_name, 
         List<string> enemy1messages, List<string> enemy2messages, List<string> enemy3messages) {
 
-        actionCanvas.SetActive(true);
+        TriggerAction();
 
         ShowHero(hero_name, hero2Position.transform.position);
 
@@ -95,7 +104,7 @@ public class ActionCanvasManager : MonoBehaviour {
 
     public void TriggerPlayerToHeroSingleTargetAction(string hero1_name, string hero2_name, List<string> messages) {
 
-        actionCanvas.SetActive(true);
+        TriggerAction();
 
         ShowHero(hero1_name, hero1Position.transform.position);
         ShowHero(hero2_name, hero3Position.transform.position);
@@ -106,7 +115,7 @@ public class ActionCanvasManager : MonoBehaviour {
     public void TriggerPlayerToAllHeroesAction(string hero1_name, string hero2_name, string hero3_name,
         List<string> hero1messages, List<string> hero2messages, List<string> hero3messages) {
 
-        actionCanvas.SetActive(true);
+        TriggerAction();
 
         if (hero1_name != "") ShowHero(hero1_name, hero1Position.transform.position);
         if (hero2_name != "") ShowHero(hero2_name, hero2Position.transform.position);
@@ -119,7 +128,7 @@ public class ActionCanvasManager : MonoBehaviour {
 
     public void TriggerPlayerToHeroSelfTargetAction(string hero_name, List<string> messages) {
 
-        actionCanvas.SetActive(true);
+        TriggerAction();
 
         ShowHero(hero_name, hero2Position.transform.position);
 
@@ -130,7 +139,7 @@ public class ActionCanvasManager : MonoBehaviour {
     #region CPU Action Functions
     public void TriggerCPUToHeroSingleTargetAction(string enemy_name, string hero_name, List<string> messages) {
 
-        actionCanvas.SetActive(true);
+        TriggerAction();
 
         ShowEnemy(enemy_name, enemy2Position.transform.position);
         ShowHero(hero_name, hero2Position.transform.position);
@@ -140,16 +149,18 @@ public class ActionCanvasManager : MonoBehaviour {
     #endregion
 
     private void ShowHero(string hero_name, Vector3 position) {
-        GameObject heroSprite = Instantiate(charPrefab, position, Quaternion.identity);
-        heroSprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(hero_name);
-        instances.Add(heroSprite);
+        ShowCharacter(hero_name, position, false);
     }
 
     private void ShowEnemy(string enemy_name, Vector3 position) {
-        GameObject enemySprite = Instantiate(charPrefab, position, Quaternion.identity);
-        enemySprite.GetComponent<SpriteRenderer>().flipX = true;
-        enemySprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(enemy_name);
-        instances.Add(enemySprite);
+        ShowCharacter(enemy_name, position, true);
+    }
+
+    private void ShowCharacter(string char_name, Vector3 position, bool flip) {
+        GameObject charSprite = Instantiate(charPrefab, position, Quaternion.identity);
+        charSprite.GetComponent<SpriteRenderer>().flipX = flip;
+        charSprite.GetComponent<SpriteRenderer>().sprite = CharacterCombatSpriteManager.GetInstance().CharacterSpriteIdleImage(char_name);
+        instances.Add(charSprite);
     }
 
     private void ShowMultipleMessages(List<string> messages, Vector3 position) {
@@ -168,6 +179,28 @@ public class ActionCanvasManager : MonoBehaviour {
         }
     }
 
+    private void AnimateTexts() {
+        foreach (GameObject msg in messageInstances) {
+            msg.transform.position = Vector3.Lerp(
+                msg.transform.position, 
+                new Vector3(
+                    msg.transform.position.x, 
+                    msg.transform.position.y + 0.5f, 
+                    msg.transform.position.z), 
+                1f * Time.deltaTime);
+
+            Color msgColor = msg.GetComponent<TextMeshProUGUI>().color;
+            msgColor = Color.Lerp(
+                msgColor, 
+                new Color(
+                    msgColor.r, 
+                    msgColor.g, 
+                    msgColor.b, 
+                    msgColor.a - 0.2f), 
+                4f * Time.deltaTime);
+            msg.GetComponent<TextMeshProUGUI>().color = msgColor;
+        }
+    }
     private Color TypeOfMessage(String msg) {
         if (msg.IndexOf("CRITICAL", StringComparison.OrdinalIgnoreCase) >= 0) return orangeCritical;
         if (msg.IndexOf("UP", StringComparison.OrdinalIgnoreCase) >= 0)       return buffCyan;
@@ -182,6 +215,7 @@ public class ActionCanvasManager : MonoBehaviour {
 
     public void DismissAction() {
         actionCanvas.SetActive(false);
+        isRunning = false;
 
         foreach(GameObject inst in instances) Destroy(inst);
         foreach(GameObject inst in messageInstances) Destroy(inst);
