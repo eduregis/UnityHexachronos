@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public enum BattleState { 
     START,
@@ -131,6 +132,7 @@ public class BattleSystem : MonoBehaviour {
     const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
     const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
     const float ROTATE_TO_NEXTTURN_TIME = 1f;
+    const float ENDBATTLE_TO_NEXTSCENE = 2f;
 
     #endregion
 
@@ -147,9 +149,9 @@ public class BattleSystem : MonoBehaviour {
         //string hero2Name = "Sam";
         //string hero3Name = "Borell";
 
-        if (!string.IsNullOrEmpty(hero1Name)) hero1 = CharacterStatsManager.GetInstance().GetCharacter(hero1Name);
-        if (!string.IsNullOrEmpty(hero2Name)) hero2 = CharacterStatsManager.GetInstance().GetCharacter(hero2Name);
-        if (!string.IsNullOrEmpty(hero3Name)) hero3 = CharacterStatsManager.GetInstance().GetCharacter(hero3Name);
+        if (!string.IsNullOrEmpty(hero1Name)) hero1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero1Name));
+        if (!string.IsNullOrEmpty(hero2Name)) hero2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero2Name));
+        if (!string.IsNullOrEmpty(hero3Name)) hero3 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero3Name));
 
         string enemy1Name = DialogueBattleDataBridge.enemy1_Name;
         string enemy2Name = DialogueBattleDataBridge.enemy2_Name;
@@ -160,9 +162,9 @@ public class BattleSystem : MonoBehaviour {
         //string enemy2Name = "BasicSoldier";
         //string enemy3Name = "";
 
-        if (!string.IsNullOrEmpty(enemy1Name)) enemy1 = CharacterStatsManager.GetInstance().GetCharacter(enemy1Name);
-        if (!string.IsNullOrEmpty(enemy2Name)) enemy2 = CharacterStatsManager.GetInstance().GetCharacter(enemy2Name);
-        if (!string.IsNullOrEmpty(enemy3Name)) enemy3 = CharacterStatsManager.GetInstance().GetCharacter(enemy3Name);
+        if (!string.IsNullOrEmpty(enemy1Name)) enemy1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy1Name));
+        if (!string.IsNullOrEmpty(enemy2Name)) enemy2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy2Name));
+        if (!string.IsNullOrEmpty(enemy3Name)) enemy3 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy3Name));
 
         hero1Position = GetPosition(hero1Sprite);
         hero2Position = GetPosition(hero2Sprite);
@@ -441,7 +443,7 @@ public class BattleSystem : MonoBehaviour {
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
-            EndBattle();
+            StartCoroutine(EndBattle());
         } else {
             StartCoroutine(NextTurn());
         }
@@ -499,7 +501,7 @@ public class BattleSystem : MonoBehaviour {
 
         if (IsAllHeroesDead()) {
             state = BattleState.LOST;
-            EndBattle();
+            StartCoroutine(EndBattle());
         } else {
             StartCoroutine(NextTurn());
         }
@@ -559,7 +561,7 @@ public class BattleSystem : MonoBehaviour {
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
-            EndBattle();
+            StartCoroutine(EndBattle());
         }
         else {
             StartCoroutine(NextTurn());
@@ -697,7 +699,7 @@ public class BattleSystem : MonoBehaviour {
 
             if (IsAllHeroesDead()) {
                 state = BattleState.LOST;
-                EndBattle();
+                StartCoroutine(EndBattle());
             } else {
                 StartCoroutine(NextTurn());
             }
@@ -858,12 +860,15 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
-    void EndBattle() {
+    IEnumerator EndBattle() {
         if (state == BattleState.WON) {
             auxText.text = "You won the battle!";
         } else if (state == BattleState.LOST) {
             auxText.text = "You were defeated!";
         }
+        yield return new WaitForSeconds(ENDBATTLE_TO_NEXTSCENE);
+
+        SceneManager.LoadScene("DialogueScene");
     }
 
     #endregion

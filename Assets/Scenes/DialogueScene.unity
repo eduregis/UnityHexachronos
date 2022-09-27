@@ -2203,4 +2203,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inkJSON1: {fileID: 4900000, guid: 2571264bfd451174e882ab596fac240d, type: 3}
-  inkJSON2: {fileID: 4900000, guid: 2571264bfd451174e882ab596fac240d, type: 3}
+  inkJSON2: {fileID: 4900000, guid: da0c3cd9a3de9f241bba09739ccb52fd, type: 3}

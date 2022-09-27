@@ -11,7 +11,10 @@ public class DialogueTrigger : MonoBehaviour
 
     private int handler = 0;
 
-    // Update is called once per frame
+    private void Start() {
+        handler = DialogueBattleDataBridge.dialogueHandler;
+    }
+
     void Update() {
         if (!DialogueManager.GetInstance().dialogueIsPlaying) {
             switch(handler) {
@@ -19,21 +22,19 @@ public class DialogueTrigger : MonoBehaviour
                     DialogueManager.GetInstance().EnterDialogueMode(inkJSON1);
                     handler = 1;
                     break;
-                default:
+                case 1:
                     Debug.Log(DialogueManager.GetInstance().choicesIndexes);
                     LoadBattleScene("Luca", "Borell", "Sam", "BasicSoldier", "BasicSoldier", "");
+                    break;
+                case 2:
+                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
+                    handler = 3;
+                    break;
+                default:
                     break;
             }
         }
     }
-
-    
-
-    /*case 1:
-        DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
-        handler = 2;
-        break;
-    */
 
     public void LoadBattleScene(string hero1Name, string hero2Name, string hero3Name, string enemy1Name, string enemy2Name, string enemy3Name) {
         DialogueBattleDataBridge.hero1_Name = hero1Name;
@@ -42,6 +43,9 @@ public class DialogueTrigger : MonoBehaviour
         DialogueBattleDataBridge.enemy1_Name = enemy1Name;
         DialogueBattleDataBridge.enemy2_Name = enemy2Name;
         DialogueBattleDataBridge.enemy3_Name = enemy3Name;
+
+        DialogueBattleDataBridge.dialogueHandler = handler + 1;
+
         SceneManager.LoadScene("BattleScene");
     }
 
