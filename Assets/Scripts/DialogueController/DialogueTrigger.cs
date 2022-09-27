@@ -17,18 +17,24 @@ public class DialogueTrigger : MonoBehaviour
 
     void Update() {
         if (!DialogueManager.GetInstance().dialogueIsPlaying) {
-            switch(handler) {
+            Debug.Log("Handler: " + handler);
+            switch (handler) {
                 case 0:
-                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON1);
+                    StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON1));
                     handler = 1;
                     break;
                 case 1:
-                    Debug.Log(DialogueManager.GetInstance().choicesIndexes);
-                    LoadBattleScene("Luca", "Borell", "Sam", "BasicSoldier", "BasicSoldier", "");
+                    StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON1));
+                    handler = 2;
                     break;
                 case 2:
-                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
-                    handler = 3;
+                    Debug.Log("Choices: " + DialogueManager.GetInstance().choicesIndexes);
+                    DialogueManager.GetInstance().isFadeOutTransition = true;
+                    StartCoroutine(LoadBattleScene("Luca", "Borell", "Sam", "BasicSoldier", "BasicSoldier", ""));
+                    break;
+                case 3:
+                    StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON2));
+                    handler = 4;
                     break;
                 default:
                     break;
@@ -36,7 +42,10 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
-    public void LoadBattleScene(string hero1Name, string hero2Name, string hero3Name, string enemy1Name, string enemy2Name, string enemy3Name) {
+    public IEnumerator LoadBattleScene(string hero1Name, string hero2Name, string hero3Name, string enemy1Name, string enemy2Name, string enemy3Name) {
+
+        yield return new WaitForSeconds(0.5f);
+
         DialogueBattleDataBridge.hero1_Name = hero1Name;
         DialogueBattleDataBridge.hero2_Name = hero2Name;
         DialogueBattleDataBridge.hero3_Name = hero3Name;

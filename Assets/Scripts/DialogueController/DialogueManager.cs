@@ -12,6 +12,7 @@ public class DialogueManager : MonoBehaviour {
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private Image characterImage;
+    [SerializeField] private GameObject transitionPanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI nameText;
 
@@ -19,10 +20,15 @@ public class DialogueManager : MonoBehaviour {
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
 
+
+    const float FADEIN_TRANSITION_TIME = 0.5f;
+
     private Story currentStory;
 
     public bool dialogueIsPlaying { get; private set; }
     private bool dialogueIsWriting;
+    public bool isFadeInTransition;
+    public bool isFadeOutTransition;
 
     private static DialogueManager instance;
 
@@ -40,10 +46,15 @@ public class DialogueManager : MonoBehaviour {
     }
 
     private void Start() {
+
+        isFadeInTransition = true;
+        isFadeOutTransition = false;
         dialogueIsPlaying = false;
         dialogueIsWriting = false;
         dialogueBox.SetActive(false);
         characterImage.enabled = false;
+
+        transitionPanel.SetActive(true);
 
         choicesText = new TextMeshProUGUI[choices.Length];
         int index = 0;
@@ -51,24 +62,36 @@ public class DialogueManager : MonoBehaviour {
             choicesText[index] = choice.GetComponentInChildren<TextMeshProUGUI>();
             index++;
         }
+
+        StartCoroutine(FinishFadeInTransition());
     }
 
     private void Update() {
-        if(!dialogueIsPlaying) {
-            return;
-        }
-        if(InputManager.GetInstance().GetSubmitPressed()) {
-            if(!dialogueIsWriting) {
-                ContinueStory();
-            } else {
-                dialogueIsWriting = false;
+        if (isFadeInTransition) {
+            FadeInTransition();
+        } else if (isFadeOutTransition) {
+            FadeOutTransition();
+        } else { 
+            if(!dialogueIsPlaying) {
+                return;
+            }
+            if(InputManager.GetInstance().GetSubmitPressed()) {
+                if(!dialogueIsWriting) {
+                    ContinueStory();
+                } else {
+                    dialogueIsWriting = false;
+                }
             }
         }
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON) {
-        currentStory = new Story(inkJSON.text);
+    public IEnumerator EnterDialogueMode(TextAsset inkJSON) {
+
         dialogueIsPlaying = true;
+
+        yield return new WaitForSeconds(FADEIN_TRANSITION_TIME);
+
+        currentStory = new Story(inkJSON.text);
         dialogueBox.SetActive(true);
         characterImage.enabled = true;
 
@@ -76,7 +99,7 @@ public class DialogueManager : MonoBehaviour {
     }
 
     public IEnumerator ExitDialogueMode() {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(FADEIN_TRANSITION_TIME);
 
         dialogueIsPlaying = false;
         dialogueBox.SetActive(false);
@@ -162,8 +185,6 @@ public class DialogueManager : MonoBehaviour {
     }
 
     private IEnumerator SelectFirstChoice() {
-        // Event System requires we clear it first, then wait
-        // for at least one frame before we set the current selected object.
         EventSystem.current.SetSelectedGameObject(null);
         yield return new WaitForEndOfFrame();
         EventSystem.current.SetSelectedGameObject(choices[0].gameObject);
@@ -172,5 +193,37 @@ public class DialogueManager : MonoBehaviour {
     public void MakeChoice(int choiceIndex) {
         currentStory.ChooseChoiceIndex(choiceIndex);
         choicesIndexes += ("" + choiceIndex);
+    }
+
+    public IEnumerator FinishFadeInTransition() {
+
+        yield return new WaitForSeconds(FADEIN_TRANSITION_TIME);
+
+        isFadeInTransition = false;
+    }
+
+    public void FadeInTransition() {
+        Color panelColor = transitionPanel.GetComponent<Image>().color;
+        panelColor = Color.Lerp(
+            panelColor,
+            new Color(
+                panelColor.r,
+                panelColor.g,
+                panelColor.b,
+                panelColor.a - 0.5f),
+            4f * Time.deltaTime);
+        transitionPanel.GetComponent<Image>().color = panelColor;
+    }
+    public void FadeOutTransition() {
+        Color panelColor = transitionPanel.GetComponent<Image>().color;
+        panelColor = Color.Lerp(
+            panelColor,
+            new Color(
+                panelColor.r,
+                panelColor.g,
+                panelColor.b,
+                panelColor.a + 0.5f),
+            4f * Time.deltaTime);
+        transitionPanel.GetComponent<Image>().color = panelColor;
     }
 }
