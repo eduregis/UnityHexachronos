@@ -199,6 +199,10 @@ public class BattleSystem : MonoBehaviour {
             AnimateFadeInTransition();
         }
 
+        if (isFadeOutTransition) {
+            AnimateFadeOutTransition();
+        }
+
         if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
             if (rotatingHeroes == true && hero3 != null) RotateHeroes();
             if (isInSkillsMenu == true) ShowDescriptionSkill();
@@ -872,6 +876,10 @@ public class BattleSystem : MonoBehaviour {
         } else if (state == BattleState.LOST) {
             auxText.text = "You were defeated!";
         }
+
+        isFadeOutTransition = true;
+        transitionPanel.SetActive(true);
+
         yield return new WaitForSeconds(ENDBATTLE_TO_NEXTSCENE);
 
         SceneManager.LoadScene("DialogueScene");
@@ -897,6 +905,19 @@ public class BattleSystem : MonoBehaviour {
                 panelColor.g,
                 panelColor.b,
                 panelColor.a - 0.5f),
+            4f * Time.deltaTime);
+        transitionPanel.GetComponent<Image>().color = panelColor;
+    }
+
+    public void AnimateFadeOutTransition() {
+        Color panelColor = transitionPanel.GetComponent<Image>().color;
+        panelColor = Color.Lerp(
+            panelColor,
+            new Color(
+                panelColor.r,
+                panelColor.g,
+                panelColor.b,
+                panelColor.a + 0.5f),
             4f * Time.deltaTime);
         transitionPanel.GetComponent<Image>().color = panelColor;
     }
