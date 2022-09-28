@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class CharacterImageManager : MonoBehaviour
-{
+public class CharacterImageManager : MonoBehaviour {
+
     private static CharacterImageManager instance;
 
     [Header("Billy")]
@@ -62,111 +62,69 @@ public class CharacterImageManager : MonoBehaviour
     public Sprite Thunder_Sigh;
     public Sprite Thunder_Sweet;
 
-    private void Awake()
-    {
-        if (instance != null)
-        {
+    private void Awake() {
+        if (instance != null) {
             Debug.LogWarning("Found more than one DialogueManager in the scene");
         }
         instance = this;
     }
-    public static CharacterImageManager GetInstance()
-    {
+
+    public static CharacterImageManager GetInstance() {
         return instance;
     }
 
-    public Sprite ChangeCharacterImage(String imageText)
-    {
-        switch (imageText)
-        {
-            case "Billy_Broke":
-                return Billy_Broke;
-            case "Billy_Confused":
-                return Billy_Confused;
-            case "Billy_Happy":
-                return Billy_Happy;
-            case "Billy_Sad":
-                return Billy_Sad;
-            case "Billy_Serious":
-                return Billy_Serious;
-            case "Billy_Speechless":
-                return Billy_Speechless;
-            case "Billy_Struggle":
-                return Billy_Struggle;
-            case "Billy_Surprised":
-                return Billy_Surprised;
-            case "Billy_Tired":
-                return Billy_Tired;
-            case "Hammer_Angry":
-                return Hammer_Angry;
-            case "Hammer_Happy":
-                return Hammer_Happy;
-            case "Hammer_Serious":
-                return Hammer_Serious;
-            case "Hammer_Smile":
-                return Hammer_Smile;
-            case "Hammer_Surprised":
-                return Hammer_Surprised;
-            case "Hammer_Sweet":
-                return Hammer_Sweet;
-            case "Morya_Sad":
-                return Morya_Sad;
-            case "Morya_Sigh":
-                return Morya_Sigh;
-            case "Morya_Struggle":
-                return Morya_Struggle;
-            case "Morya_Surprised":
-                return Morya_Surprised;
-            case "Cap_Angry":
-                return Cap_Angry;
-            case "Cap_Happy":
-                return Cap_Happy;
-            case "Cap_Neutral":
-                return Cap_Neutral;
-            case "Cap_Sad":
-                return Cap_Sad;
-            case "Cap_Serious":
-                return Cap_Serious;
-            case "Cap_Shy":
-                return Cap_Shy;
-            case "Cap_Surprised":
-                return Cap_Surprised;
-            case "Sam_Angry":
-                return Sam_Angry;
-            case "Sam_Cheeky":
-                return Sam_Cheeky;
-            case "Sam_Defy":
-                return Sam_Defy;
-            case "Sam_Focused":
-                return Sam_Focused;
-            case "Sam_Happy":
-                return Sam_Happy;
-            case "Sam_Sad":
-                return Sam_Sad;
-            case "Sam_Serious":
-                return Sam_Serious;
-            case "Sam_Shy":
-                return Sam_Shy;
-            case "Sam_Surprised":
-                return Sam_Surprised;
-            case "Cap_Sweet":
-                return Cap_Sweet;
-            case "Thunder_Angry":
-                return Thunder_Angry;
-            case "Thunder_Broke":
-                return Thunder_Broke;
-            case "Thunder_Happy":
-                return Thunder_Happy;
-            case "Thunder_Sad":
-                return Thunder_Sad;
-            case "Thunder_Serious":
-                return Thunder_Serious;
-            case "Thunder_Sigh":
-                return Thunder_Sigh;
-            case "Thunder_Sweet":
-                return Thunder_Sweet;
-            default:
-                return Thunder_Sigh;
-        }
+    public Sprite ChangeCharacterImage(String imageText) {
+        return imageText switch {
+            "Billy" => Billy_Serious,
+            "Billy_Broke" => Billy_Broke,
+            "Billy_Confused" => Billy_Confused,
+            "Billy_Happy" => Billy_Happy,
+            "Billy_Sad" => Billy_Sad,
+            "Billy_Serious" => Billy_Serious,
+            "Billy_Speechless" => Billy_Speechless,
+            "Billy_Struggle" => Billy_Struggle,
+            "Billy_Surprised" => Billy_Surprised,
+            "Billy_Tired" => Billy_Tired,
+            "Hammer_Happy" => Hammer_Happy,
+            "Hammer_Angry" => Hammer_Angry,
+            "Hammer" => Hammer_Happy,
+            "Hammer_Serious" => Hammer_Serious,
+            "Hammer_Smile" => Hammer_Smile,
+            "Hammer_Surprised" => Hammer_Surprised,
+            "Hammer_Sweet" => Hammer_Sweet,
+            "Morya" => Morya_Sigh,
+            "Morya_Sad" => Morya_Sad,
+            "Morya_Sigh" => Morya_Sigh,
+            "Morya_Struggle" => Morya_Struggle,
+            "Morya_Surprised" => Morya_Surprised,
+            "Cap" => Cap_Neutral,
+            "Cap_Angry" => Cap_Angry,
+            "Cap_Happy" => Cap_Happy,
+            "Cap_Neutral" => Cap_Neutral,
+            "Cap_Sad" => Cap_Sad,
+            "Cap_Serious" => Cap_Serious,
+            "Cap_Shy" => Cap_Shy,
+            "Cap_Surprised" => Cap_Surprised,
+            "Cap_Sweet" => Cap_Sweet,
+            "Sam" => Sam_Serious,
+            "Sam_Angry" => Sam_Angry,
+            "Sam_Cheeky" => Sam_Cheeky,
+            "Sam_Defy" => Sam_Defy,
+            "Sam_Focused" => Sam_Focused,
+            "Sam_Happy" => Sam_Happy,
+            "Sam_Sad" => Sam_Sad,
+            "Sam_Serious" => Sam_Serious,
+            "Sam_Shy" => Sam_Shy,
+            "Sam_Surprised" => Sam_Surprised,
+            "Thunder" => Thunder_Serious,
+            "Thunder_Angry" => Thunder_Angry,
+            "Thunder_Broke" => Thunder_Broke,
+            "Thunder_Happy" => Thunder_Happy,
+            "Thunder_Sad" => Thunder_Sad,
+            "Thunder_Serious" => Thunder_Serious,
+            "Thunder_Sigh" => Thunder_Sigh,
+            "Thunder_Sweet" => Thunder_Sweet,
+            _ => Thunder_Sigh,
+        };
     }
 }

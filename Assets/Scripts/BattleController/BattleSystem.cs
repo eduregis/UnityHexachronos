@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public enum BattleState { 
     START,
@@ -25,13 +26,6 @@ public enum MenuTargetType {
 public class BattleSystem : MonoBehaviour {
 
     #region External variables
-    [Header("Characters Stats")]
-    public CharacterStats hero1;
-    public CharacterStats hero2;
-    public CharacterStats hero3;
-    public CharacterStats enemy1;
-    public CharacterStats enemy2;
-    public CharacterStats enemy3;
 
     [Header("Character Sprites")]
     public GameObject hero1Sprite;
@@ -89,10 +83,20 @@ public class BattleSystem : MonoBehaviour {
     public BattleHUD enemy2HUD;
     public BattleHUD enemy3HUD;
 
+    [Header("Transition Panel")]
+    public GameObject transitionPanel;
+
     public BattleState state;
     #endregion
 
     #region Control variables
+
+    CharacterStats hero1;
+    CharacterStats hero2;
+    CharacterStats hero3;
+    CharacterStats enemy1;
+    CharacterStats enemy2;
+    CharacterStats enemy3;
 
     bool isInSkillsMenu = false;
     bool rotatingHeroes = false;
@@ -100,6 +104,9 @@ public class BattleSystem : MonoBehaviour {
     List<CharacterSkill> skills;
     int selectedSkillIndex = 0;
     Color backCharColor = new(0.4f, 0.4f, 0.4f, 1f);
+
+    bool isFadeInTransition = true;
+    bool isFadeOutTransition = false;
 
     Vector3 hero1Position;
     Vector3 hero2Position;
@@ -117,6 +124,7 @@ public class BattleSystem : MonoBehaviour {
 
     #region Time variables
 
+    const float FADEIN_TRANSITION_TIME = 1f;
     const float START_BATTLE_TIME = 1.2f;
     const float MENU_TO_ENEMYSINGLETARGET_TIME = 0.5f;
     const float MENU_TO_HEROSINGLETARGET_TIME = 0.5f;
@@ -131,12 +139,39 @@ public class BattleSystem : MonoBehaviour {
     const float MAINMENU_TO_BLOCKING_TIME = 0.5f;
     const float BLOCKING_TO_NEXTTURN_TIME = 0.5f;
     const float ROTATE_TO_NEXTTURN_TIME = 1f;
+    const float ENDBATTLE_TO_NEXTSCENE = 2f;
 
     #endregion
 
     // Start is called before the first frame update
     void Start() {
         state = BattleState.START;
+
+        string hero1Name = DialogueBattleDataBridge.hero1_Name;
+        string hero2Name = DialogueBattleDataBridge.hero2_Name;
+        string hero3Name = DialogueBattleDataBridge.hero3_Name;
+
+        // TO TEST BATTLESCENE DIRECTLY WILL BE REMOVED IN THE FUTURE
+        //string hero1Name = "Luca"; 
+        //string hero2Name = "Sam";
+        //string hero3Name = "Borell";
+
+        if (!string.IsNullOrEmpty(hero1Name)) hero1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero1Name));
+        if (!string.IsNullOrEmpty(hero2Name)) hero2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero2Name));
+        if (!string.IsNullOrEmpty(hero3Name)) hero3 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero3Name));
+
+        string enemy1Name = DialogueBattleDataBridge.enemy1_Name;
+        string enemy2Name = DialogueBattleDataBridge.enemy2_Name;
+        string enemy3Name = DialogueBattleDataBridge.enemy3_Name;
+
+        // TO TEST BATTLESCENE DIRECTLY WILL BE REMOVED IN THE FUTURE
+        //string enemy1Name = "BasicSoldier";
+        //string enemy2Name = "BasicSoldier";
+        //string enemy3Name = "";
+
+        if (!string.IsNullOrEmpty(enemy1Name)) enemy1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy1Name));
+        if (!string.IsNullOrEmpty(enemy2Name)) enemy2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy2Name));
+        if (!string.IsNullOrEmpty(enemy3Name)) enemy3 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy3Name));
 
         hero1Position = GetPosition(hero1Sprite);
         hero2Position = GetPosition(hero2Sprite);
@@ -159,6 +194,15 @@ public class BattleSystem : MonoBehaviour {
     }
 
     void Update() {
+
+        if (isFadeInTransition) {
+            AnimateFadeInTransition();
+        }
+
+        if (isFadeOutTransition) {
+            AnimateFadeOutTransition();
+        }
+
         if (state == BattleState.HERO1TURN || state == BattleState.HERO2TURN || state == BattleState.HERO3TURN) {
             if (rotatingHeroes == true && hero3 != null) RotateHeroes();
             if (isInSkillsMenu == true) ShowDescriptionSkill();
@@ -214,10 +258,10 @@ public class BattleSystem : MonoBehaviour {
             enemy3HUD.SetHUD(enemy3);
         }
 
-        StartCoroutine(StartBattle());
+        StartBattle();
     }
 
-    IEnumerator StartBattle()
+    void StartBattle()
     {
         if (hero1 == null)
             hero1HUD.gameObject.SetActive(false);
@@ -232,13 +276,7 @@ public class BattleSystem : MonoBehaviour {
         if (enemy3 == null)
             enemy3HUD.gameObject.SetActive(false);
 
-        state = BattleState.HERO1TURN;
-
-        yield return new WaitForSeconds(START_BATTLE_TIME);
-
-        hero1HUD.isHighlighted = true;
-
-        StartCoroutine(PlayerTurn());
+        StartCoroutine(FadeInTransition());
     }
 
     IEnumerator PlayerTurn() {
@@ -415,7 +453,7 @@ public class BattleSystem : MonoBehaviour {
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
-            EndBattle();
+            StartCoroutine(EndBattle());
         } else {
             StartCoroutine(NextTurn());
         }
@@ -473,7 +511,7 @@ public class BattleSystem : MonoBehaviour {
 
         if (IsAllHeroesDead()) {
             state = BattleState.LOST;
-            EndBattle();
+            StartCoroutine(EndBattle());
         } else {
             StartCoroutine(NextTurn());
         }
@@ -533,7 +571,7 @@ public class BattleSystem : MonoBehaviour {
 
         if (IsAllEnemiesDead()) {
             state = BattleState.WON;
-            EndBattle();
+            StartCoroutine(EndBattle());
         }
         else {
             StartCoroutine(NextTurn());
@@ -671,7 +709,7 @@ public class BattleSystem : MonoBehaviour {
 
             if (IsAllHeroesDead()) {
                 state = BattleState.LOST;
-                EndBattle();
+                StartCoroutine(EndBattle());
             } else {
                 StartCoroutine(NextTurn());
             }
@@ -832,12 +870,56 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
-    void EndBattle() {
+    IEnumerator EndBattle() {
         if (state == BattleState.WON) {
             auxText.text = "You won the battle!";
         } else if (state == BattleState.LOST) {
             auxText.text = "You were defeated!";
         }
+
+        isFadeOutTransition = true;
+        transitionPanel.SetActive(true);
+
+        yield return new WaitForSeconds(ENDBATTLE_TO_NEXTSCENE);
+
+        SceneManager.LoadScene("DialogueScene");
+    }
+
+    IEnumerator FadeInTransition() {
+        transitionPanel.SetActive(true);
+        yield return new WaitForSeconds(FADEIN_TRANSITION_TIME);
+        isFadeInTransition = false;
+        transitionPanel.SetActive(false);
+        state = BattleState.HERO1TURN;
+        yield return new WaitForSeconds(START_BATTLE_TIME);
+        hero1HUD.isHighlighted = true;
+        StartCoroutine(PlayerTurn());
+    }
+
+    public void AnimateFadeInTransition() {
+        Color panelColor = transitionPanel.GetComponent<Image>().color;
+        panelColor = Color.Lerp(
+            panelColor,
+            new Color(
+                panelColor.r,
+                panelColor.g,
+                panelColor.b,
+                panelColor.a - 0.5f),
+            4f * Time.deltaTime);
+        transitionPanel.GetComponent<Image>().color = panelColor;
+    }
+
+    public void AnimateFadeOutTransition() {
+        Color panelColor = transitionPanel.GetComponent<Image>().color;
+        panelColor = Color.Lerp(
+            panelColor,
+            new Color(
+                panelColor.r,
+                panelColor.g,
+                panelColor.b,
+                panelColor.a + 0.5f),
+            4f * Time.deltaTime);
+        transitionPanel.GetComponent<Image>().color = panelColor;
     }
 
     #endregion
@@ -1006,9 +1088,9 @@ public class BattleSystem : MonoBehaviour {
 
     private CharacterStats ChoosingATargetHero() {
 
-        if (hero1.IsInNegativeStatus(BuffType.Taunt) == true) return hero1;
-        if (hero2.IsInNegativeStatus(BuffType.Taunt) == true) return hero2;
-        if (hero3.IsInNegativeStatus(BuffType.Taunt) == true) return hero3;
+        if ((hero3 != null) && (hero1.IsInNegativeStatus(BuffType.Taunt) == true)) return hero1;
+        if ((hero3 != null) && (hero2.IsInNegativeStatus(BuffType.Taunt) == true)) return hero2;
+        if ((hero3 != null) && (hero3.IsInNegativeStatus(BuffType.Taunt) == true)) return hero3;
 
         while (true) {
             int targetRNG = UnityEngine.Random.Range(1, 4);

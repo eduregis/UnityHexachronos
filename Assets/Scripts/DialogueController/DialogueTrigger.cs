@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DialogueTrigger : MonoBehaviour
 {
@@ -10,31 +11,47 @@ public class DialogueTrigger : MonoBehaviour
 
     private int handler = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    private void Start() {
+        handler = DialogueBattleDataBridge.dialogueHandler;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!DialogueManager.GetInstance().dialogueIsPlaying)
-        {
-            switch(handler)
-            {
+    void Update() {
+        if (!DialogueManager.GetInstance().dialogueIsPlaying) {
+            Debug.Log("Handler: " + handler);
+            switch (handler) {
                 case 0:
-                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON1);
+                    StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON1));
                     handler = 1;
                     break;
                 case 1:
-                    DialogueManager.GetInstance().EnterDialogueMode(inkJSON2);
-                    handler = 2;
+                    Debug.Log("Choices: " + DialogueManager.GetInstance().choicesIndexes);
+                    DialogueManager.GetInstance().isFadeOutTransition = true;
+                    StartCoroutine(LoadBattleScene("Luca", "Borell", "Sam", "BasicSoldier", "BasicSoldier", ""));
+                    break;
+                case 2:
+                    StartCoroutine(DialogueManager.GetInstance().EnterDialogueMode(inkJSON2));
+                    handler = 3;
                     break;
                 default:
-                    Debug.Log(DialogueManager.GetInstance().choicesIndexes);
                     break;
             }
         }
     }
+
+    public IEnumerator LoadBattleScene(string hero1Name, string hero2Name, string hero3Name, string enemy1Name, string enemy2Name, string enemy3Name) {
+
+        yield return new WaitForSeconds(0.5f);
+
+        DialogueBattleDataBridge.hero1_Name = hero1Name;
+        DialogueBattleDataBridge.hero2_Name = hero2Name;
+        DialogueBattleDataBridge.hero3_Name = hero3Name;
+        DialogueBattleDataBridge.enemy1_Name = enemy1Name;
+        DialogueBattleDataBridge.enemy2_Name = enemy2Name;
+        DialogueBattleDataBridge.enemy3_Name = enemy3Name;
+
+        DialogueBattleDataBridge.dialogueHandler = handler + 1;
+
+        SceneManager.LoadScene("BattleScene");
+    }
+
 }
