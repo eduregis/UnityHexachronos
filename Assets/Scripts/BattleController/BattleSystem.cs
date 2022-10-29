@@ -23,7 +23,9 @@ public enum MenuTargetType {
     SKILL
 }
 
-public class BattleSystem : MonoBehaviour {
+public class BattleSystem : MonoBehaviour, IDataPersistence {
+
+    private int deathCount = 0;
 
     #region External variables
 
@@ -447,6 +449,7 @@ public class BattleSystem : MonoBehaviour {
                     default:
                         break;
                 }
+                deathCount++;
                 auxText.text = "Attacking!";
                 break;
             case MenuTargetType.SKILL:
@@ -1260,6 +1263,18 @@ public class BattleSystem : MonoBehaviour {
 
     public void OnBlockButton() {
         StartCoroutine(Blocking());
+    }
+
+    #endregion
+
+    #region Data persistence functions
+
+    public void LoadData(GameData data) {
+        this.deathCount = data.deathCount;
+    }
+
+    public void SaveData(ref GameData data) {
+        data.deathCount = this.deathCount;
     }
 
     #endregion
