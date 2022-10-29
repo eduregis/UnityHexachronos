@@ -23,7 +23,9 @@ public enum MenuTargetType {
     SKILL
 }
 
-public class BattleSystem : MonoBehaviour {
+public class BattleSystem : MonoBehaviour, IDataPersistence {
+
+    private int deathCount = 0;
 
     #region External variables
 
@@ -147,27 +149,42 @@ public class BattleSystem : MonoBehaviour {
     void Start() {
         state = BattleState.START;
 
-        string hero1Name = DialogueBattleDataBridge.hero1_Name;
-        string hero2Name = DialogueBattleDataBridge.hero2_Name;
-        string hero3Name = DialogueBattleDataBridge.hero3_Name;
+        // TO USE BATTLESCENE WITH DATA BRIDGED FROM DIALOGUESCENE
+        //string hero1Name = DialogueBattleDataBridge.hero1_Name;
+        //string hero2Name = DialogueBattleDataBridge.hero2_Name;
+        //string hero3Name = DialogueBattleDataBridge.hero3_Name;
 
-        // TO TEST BATTLESCENE DIRECTLY WILL BE REMOVED IN THE FUTURE
-        //string hero1Name = "Luca"; 
-        //string hero2Name = "Sam";
-        //string hero3Name = "Borell";
+        // TO TEST BATTLESCENE DIRECTLY, WILL BE REMOVED IN THE FUTURE
+        string hero1Name = "Luca";
+        string hero2Name = "Sam";
+        string hero3Name = "Borell";
 
-        if (!string.IsNullOrEmpty(hero1Name)) hero1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero1Name));
-        if (!string.IsNullOrEmpty(hero2Name)) hero2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero2Name));
-        if (!string.IsNullOrEmpty(hero3Name)) hero3 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero3Name));
+        if (!string.IsNullOrEmpty(hero1Name)) {
+            hero1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero1Name));
+            // setting manually the chip upgrade
+            List<UpgradeChip> hero1Chips = new();
+            hero1Chips.Add(new() { value = 1, chipType = ChipType.Strength, chipModifier = ChipModifier.Constant, chipSet = ChipSet.Pyrang });
+            hero1Chips.Add(new() { value = 1, chipType = ChipType.Strength, chipModifier = ChipModifier.Constant, chipSet = ChipSet.Pyrang });
+            hero1.LoadChips(hero1Chips);
+        }
 
-        string enemy1Name = DialogueBattleDataBridge.enemy1_Name;
-        string enemy2Name = DialogueBattleDataBridge.enemy2_Name;
-        string enemy3Name = DialogueBattleDataBridge.enemy3_Name;
+        if (!string.IsNullOrEmpty(hero2Name)) {
+            hero2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero2Name));
+        }
 
-        // TO TEST BATTLESCENE DIRECTLY WILL BE REMOVED IN THE FUTURE
-        //string enemy1Name = "BasicSoldier";
-        //string enemy2Name = "BasicSoldier";
-        //string enemy3Name = "";
+        if (!string.IsNullOrEmpty(hero3Name)) {
+            hero3 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(hero3Name));
+        }
+
+        // TO USE BATTLESCENE WITH DATA BRIDGED FROM DIALOGUESCENE
+        //string enemy1Name = DialogueBattleDataBridge.enemy1_Name;
+        //string enemy2Name = DialogueBattleDataBridge.enemy2_Name;
+        //string enemy3Name = DialogueBattleDataBridge.enemy3_Name;
+
+        // TO TEST BATTLESCENE DIRECTLY, WILL BE REMOVED IN THE FUTURE
+        string enemy1Name = "BasicSoldier";
+        string enemy2Name = "BasicSoldier";
+        string enemy3Name = "";
 
         if (!string.IsNullOrEmpty(enemy1Name)) enemy1 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy1Name));
         if (!string.IsNullOrEmpty(enemy2Name)) enemy2 = Instantiate(CharacterStatsManager.GetInstance().GetCharacter(enemy2Name));
@@ -362,14 +379,33 @@ public class BattleSystem : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         EventSystem.current.SetSelectedGameObject(skill1Button.gameObject);
 
-        if (skills[0] != null)
+        if (skills.Count > 0 && skills[0] != null) {
             skill1Text.text = skills[0].skill_name;
-        if (skills[1] != null)
+            skill1Button.gameObject.SetActive(true);
+        } else {
+            skill1Button.gameObject.SetActive(false);
+        }
+
+        if (skills.Count > 1 && skills[1] != null) {
             skill2Text.text = skills[1].skill_name;
-        if (skills[2] != null)
+            skill2Button.gameObject.SetActive(true);
+        } else {
+            skill2Button.gameObject.SetActive(false);
+        }
+
+        if (skills.Count > 2 && skills[2] != null) {
             skill3Text.text = skills[2].skill_name;
-        if (skills[3] != null)
+            skill3Button.gameObject.SetActive(true);
+        } else {
+            skill3Button.gameObject.SetActive(false);
+        }
+
+        if (skills.Count > 3 && skills[3] != null) {
             skill4Text.text = skills[3].skill_name;
+            skill4Button.gameObject.SetActive(true);
+        } else {
+            skill4Button.gameObject.SetActive(false);
+        }
     }
 
     #region Player Action Functions
@@ -413,6 +449,7 @@ public class BattleSystem : MonoBehaviour {
                     default:
                         break;
                 }
+                deathCount++;
                 auxText.text = "Attacking!";
                 break;
             case MenuTargetType.SKILL:
@@ -1226,6 +1263,18 @@ public class BattleSystem : MonoBehaviour {
 
     public void OnBlockButton() {
         StartCoroutine(Blocking());
+    }
+
+    #endregion
+
+    #region Data persistence functions
+
+    public void LoadData(GameData data) {
+        this.deathCount = data.deathCount;
+    }
+
+    public void SaveData(ref GameData data) {
+        data.deathCount = this.deathCount;
     }
 
     #endregion

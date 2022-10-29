@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.Linq;
 
 [CreateAssetMenu(fileName ="BasicStats", menuName ="BasicStats")]
 
@@ -32,9 +33,19 @@ public class CharacterStats : ScriptableObject
 
     public List<CharacterSkill> skills;
     public List<Buff> buffs;
+    List<UpgradeChip> chips;
+    List<String> chipSetEffects;
 
-    public void LoadBattleStats()
-    {
+    public void LoadChips(List<UpgradeChip> chipToBeLoaded) {
+        chips = chipToBeLoaded;
+    }
+
+    public void LoadBattleStats() {
+
+        TriggerChipSetEffects();
+
+        TriggerStatsChips();
+
         maxLife = ((vitality) * 5);
         life = maxLife;
         maxEnergy = 100;
@@ -47,6 +58,112 @@ public class CharacterStats : ScriptableObject
         critDamage = 50;
         isBlocking = false;
         buffs = new List<Buff>();
+
+        TriggerBattleChips();
+
+        DebbugingHero();
+    }
+
+    public void DebbugingHero() {
+        Debug.Log("Hero name: " + name + "\n Basic Stats: " + "\n   Strength: " + strength + "\n   Vitality: " + vitality +
+            "\n   Intelligence: " + intelligence + "\n   Technique: " + technique + "\n   Agility: " + agility +
+            "\n   Luck: " + luck + "\n Battle Stats: " + "\n   Damage: " + damage + "\n   Defense: " + defense + "\n   CritRate: "
+            + critRate + "\n   CritDamage: " + critDamage + "\n   Evasion: " + evasionRate + "\n   HitRate: " + hitRate + "\n ChipSet Effects: (" + chipSetEffects.Count + ")");
+        foreach (string chipSet in chipSetEffects) {
+            Debug.Log("\n   " + chipSet);
+        }
+    }
+
+    public void TriggerStatsChips() {
+        if (chips != null) {
+            foreach (UpgradeChip chip in chips) {
+                if (chip.chipType is ChipType.Strength or ChipType.Intelligence or ChipType.Vitality or
+                    ChipType.Technique or ChipType.Agility or ChipType.Luck) {
+                    TriggerChip(chip);
+                }
+            }
+        }
+    }
+
+    public void TriggerBattleChips() {
+        if (chips != null) {
+            foreach (UpgradeChip chip in chips) {
+                if (chip.chipType is ChipType.Damage or ChipType.Defense or ChipType.HitRate or
+                    ChipType.Evasion or ChipType.CritDamage or ChipType.CritRate) {
+                    TriggerChip(chip);
+                }
+            }
+        }
+    }
+
+    public void TriggerChipSetEffects() {
+
+        chipSetEffects = new();
+
+        if (chips != null) {
+            foreach (ChipSet chipSet in Enum.GetValues(typeof(ChipSet))) {
+                var filteredChips = chips.Where(chip => chip.chipSet == chipSet);
+                if (filteredChips.Count() > 1) {
+                    chipSetEffects.Add(chipSet + "+2");
+                    if (filteredChips.Count() > 2) {
+                        chipSetEffects.Add(chipSet + "+3");
+                    }
+                }
+            }
+        }
+    }
+
+    public void TriggerChip(UpgradeChip chip) {
+        switch (chip.chipType) {
+            case ChipType.Damage:
+                damage = (int)CalcStatusWithChipBonus(damage, chip);
+                break;
+            case ChipType.Defense:
+                defense = CalcStatusWithChipBonus(defense, chip);
+                break;
+            case ChipType.HitRate:
+                hitRate = (int)CalcStatusWithChipBonus(hitRate, chip);
+                break;
+            case ChipType.Evasion:
+                evasionRate = (int)CalcStatusWithChipBonus(evasionRate, chip);
+                break;
+            case ChipType.CritDamage:
+                critDamage = (int)CalcStatusWithChipBonus(critDamage, chip);
+                break;
+            case ChipType.CritRate:
+                critRate = (int)CalcStatusWithChipBonus(critRate, chip);
+                break;
+            case ChipType.Strength:
+                strength = (int)CalcStatusWithChipBonus(strength, chip);
+                break;
+            case ChipType.Intelligence:
+                intelligence = (int)CalcStatusWithChipBonus(intelligence, chip);
+                break;
+            case ChipType.Vitality:
+                vitality = (int)CalcStatusWithChipBonus(vitality, chip);
+                break;
+            case ChipType.Technique:
+                technique = (int)CalcStatusWithChipBonus(technique, chip);
+                break;
+            case ChipType.Agility:
+                agility = (int)CalcStatusWithChipBonus(agility, chip);
+                break;
+            case ChipType.Luck:
+                luck = (int)CalcStatusWithChipBonus(luck, chip);
+                break;
+        }
+    }
+
+    public float CalcStatusWithChipBonus(float value, UpgradeChip chip) {
+        switch (chip.chipModifier) {
+            case ChipModifier.Constant:
+                return value + chip.value;
+            case ChipModifier.Multiplier:
+                return value * chip.value;
+            case ChipModifier.AutoAttackModifier:
+                return value;
+        }
+        return value;
     }
 
     public string TakeDamage(int dmg) {
